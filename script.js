@@ -78,7 +78,7 @@ if(!Array.isArray(state.ownedClickers)||!state.ownedClickers.length)state.ownedC
 if(!Array.isArray(state.quests)||!state.quests.length)state.quests=defaults.quests;
 if(!Array.isArray(state.skills))state.skills=[];
 if(!Array.isArray(state.ownedPets))state.ownedPets=[];
-if(!Array.isArray(state.equippedPets))state.equippedPets=[];
+if(!Array.isArray(state.equippedPets))state.equippedPets=[];\nif(typeof state.shieldMax!=="number"||typeof state.shieldHp!=="number"){state.shieldMax=30;state.shieldHp=30;state.shieldBroken=!boss().mechanics.includes("🛡️ Schild");}
 function $(id){return document.getElementById(id)}
 function format(n){return Math.floor(n).toLocaleString("de-DE")}
 function save(){state.lastSeen=Date.now();localStorage.setItem(SAVE_KEY,JSON.stringify(state))}
