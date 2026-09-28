@@ -5,7 +5,10 @@
   const app=document.querySelector(".app");
   if(!app) return;
 
-  // =============================\n  // UI CONSTRUCTION\n  // =============================\n  // Build fixed top status HUD.
+  // =============================
+  // UI CONSTRUCTION
+  // =============================
+  // Build fixed top status HUD.
   const top=document.createElement("div");
   top.className="ui-topbar";
   top.innerHTML=`
@@ -90,7 +93,10 @@
   ];
   if(oldNav) oldNav.innerHTML=navItems.map(([id,icon,label])=>`<button class="nav-tab ${id==="combat"?"active":""}" data-ui-section="${id}"><span>${icon}</span><span>${label}</span></button>`).join("");
 
-  // =============================\n  // NAVIGATION STATE & CONTEXT\n  // =============================\n  const titles={
+  // =============================
+  // NAVIGATION STATE & CONTEXT
+  // =============================
+  const titles={
     upgrades:["SHOP","Stärker werden"],
     progress:["FORTSCHRITT","Prestige & Events"],
     quests:["QUESTS","Mission Control"],
@@ -111,7 +117,10 @@
     progress:[["✨","AURA","aura","uiWalletAura"],["⭐","STERNE","stars","uiWalletStars"]]
   };
 
-  // =============================\n  // SHEET / NAVIGATION CONTROLS\n  // =============================\n  function updateContextWallet(section){
+  // =============================
+  // SHEET / NAVIGATION CONTROLS
+  // =============================
+  function updateContextWallet(section){
     const wallet=$("uiContextWallet");
     if(!wallet)return;
     const list=contextCurrencies[section]||[];
@@ -184,7 +193,10 @@
     if(e.target===el) closeSheets();
   }));
 
-  // =============================\n  // COMBAT PRESENTATION LOOP\n  // =============================\n  // Smooth, continuous fake movement. It uses the same combat-field coordinate system as Crit.
+  // =============================
+  // COMBAT PRESENTATION LOOP
+  // =============================
+  // Smooth, continuous fake movement. It uses the same combat-field coordinate system as Crit.
   const fake=$("fakeZone");
   let fakeFrame=0;
   function animateCombatObjects(){
@@ -222,7 +234,10 @@
   }
   fakeFrame=requestAnimationFrame(animateCombatObjects);
 
-  // =============================\n  // HUD SYNCHRONIZATION\n  // =============================\n  // Keep the top status HUD in sync with the game's existing state/render cycle.
+  // =============================
+  // HUD SYNCHRONIZATION
+  // =============================
+  // Keep the top status HUD in sync with the game's existing state/render cycle.
   function syncStatus(){
     const map={
       uiAura:"aura",uiLevel:"level",uiPower:"power",uiMultiplier:"multiplier",
