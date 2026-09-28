@@ -170,11 +170,21 @@
     if(arena){
       const t=performance.now()/1000;
       if(fake && fake.style.display!=="none"){
-        const x=50+Math.cos(t*1.07+1.8)*30;
-        const y=50+Math.sin(t*1.43)*25;
-        fake.style.left=x+"%";
-        fake.style.top=y+"%";
-        fake.style.transform="translate(-50%,-50%)";
+        const target=$("bossTarget");
+        if(target){
+          const ar=arena.getBoundingClientRect(),tr=target.getBoundingClientRect();
+          const cx=tr.left+tr.width/2-ar.left,cy=tr.top+tr.height/2-ar.top;
+          const bossR=Math.min(tr.width,tr.height)/2;
+          const fakeR=Math.min(fake.getBoundingClientRect().width,fake.getBoundingClientRect().height)/2||30;
+          const safe=Math.max(12,bossR-fakeR*1.15);
+          const radius=safe*(.55+.2*Math.sin(t*.72));
+          const angle=t*.92+1.8;
+          const x=cx+Math.cos(angle)*radius-fakeR;
+          const y=cy+Math.sin(angle*1.13)*radius-fakeR;
+          fake.style.left=x+"px";
+          fake.style.top=y+"px";
+          fake.style.transform="none";
+        }
       }
       const shield=$("bossShield");
       if(shield && typeof shieldOpeningAngle==="function"){
