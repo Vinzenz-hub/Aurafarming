@@ -175,7 +175,7 @@
         const cx=tr.left+tr.width/2-ar.left,cy=tr.top+tr.height/2-ar.top;
         const bossR=Math.min(tr.width,tr.height)/2;
 
-        // Crit follows the same proven transform coordinate system as Fake.
+        // Crit uses direct viewport coordinates; this bypasses arena positioning conflicts.
         const zone=$("critZone");
         if(zone){
           const zoneR=Math.min(zone.getBoundingClientRect().width,zone.getBoundingClientRect().height)/2||50;
@@ -184,11 +184,12 @@
           const angle=(typeof shieldOpeningAngle==="function" && typeof hasShield==="function" && hasShield() && !window.state?.shieldBroken)
             ? shieldOpeningAngle()+Math.sin(t*1.35)*.22
             : t*1.15;
-          const x=cx+Math.cos(angle)*radius-zoneR;
-          const y=cy+Math.sin(angle)*radius-zoneR;
-          zone.style.left="0px";
-          zone.style.top="0px";
-          zone.style.setProperty("transform","translate3d("+x+"px,"+y+"px,0)","important");
+          const x=tr.left+tr.width/2+Math.cos(angle)*radius-zoneR;
+          const y=tr.top+tr.height/2+Math.sin(angle)*radius-zoneR;
+          zone.style.setProperty("position","fixed","important");
+          zone.style.setProperty("left",x+"px","important");
+          zone.style.setProperty("top",y+"px","important");
+          zone.style.setProperty("transform","none","important");
         }
 
         if(fake && fake.style.display!=="none"){
