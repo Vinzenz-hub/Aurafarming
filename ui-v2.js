@@ -169,6 +169,11 @@
     updateContextWallet(section);
     openSection=section;
     document.body.classList.add("ui-sheet-open");
+    syncCritVisibility();
+  }
+
+  function syncCritVisibility(){
+    if(critOverlay) critOverlay.style.display=document.body.classList.contains("ui-sheet-open")?"none":"block";
   }
 
   function closeSheets(){
@@ -176,6 +181,7 @@
     sheet.classList.remove("open");
     openSection=null;
     document.body.classList.remove("ui-sheet-open");
+    syncCritVisibility();
   }
 
   oldNav?.querySelectorAll(".nav-tab").forEach(btn=>{
@@ -203,6 +209,7 @@
       openSection=null;
       status.classList.add("open");
       document.body.classList.add("ui-sheet-open");
+      syncCritVisibility();
     }
   };
   $("uiStatusClose").onclick=()=>closeSheets();
