@@ -93,6 +93,26 @@
   ];
   if(oldNav) oldNav.innerHTML=navItems.map(([id,icon,label])=>`<button class="nav-tab ${id==="combat"?"active":""}" data-ui-section="${id}"><span>${icon}</span><span>${label}</span></button>`).join("");
 
+  // Move Crit out of the combat arena. The legacy element is constrained by
+  // arena positioning/overflow rules, so the live Crit overlay belongs directly to body.
+  const legacyCrit=$("critZone");
+  let critOverlay=legacyCrit;
+  if(legacyCrit){
+    critOverlay.remove();
+    critOverlay=document.createElement("div");
+    critOverlay.id="critZone";
+    critOverlay.className="crit-zone";
+    critOverlay.innerHTML="<span id='critZoneText'>CRIT</span>";
+    document.body.appendChild(critOverlay);
+  }
+  if(critOverlay){
+    critOverlay.style.setProperty("position","fixed","important");
+    critOverlay.style.setProperty("z-index","2000","important");
+    critOverlay.style.setProperty("margin","0","important");
+    critOverlay.style.setProperty("transform","none","important");
+    critOverlay.style.setProperty("pointer-events","none","important");
+  }
+
   // =============================
   // NAVIGATION STATE & CONTEXT
   // =============================
@@ -209,8 +229,25 @@
         const cx=tr.left+tr.width/2-ar.left,cy=tr.top+tr.height/2-ar.top;
         const bossR=Math.min(tr.width,tr.height)/2;
 
-        // Crit-zone movement is owned by script.js (single source of truth).
-        // Keep this UI controller focused on presentation-only combat objects.
+        // Crit is a viewport overlay, deliberately outside the arena DOM.
+        // This avoids every arena positioning/overflow containing-block conflict.
+        if(critOverlay){
+          const zoneR=Math.min(critOverlay.getBoundingClientRect().width,critOverlay.getBoundingClientRect().height)/2||52;
+          const zoneSizePx=80+(typeof zoneSize==="function"?zoneSize():.18)*80;
+          const safe=Math.max(18,bossR-zoneSizePx*.58);
+          const angle=(typeof hasShield==="function"&&hasShield()&&!state.shieldBroken&&typeof shieldOpeningAngle==="function")
+            ?shieldOpeningAngle()+Math.sin(t*1.35)*.22
+            :t*(typeof zoneSpeed==="function"?zoneSpeed():.012)/.012*1.65;
+          const radius=(typeof hasShield==="function"&&hasShield()&&!state.shieldBroken)
+            ?safe*.68
+            :safe*(.62+.18*Math.sin(t*.9));
+          const x=tr.left+tr.width/2+Math.cos(angle)*radius-zoneSizePx/2;
+          const y=tr.top+tr.height/2+Math.sin(angle)*radius-zoneSizePx/2;
+          critOverlay.style.setProperty("width",zoneSizePx+"px","important");
+          critOverlay.style.setProperty("height",zoneSizePx+"px","important");
+          critOverlay.style.setProperty("left",x+"px","important");
+          critOverlay.style.setProperty("top",y+"px","important");
+        }
 
         if(fake && fake.style.display!=="none"){
           const fakeR=Math.min(fake.getBoundingClientRect().width,fake.getBoundingClientRect().height)/2||30;
