@@ -102,3 +102,27 @@ button:focus{outline:none}
 
 /* When a sheet is open, the combat HUD must not overlap its content. */
 body.ui-sheet-open .ui-combat-hud{display:none!important}
+
+
+/* Scalable shop upgrades */
+.ui-bottom-body .upgrade-grid{gap:12px}
+.ui-bottom-body .upgrade{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:15px;border:1px solid #ffffff16;background:#ffffff06;border-radius:18px}
+.upgrade-level{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#72f5df12;border:1px solid #72f5df25;color:#7ef5e0;font-size:.58rem;font-weight:950;letter-spacing:.08em}
+.upgrade-next{color:#9a92a5;font-size:.68rem}
+.upgrade-next b{color:#f6d56d}
+.upgrade-buy-grid{width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-top:7px}
+.upgrade-buy{min-width:0;min-height:58px;padding:7px 3px;border:1px solid #ffffff16;border-radius:11px;background:#ffffff08;color:#f1edf7;font-weight:950;font-size:.75rem;cursor:pointer;transition:transform .12s,border-color .12s,opacity .12s,background .12s}
+.upgrade-buy small{display:block;margin-top:3px;color:#f6d56d;font-size:.52rem;line-height:1.1}
+.upgrade-buy:active{transform:scale(.96)}
+.upgrade-buy:disabled{opacity:.32;cursor:not-allowed}
+.upgrade-buy.insufficient{border-color:#ff5f8f35;background:#ff5f8f08}
+.upgrade.insufficient .upgrade-level{border-color:#ff5f8f35;color:#ff8faf}
+.idle-buy-grid{grid-template-columns:minmax(100px,1fr)}
+.ui-bottom-body .skill-card.active{border-color:#72f5df30}
+.skill-level{display:inline-flex;margin:2px 0 5px;padding:4px 8px;border-radius:999px;background:#9d7cff12;border:1px solid #9d7cff2b;color:#c9b8ff;font-size:.57rem;font-weight:950;letter-spacing:.08em}
+.skill-card.maxed .skill-level{color:#f6d56d;border-color:#f6d56d35;background:#f6d56d0b}
+.skill-card.maxed .skill-cost{color:#f6d56d}
+@media(max-width:600px){
+  .upgrade-buy-grid{gap:4px}
+  .upgrade-buy{min-height:55px;font-size:.7rem}
+}
