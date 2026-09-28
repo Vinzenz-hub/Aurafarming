@@ -75,7 +75,7 @@ const defaults={
 };
 function readSave(){try{return JSON.parse(localStorage.getItem(SAVE_KEY)||"{}")}catch(e){return {}}}
 let state={...defaults,...readSave()};
-let selectedBulk={power:0,multiplier:0,combo:0,auto:0};
+let selectedBulk={power:1,multiplier:1,combo:1,auto:1};
 if(!Array.isArray(state.ownedClickers)||!state.ownedClickers.length)state.ownedClickers=["basic"];
 if(!Array.isArray(state.quests)||!state.quests.length)state.quests=defaults.quests;
 if(!Array.isArray(state.skills))state.skills=[];
@@ -209,20 +209,27 @@ function renderUpgrades(){
  const types=["power","multiplier","combo","auto"];
  types.forEach(type=>{
    const level=state.upgradeLevels[type]||0;
-   const next=upgradeNextCost(type);
+   const qty=selectedBulk[type]||1;
+   const cost=bulkUpgradeCost(type,qty);
    const card=document.querySelector('.upgrade[data-type="'+type+'"]');
    if($(type+"Level"))$(type+"Level").textContent="LEVEL "+level;
    document.querySelectorAll('.upgrade-qty[data-type="'+type+'"]').forEach(btn=>{
-     const qty=Number(btn.dataset.qty)||1;
-     const cost=bulkUpgradeCost(type,qty);
-     btn.innerHTML="×"+qty+"<small>✨ "+format(cost)+"</small>";
-     btn.setAttribute("aria-label","Kaufe "+qty+" Level für "+format(cost)+" Aura");
-     btn.setAttribute("aria-pressed","false");
-     btn.classList.remove("selected");
-     btn.classList.toggle("insufficient",state.aura<cost);
-     btn.disabled=state.aura<cost;
+     const n=Number(btn.dataset.qty)||1;
+     btn.innerHTML="×"+n;
+     btn.setAttribute("aria-label","Kaufmenge "+n);
+     btn.setAttribute("aria-pressed",String(n===qty));
+     btn.classList.toggle("selected",n===qty);
+     btn.classList.remove("insufficient");
+     btn.disabled=false;
    });
-   if(card)card.classList.toggle("insufficient",state.aura<next);
+   const buyBtn=card?.querySelector('.upgrade-purchase');
+   if(buyBtn){
+     buyBtn.textContent=state.aura>=cost
+       ?"Kaufen · ✨ "+format(cost)
+       :"Nicht genug Aura · ✨ "+format(cost);
+     buyBtn.disabled=state.aura<cost;
+     buyBtn.classList.toggle("insufficient",state.aura<cost);
+   }
  });
  const idleBtn=document.querySelector('.upgrade-purchase[data-type="idle"]');
  if(idleBtn){
@@ -289,11 +296,14 @@ function triggerEvent(){const events=[["⚡ Aura Overload","Aura"],["💎 Crysta
 document.querySelectorAll(".upgrade-qty").forEach(b=>b.onclick=e=>{
  e.stopPropagation();
  const type=b.dataset.type,qty=Number(b.dataset.qty)||1;
- if(!b.disabled)buy(type,qty);
+ selectedBulk[type]=qty;
+ renderUpgrades();
 });
 document.querySelectorAll(".upgrade-purchase").forEach(b=>b.onclick=e=>{
  e.stopPropagation();
- if(b.dataset.type==="idle")buy("idle",1);
+ const type=b.dataset.type;
+ if(type==="idle")buy("idle",1);
+ else buy(type,selectedBulk[type]||1);
 });
 document.querySelector(".crit-arena").addEventListener("pointerdown",(e)=>{if(e.pointerType==="touch")e.preventDefault();if(e.button!==undefined&&e.button>0)return;farm(e)});document.querySelectorAll(".nav-tab").forEach(tab=>tab.onclick=()=>{const target=tab.dataset.section;if(target==="more"){document.getElementById("moreMenu").classList.toggle("open");return}document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target||(target==="combat"&&x.id==="combatArea")));window.scrollTo({top:0,behavior:"smooth"})});document.getElementById("currencyToggle").onclick=()=>{const p=document.getElementById("currencyPanel"),open=p.classList.toggle("open");document.getElementById("currencyToggle").setAttribute("aria-expanded",open)};document.querySelectorAll(".more-menu button").forEach(b=>b.onclick=()=>{const target=b.dataset.section;document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target));window.scrollTo({top:0,behavior:"smooth"})});$("prestigeBtn").onclick=prestige;$("eventBtn").onclick=triggerEvent;
 $("resetBtn").onclick=()=>{if(confirm("Spielstand wirklich löschen?")){localStorage.removeItem(SAVE_KEY);location.reload()}};
