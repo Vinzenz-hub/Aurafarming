@@ -4,21 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#100a25">
-  <title>✨ Aura Farming</title>
+  <meta name="description" content="Aura Farming – aktives Aura-Boss-Spiel mit Crits, Idle-Schaden, Quests, Pets und Prestige.">
+  <title>✨ Aura Farming 2.0</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="background-orb orb-one"></div><div class="background-orb orb-two"></div>
   <main class="app">
     <header class="topbar">
-      <div class="logo">✨ <span>Aura Farming</span></div>
+      <div class="logo">✨ <span>Aura Farming 2.0</span></div>
       <button id="resetBtn" class="ghost">Reset</button>
     </header>
 
     <section class="hero">
-      <p class="tag">AURA FARMING</p>
-      <h1>Farm deine <span>Aura</span>.</h1>
-      <p class="subtitle">Besiege Aura-Bosse, triff die wechselnde Crit-Zone und schalte immer stärkere Klicker frei.</p>
+      <p class="tag">AURA FARMING 2.0</p>
+      <h1>Werde zur <span>Aura-Legende.</span></h1>
+      <p class="subtitle">Triff die bewegliche Crit-Zone, besiege Bosse unter Zeitdruck, entwickle deinen Build und steige durch Prestige immer weiter auf.</p>
     </section>
 
     <section class="stats">
@@ -27,29 +28,40 @@
       <div class="stat"><small>PRO KLICK</small><strong id="power">1</strong></div>
       <div class="stat"><small>AURA MULTI</small><strong id="multiplier">x1.00</strong></div>
       <div class="stat"><small>COMBO</small><strong id="combo">x1.00</strong></div>
-      <div class="stat"><small>CRIT</small><strong id="critStat">x2.00</strong></div>
+      <div class="stat"><small>PRESTIGE</small><strong id="prestige">0</strong></div>
+    </section>
+
+    <section class="meta-stats">
+      <div>💎 Kristalle <b id="crystals">0</b></div>
+      <div>⭐ Sterne <b id="stars">0</b></div>
+      <div>🌳 Skillpunkte <b id="skillPoints">0</b></div>
+      <div>⚡ Idle-DPS <b id="idleDamage">0</b></div>
+      <div>🔥 Boss-Streak <b id="bossStreak">0</b></div>
     </section>
 
     <section class="boss-card">
       <div class="boss-top">
         <div>
-          <p class="tag">AKTUELLER GEGNER</p>
+          <p class="tag">BOSS <span id="bossNumber">1</span></p>
           <h2 id="bossName">Aura-Schatten</h2>
-          <p id="bossDesc">Ein dunkler Kern, der auf deine Aura wartet.</p>
+          <p id="bossDesc">Ein dunkler Kern, der deine erste Aura-Prüfung bewacht.</p>
         </div>
         <div id="bossEmoji" class="boss-emoji">🌑</div>
       </div>
+      <div class="boss-timer"><span>⏱️</span><b id="bossTimer">30.0</b><span>s</span></div>
       <div class="boss-bar"><div id="bossHealth" class="boss-health"></div></div>
-      <div class="boss-health-text"><span id="bossHp">0 / 0</span><span id="bossReward">Belohnung: +0 Aura</span></div>
+      <div class="boss-health-text"><span id="bossHp">120 / 120</span><span id="bossReward">Belohnung: +180 Aura</span></div>
+      <div class="boss-mechanics" id="bossMechanics"></div>
     </section>
 
     <section class="farm-area">
       <div class="combat-line">
         <span id="comboBadge" class="combo-badge">COMBO x1.00</span>
-        <span id="critBadge" class="crit-badge">CRIT-ZONE ×2.00</span>
+        <span id="critBadge" class="crit-badge">🎯 TREFFERZONE</span>
       </div>
-      <div class="crit-track" aria-label="Wechselnde kritische Trefferzone">
-        <div id="critZone" class="crit-zone"></div>
+
+      <div class="crit-arena" aria-label="Bewegliche kritische Trefferzone">
+        <div id="critZone" class="crit-zone"><span id="critZoneText">CRIT</span></div>
         <div id="critMarker" class="crit-marker"></div>
       </div>
 
@@ -57,28 +69,62 @@
         <div class="core-ring ring-a"></div><div class="core-ring ring-b"></div>
         <div class="core-glow"></div><span class="core-symbol">✦</span><span class="core-label">AURA</span>
       </button>
-      <p id="message" class="message">Klick auf den Kern und triff die Crit-Zone!</p>
+      <p id="message" class="message">Klicke den Auraball dort, wo die Crit-Zone erscheint!</p>
+    </section>
+
+    <section class="grid-section">
+      <div class="section-heading"><div><p class="tag">FORTSCHRITT</p><h2>Deine Systeme</h2></div></div>
+      <div class="panel-grid">
+        <article class="panel">
+          <div class="panel-title"><span>⚡</span><h3>Idle-Schaden</h3></div>
+          <p>Automatischer Boss-Schaden. Idle skaliert bewusst nur abgeschwächt mit Combo und Multiplikatoren.</p>
+          <strong id="idleDetail">0 Schaden/s</strong>
+          <button class="small-btn" data-skill="idle">+ Idle-Skill</button>
+        </article>
+        <article class="panel">
+          <div class="panel-title"><span>🌌</span><h3>Prestige</h3></div>
+          <p id="prestigeText">Prestige 1 wird bei 1.000.000 Aura freigeschaltet.</p>
+          <strong id="prestigeBonus">Belohnungen ×1.00</strong>
+          <button id="prestigeBtn" class="small-btn">Ascension</button>
+        </article>
+        <article class="panel">
+          <div class="panel-title"><span>📜</span><h3>Quests</h3></div>
+          <div id="questList" class="quest-list"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-title"><span>🎲</span><h3>Event</h3></div>
+          <div id="eventBox" class="event-box">Kein Event aktiv.</div>
+          <button id="eventBtn" class="small-btn">Event prüfen</button>
+        </article>
+      </div>
     </section>
 
     <section class="upgrades">
-      <div class="section-heading">
-        <div><p class="tag">UPGRADES</p><h2>Werde stärker</h2></div>
-        <span id="autoInfo" class="auto-info">Auto-Aura: 0/s</span>
-      </div>
+      <div class="section-heading"><div><p class="tag">UPGRADES</p><h2>Werde stärker</h2></div><span id="autoInfo" class="auto-info">Auto-Aura: 0/s</span></div>
       <div class="upgrade-grid">
         <button class="upgrade" data-type="power"><span class="upgrade-icon">⚡</span><span class="upgrade-name">Aura Power</span><span class="upgrade-desc">+1 Schaden pro Klick</span><span class="upgrade-cost">✨ <b id="powerCost">25</b></span></button>
-        <button class="upgrade" data-type="multiplier"><span class="upgrade-icon">💎</span><span class="upgrade-name">Aura Multiplikator</span><span class="upgrade-desc">Erhöht deine gesamte Aura-Ausbeute</span><span class="upgrade-cost">✨ <b id="multiplierCost">300</b></span></button>
-        <button class="upgrade" data-type="combo"><span class="upgrade-icon">🔥</span><span class="upgrade-name">Combo Boost</span><span class="upgrade-desc">Combo steigt schneller und höher</span><span class="upgrade-cost">✨ <b id="comboCost">75</b></span></button>
-        <button class="upgrade" data-type="auto"><span class="upgrade-icon">🤖</span><span class="upgrade-name">Auto Aura</span><span class="upgrade-desc">Farmt automatisch Aura</span><span class="upgrade-cost">✨ <b id="autoCost">150</b></span></button>
+        <button class="upgrade" data-type="multiplier"><span class="upgrade-icon">💎</span><span class="upgrade-name">Aura Multiplikator</span><span class="upgrade-desc">+0,25× Aura-Ausbeute</span><span class="upgrade-cost">✨ <b id="multiplierCost">300</b></span></button>
+        <button class="upgrade" data-type="combo"><span class="upgrade-icon">🔥</span><span class="upgrade-name">Combo Boost</span><span class="upgrade-desc">Combo steigt schneller</span><span class="upgrade-cost">✨ <b id="comboCost">75</b></span></button>
+        <button class="upgrade" data-type="auto"><span class="upgrade-icon">🤖</span><span class="upgrade-name">Auto Aura</span><span class="upgrade-desc">Erzeugt Aura pro Sekunde</span><span class="upgrade-cost">✨ <b id="autoCost">150</b></span></button>
       </div>
     </section>
 
     <section class="clickers">
-      <div class="section-heading"><div><p class="tag">KLICKER</p><h2>Dein Aura-Stil</h2></div><span class="auto-info">Der Klicker verändert den Kern.</span></div>
+      <div class="section-heading"><div><p class="tag">KLICKER</p><h2>Dein Aura-Stil</h2></div><span class="auto-info">Jeder Clicker verändert den Auraball.</span></div>
       <div class="clicker-grid" id="clickerGrid"></div>
     </section>
 
-    <footer>Spielstand und freigeschaltete Klicker werden automatisch im Browser gespeichert.</footer>
+    <section class="section-block">
+      <div class="section-heading"><div><p class="tag">SKILLTREE</p><h2>Baue deinen eigenen Build</h2></div><span class="auto-info">Kosten: 💎 Kristalle</span></div>
+      <div class="skill-grid" id="skillGrid"></div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-heading"><div><p class="tag">PETS</p><h2>Begleiter</h2></div><span class="auto-info">Aktive Slots: <b id="petSlots">1</b></span></div>
+      <div class="pet-grid" id="petGrid"></div>
+    </section>
+
+    <footer>Dein Spielstand wird automatisch im Browser gespeichert. Boss-Timer pausiert beim Verlassen der Seite.</footer>
   </main>
   <script src="script.js"></script>
 </body>
