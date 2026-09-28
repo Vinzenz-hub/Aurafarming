@@ -181,9 +181,9 @@
           const angle=t*.92+1.8;
           const x=cx+Math.cos(angle)*radius-fakeR;
           const y=cy+Math.sin(angle*1.13)*radius-fakeR;
-          fake.style.left=x+"px";
-          fake.style.top=y+"px";
-          fake.style.transform="none";
+          fake.style.left="0px";
+          fake.style.top="0px";
+          fake.style.transform="translate3d("+x+"px,"+y+"px,0)";
         }
       }
       const shield=$("bossShield");
