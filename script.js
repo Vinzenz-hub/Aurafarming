@@ -75,7 +75,7 @@ const defaults={
 };
 function readSave(){try{return JSON.parse(localStorage.getItem(SAVE_KEY)||"{}")}catch(e){return {}}}
 let state={...defaults,...readSave()};
-let selectedBulk={power:1,multiplier:1,combo:1,auto:1};
+let selectedBulk={power:null,multiplier:null,combo:null,auto:null};
 if(!Array.isArray(state.ownedClickers)||!state.ownedClickers.length)state.ownedClickers=["basic"];
 if(!Array.isArray(state.quests)||!state.quests.length)state.quests=defaults.quests;
 if(!Array.isArray(state.skills))state.skills=[];
@@ -209,8 +209,8 @@ function renderUpgrades(){
  const types=["power","multiplier","combo","auto"];
  types.forEach(type=>{
    const level=state.upgradeLevels[type]||0;
-   const qty=selectedBulk[type]||1;
-   const cost=bulkUpgradeCost(type,qty);
+   const qty=selectedBulk[type];
+   const cost=qty?bulkUpgradeCost(type,qty):0;
    const card=document.querySelector('.upgrade[data-type="'+type+'"]');
    if($(type+"Level"))$(type+"Level").textContent="LEVEL "+level;
    document.querySelectorAll('.upgrade-qty[data-type="'+type+'"]').forEach(btn=>{
@@ -224,11 +224,11 @@ function renderUpgrades(){
    });
    const buyBtn=card?.querySelector('.upgrade-purchase');
    if(buyBtn){
-     buyBtn.textContent=state.aura>=cost
-       ?"Kaufen · ✨ "+format(cost)
-       :"Nicht genug Aura · ✨ "+format(cost);
-     buyBtn.disabled=state.aura<cost;
-     buyBtn.classList.toggle("insufficient",state.aura<cost);
+     buyBtn.textContent=!qty
+       ?"Menge wählen"
+       :(state.aura>=cost?"Kaufen · ✨ "+format(cost):"Nicht genug Aura · ✨ "+format(cost));
+     buyBtn.disabled=!qty||state.aura<cost;
+     buyBtn.classList.toggle("insufficient",!!qty&&state.aura<cost);
    }
  });
  const idleBtn=document.querySelector('.upgrade-purchase[data-type="idle"]');
@@ -296,14 +296,14 @@ function triggerEvent(){const events=[["⚡ Aura Overload","Aura"],["💎 Crysta
 document.querySelectorAll(".upgrade-qty").forEach(b=>b.onclick=e=>{
  e.stopPropagation();
  const type=b.dataset.type,qty=Number(b.dataset.qty)||1;
- selectedBulk[type]=qty;
+ selectedBulk[type]=selectedBulk[type]===qty?null:qty;
  renderUpgrades();
 });
 document.querySelectorAll(".upgrade-purchase").forEach(b=>b.onclick=e=>{
  e.stopPropagation();
  const type=b.dataset.type;
  if(type==="idle")buy("idle",1);
- else buy(type,selectedBulk[type]||1);
+ else if(selectedBulk[type]) buy(type,selectedBulk[type]);
 });
 document.querySelector(".crit-arena").addEventListener("pointerdown",(e)=>{if(e.pointerType==="touch")e.preventDefault();if(e.button!==undefined&&e.button>0)return;farm(e)});document.querySelectorAll(".nav-tab").forEach(tab=>tab.onclick=()=>{const target=tab.dataset.section;if(target==="more"){document.getElementById("moreMenu").classList.toggle("open");return}document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target||(target==="combat"&&x.id==="combatArea")));window.scrollTo({top:0,behavior:"smooth"})});document.getElementById("currencyToggle").onclick=()=>{const p=document.getElementById("currencyPanel"),open=p.classList.toggle("open");document.getElementById("currencyToggle").setAttribute("aria-expanded",open)};document.querySelectorAll(".more-menu button").forEach(b=>b.onclick=()=>{const target=b.dataset.section;document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target));window.scrollTo({top:0,behavior:"smooth"})});$("prestigeBtn").onclick=prestige;$("eventBtn").onclick=triggerEvent;
 $("resetBtn").onclick=()=>{if(confirm("Spielstand wirklich löschen?")){localStorage.removeItem(SAVE_KEY);location.reload()}};
