@@ -105,6 +105,32 @@ body.ui-sheet-open .ui-combat-hud{display:none!important}
 
 
 /* Scalable shop upgrades */
+/* Shop purchase selector: quantities select the amount; the purchase button carries the price. */
+.upgrade-purchase{
+ width:100%;min-height:46px;margin-top:4px;padding:9px 11px;border:1px solid #72f5df35;border-radius:12px;
+ background:#72f5df0d;color:#9effed;font-weight:950;font-size:.72rem;letter-spacing:.01em;cursor:pointer;
+ transition:transform .12s,border-color .12s,background .12s,opacity .12s;
+}
+.upgrade-purchase:active{transform:scale(.98)}
+.upgrade-purchase:disabled{opacity:.34;cursor:not-allowed}
+.upgrade-purchase.insufficient{border-color:#ff5f8f35;background:#ff5f8f08;color:#ff9ab6}
+.upgrade-buy-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;width:100%;margin-top:7px}
+.upgrade-qty{
+ min-width:0;min-height:44px;padding:6px 3px;border:1px solid #ffffff16;border-radius:10px;
+ background:#ffffff08;color:#eeeaf5;font-weight:950;font-size:.7rem;cursor:pointer;
+ transition:transform .12s,border-color .12s,background .12s;
+}
+.upgrade-qty:active{transform:scale(.96)}
+.upgrade-qty.selected{
+ border-color:#72f5df88;background:#72f5df18;color:#9effed;
+ box-shadow:0 0 14px #72f5df18,inset 0 0 10px #72f5df08;
+}
+.upgrade.insufficient .upgrade-level{border-color:#ff5f8f35;color:#ff8faf}
+@media(max-width:600px){
+ .upgrade-purchase{min-height:48px;font-size:.7rem}
+ .upgrade-qty{min-height:42px;font-size:.68rem}
+}
+
 .ui-bottom-body .upgrade-grid{gap:12px}
 .ui-bottom-body .upgrade{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:15px;border:1px solid #ffffff16;background:#ffffff06;border-radius:18px}
 .upgrade-level{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#72f5df12;border:1px solid #72f5df25;color:#7ef5e0;font-size:.58rem;font-weight:950;letter-spacing:.08em}
