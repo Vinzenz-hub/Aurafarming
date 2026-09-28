@@ -211,29 +211,19 @@ function renderUpgrades(){
  types.forEach(type=>{
    const level=state.upgradeLevels[type]||0;
    const next=upgradeNextCost(type);
-   const selected=selectedBulk[type]||0;
-   const levelEl=$(type+"Level"),purchase=document.querySelector('.upgrade-purchase[data-type="'+type+'"]');
-   if(levelEl)levelEl.textContent="LEVEL "+level;
+   const card=document.querySelector('.upgrade[data-type="'+type+'"]');
+   if($(type+"Level"))$(type+"Level").textContent="LEVEL "+level;
    document.querySelectorAll('.upgrade-qty[data-type="'+type+'"]').forEach(btn=>{
      const qty=Number(btn.dataset.qty)||1;
-     btn.classList.toggle("selected",qty===selected);
-     btn.setAttribute("aria-pressed",qty===selected?"true":"false");
+     const cost=bulkUpgradeCost(type,qty);
+     btn.innerHTML="×"+qty+"<small>✨ "+format(cost)+"</small>";
+     btn.setAttribute("aria-label","Kaufe "+qty+" Level für "+format(cost)+" Aura");
+     btn.setAttribute("aria-pressed","false");
+     btn.classList.remove("selected");
+     btn.classList.toggle("insufficient",state.aura<cost);
+     btn.disabled=state.aura<cost;
    });
-   const card=document.querySelector('.upgrade[data-type="'+type+'"]');
    if(card)card.classList.toggle("insufficient",state.aura<next);
-   if(purchase){
-     if(!selected){
-       purchase.textContent="Kaufen · Multiplikator wählen";
-       purchase.disabled=true;
-       purchase.classList.remove("insufficient");
-     }else{
-       const cost=bulkUpgradeCost(type,selected);
-       purchase.textContent="Kaufen · ✨ "+format(cost);
-       purchase.disabled=state.aura<cost;
-       purchase.classList.toggle("insufficient",state.aura<cost);
-       purchase.dataset.qty=selected;
-     }
-   }
  });
  const idleBtn=document.querySelector('.upgrade-purchase[data-type="idle"]');
  if(idleBtn){
@@ -300,16 +290,13 @@ function triggerEvent(){const events=[["⚡ Aura Overload","Aura"],["💎 Crysta
 document.querySelectorAll(".upgrade-qty").forEach(b=>b.onclick=e=>{
  e.stopPropagation();
  const type=b.dataset.type,qty=Number(b.dataset.qty)||1;
- selectedBulk[type]=selectedBulk[type]===qty?0:qty;
- renderUpgrades();
+ if(!b.disabled)buy(type,qty);
 });
 document.querySelectorAll(".upgrade-purchase").forEach(b=>b.onclick=e=>{
  e.stopPropagation();
- const type=b.dataset.type;
- if(type==="idle"){buy("idle",1);return}
- const qty=selectedBulk[type]||0;
- if(qty>0)buy(type,qty);
-});document.querySelector(".crit-arena").addEventListener("pointerdown",(e)=>{if(e.pointerType==="touch")e.preventDefault();if(e.button!==undefined&&e.button>0)return;farm(e)});document.querySelectorAll(".nav-tab").forEach(tab=>tab.onclick=()=>{const target=tab.dataset.section;if(target==="more"){document.getElementById("moreMenu").classList.toggle("open");return}document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target||(target==="combat"&&x.id==="combatArea")));window.scrollTo({top:0,behavior:"smooth"})});document.getElementById("currencyToggle").onclick=()=>{const p=document.getElementById("currencyPanel"),open=p.classList.toggle("open");document.getElementById("currencyToggle").setAttribute("aria-expanded",open)};document.querySelectorAll(".more-menu button").forEach(b=>b.onclick=()=>{const target=b.dataset.section;document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target));window.scrollTo({top:0,behavior:"smooth"})});$("prestigeBtn").onclick=prestige;$("eventBtn").onclick=triggerEvent;
+ if(b.dataset.type==="idle")buy("idle",1);
+});
+document.querySelector(".crit-arena").addEventListener("pointerdown",(e)=>{if(e.pointerType==="touch")e.preventDefault();if(e.button!==undefined&&e.button>0)return;farm(e)});document.querySelectorAll(".nav-tab").forEach(tab=>tab.onclick=()=>{const target=tab.dataset.section;if(target==="more"){document.getElementById("moreMenu").classList.toggle("open");return}document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target||(target==="combat"&&x.id==="combatArea")));window.scrollTo({top:0,behavior:"smooth"})});document.getElementById("currencyToggle").onclick=()=>{const p=document.getElementById("currencyPanel"),open=p.classList.toggle("open");document.getElementById("currencyToggle").setAttribute("aria-expanded",open)};document.querySelectorAll(".more-menu button").forEach(b=>b.onclick=()=>{const target=b.dataset.section;document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target));window.scrollTo({top:0,behavior:"smooth"})});$("prestigeBtn").onclick=prestige;$("eventBtn").onclick=triggerEvent;
 $("resetBtn").onclick=()=>{if(confirm("Spielstand wirklich löschen?")){localStorage.removeItem(SAVE_KEY);location.reload()}};
 setInterval(()=>{const now=Date.now();const delta=Math.min(.25,(now-(state.lastTick||now))/1000);state.lastTick=now;if(delta>0){state.bossTimer-=delta;if(state.bossTimer<=0){state.bossHp=boss().hp;state.bossTimer=boss().time;state.bossStreak=0;resetShield();$("message").textContent="⏱️ Zeit abgelaufen! Der Boss startet neu."}const idle=idleDps()*delta;state.aura+=state.autoAura*delta;let idleBossDamage=idle*(bossPhase()>=3?.85:1);if(hasShield()&&!state.shieldBroken){state.shieldHp=Math.max(0,state.shieldHp-idleBossDamage);if(state.shieldHp<=0){state.shieldBroken=true;state.shieldHp=0;$("message").textContent="🛡️ SHIELD BREAK! Der Boss ist jetzt verwundbar."}}else{state.bossHp-=idleBossDamage}addQuest("aura",idle);if(state.bossHp<=0)defeatBoss();if(state.event==="Aura"&&state.eventUntil>Date.now())state.aura+=idle*4;checkLevel();save();render()}},250);
 setInterval(()=>{if(state.combo>1){state.combo=1;render()}},1800);
