@@ -244,22 +244,23 @@
         // This avoids every arena positioning/overflow containing-block conflict.
         if(critOverlay){
           syncCritVisibility();
-          if(critOverlay.style.visibility==="hidden") return;
-          const zoneR=Math.min(critOverlay.getBoundingClientRect().width,critOverlay.getBoundingClientRect().height)/2||52;
-          const zoneSizePx=80+(typeof zoneSize==="function"?zoneSize():.18)*80;
-          const safe=Math.max(18,bossR-zoneSizePx*.58);
-          const angle=(typeof hasShield==="function"&&hasShield()&&!state.shieldBroken&&typeof shieldOpeningAngle==="function")
-            ?shieldOpeningAngle()+Math.sin(t*1.35)*.22
-            :t*(typeof zoneSpeed==="function"?zoneSpeed():.012)/.012*1.65;
-          const radius=(typeof hasShield==="function"&&hasShield()&&!state.shieldBroken)
-            ?safe*.68
-            :safe*(.62+.18*Math.sin(t*.9));
-          const x=tr.left+tr.width/2+Math.cos(angle)*radius-zoneSizePx/2;
-          const y=tr.top+tr.height/2+Math.sin(angle)*radius-zoneSizePx/2;
-          critOverlay.style.setProperty("width",zoneSizePx+"px","important");
-          critOverlay.style.setProperty("height",zoneSizePx+"px","important");
-          critOverlay.style.setProperty("left",x+"px","important");
-          critOverlay.style.setProperty("top",y+"px","important");
+          // Navigation hides Crit, but must never stop this animation loop.
+          if(critOverlay.style.visibility!=="hidden"){
+            const zoneSizePx=80+(typeof zoneSize==="function"?zoneSize():.18)*80;
+            const safe=Math.max(18,bossR-zoneSizePx*.58);
+            const angle=(typeof hasShield==="function"&&hasShield()&&!state.shieldBroken&&typeof shieldOpeningAngle==="function")
+              ?shieldOpeningAngle()+Math.sin(t*1.35)*.22
+              :t*(typeof zoneSpeed==="function"?zoneSpeed():.012)/.012*1.65;
+            const radius=(typeof hasShield==="function"&&hasShield()&&!state.shieldBroken)
+              ?safe*.68
+              :safe*(.62+.18*Math.sin(t*.9));
+            const x=tr.left+tr.width/2+Math.cos(angle)*radius-zoneSizePx/2;
+            const y=tr.top+tr.height/2+Math.sin(angle)*radius-zoneSizePx/2;
+            critOverlay.style.setProperty("width",zoneSizePx+"px","important");
+            critOverlay.style.setProperty("height",zoneSizePx+"px","important");
+            critOverlay.style.setProperty("left",x+"px","important");
+            critOverlay.style.setProperty("top",y+"px","important");
+          }
         }
 
         if(fake && fake.style.display!=="none"){
