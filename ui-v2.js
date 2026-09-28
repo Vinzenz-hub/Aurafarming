@@ -169,12 +169,29 @@
     const arena=$("critArena");
     if(arena){
       const t=performance.now()/1000;
-      if(fake && fake.style.display!=="none"){
-        const target=$("bossTarget");
-        if(target){
-          const ar=arena.getBoundingClientRect(),tr=target.getBoundingClientRect();
-          const cx=tr.left+tr.width/2-ar.left,cy=tr.top+tr.height/2-ar.top;
-          const bossR=Math.min(tr.width,tr.height)/2;
+      const target=$("bossTarget");
+      if(target){
+        const ar=arena.getBoundingClientRect(),tr=target.getBoundingClientRect();
+        const cx=tr.left+tr.width/2-ar.left,cy=tr.top+tr.height/2-ar.top;
+        const bossR=Math.min(tr.width,tr.height)/2;
+
+        // Crit follows the same proven transform coordinate system as Fake.
+        const zone=$("critZone");
+        if(zone){
+          const zoneR=Math.min(zone.getBoundingClientRect().width,zone.getBoundingClientRect().height)/2||50;
+          const safe=Math.max(18,bossR-zoneR*1.15);
+          const radius=safe*(.62+.18*Math.sin(t*.9));
+          const angle=(typeof shieldOpeningAngle==="function" && typeof hasShield==="function" && hasShield() && !window.state?.shieldBroken)
+            ? shieldOpeningAngle()+Math.sin(t*1.35)*.22
+            : t*1.15;
+          const x=cx+Math.cos(angle)*radius-zoneR;
+          const y=cy+Math.sin(angle)*radius-zoneR;
+          zone.style.left="0px";
+          zone.style.top="0px";
+          zone.style.setProperty("transform","translate3d("+x+"px,"+y+"px,0)","important");
+        }
+
+        if(fake && fake.style.display!=="none"){
           const fakeR=Math.min(fake.getBoundingClientRect().width,fake.getBoundingClientRect().height)/2||30;
           const safe=Math.max(12,bossR-fakeR*1.15);
           const radius=safe*(.55+.2*Math.sin(t*.72));
