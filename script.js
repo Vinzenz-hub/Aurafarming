@@ -92,7 +92,13 @@ function zoneSize(){return Math.min(.32,.18*(1+(skillHas("crit2")?.10:0)+petBonu
 function zoneSpeed(){const c=clickers.find(x=>x.id===state.clicker)||clickers[0];return .012*(c.bonuses.zoneSpeed||1)*(boss().mechanics.includes("⚡ Schnellere Zone")?1.5:1)}
 function critMultiplier(){const c=clickers.find(x=>x.id===state.clicker)||clickers[0];let m=2;if(skillHas("crit"))m*=1.10;if(c.bonuses.crit)m*=c.bonuses.crit;if(state.event==="Perfect Storm")m*=1.5;return m}
 function render(){
- const b=boss();const max=b.hp;state.bossHp=Math.max(0,Math.min(state.bossHp,max));
+ const b=boss();
+ const arena=document.querySelector(".crit-arena");
+ const fake=document.getElementById("fakeZone"), shield=document.getElementById("shieldZone"), core=document.getElementById("auraCore");
+ if(fake){const show=b.mechanics.includes("👻 Fake-Zonen");fake.style.display=show?"flex":"none";fake.style.left=(18+((state.bossIndex*17)%55))+"%";fake.style.top=(18+((state.bossIndex*29)%55))+"%";}
+ if(shield)shield.style.display=b.mechanics.includes("🛡️ Schild")?"flex":"none";
+ if(core)core.classList.toggle("shifted",b.mechanics.includes("🌀 Aura Shift") && Math.floor(Date.now()/1200)%2===0);
+const max=b.hp;state.bossHp=Math.max(0,Math.min(state.bossHp,max));
  $("aura").textContent=format(state.aura);$("level").textContent=state.level;$("power").textContent=format(state.power);$("multiplier").textContent="x"+state.multiplier.toFixed(2);$("combo").textContent="x"+state.combo.toFixed(2);$("prestige").textContent=state.prestige;
  $("crystals").textContent=format(state.crystals);$("stars").textContent=state.stars;$("skillPoints").textContent=state.skillPoints;$("idleDamage").textContent=format(idleDps());$("bossStreak").textContent=state.bossStreak;
  $("bossNumber").textContent=state.bossIndex+1;$("bossName").textContent=b.name;$("bossDesc").textContent=b.desc;$("bossEmoji").textContent=b.emoji;$("bossHp").textContent=format(state.bossHp)+" / "+format(max);$("bossHealth").style.width=(state.bossHp/max*100)+"%";$("bossReward").textContent="Belohnung: +"+format(b.reward*rewardMultiplier())+" Aura";
@@ -112,12 +118,12 @@ function renderQuests(){const grid=$("questList");grid.innerHTML="";state.quests
 function renderEvent(){const active=state.event&&state.eventUntil>Date.now();$("eventBox").textContent=active?state.event+" aktiv! Bonus läuft.":"Kein Event aktiv."}
 function addQuest(type,amount){state.quests.filter(q=>q.type===type).forEach(q=>{q.progress+=amount;if(q.progress>=q.goal){state.crystals+=Math.round(q.reward*rewardMultiplier());q.progress=0;$("message").textContent="📜 Quest abgeschlossen! 💎 Kristalle erhalten."}})}
 function farm(event){
- const c=clickers.find(x=>x.id===state.clicker)||clickers[0];const z=zoneSize();const arena=document.querySelector(".crit-arena");const rect=arena.getBoundingClientRect();const px=event.clientX-rect.left;const py=event.clientY-rect.top;const cx=rect.width*.5;const cy=rect.height*.5;const zoneEl=document.querySelector(".crit-zone");const zr=zoneEl.getBoundingClientRect();const zx=zr.left+zr.width/2-rect.left;const zy=zr.top+zr.height/2-rect.top;const zoneRadius=Math.max(zr.width,zr.height)*.5;const distance=Math.hypot(px-zx,py-zy);const inZone=distance<=zoneRadius;
- let cm=inZone?critMultiplier():1;if(inZone&&c.bonuses.critChance&&Math.random()<c.bonuses.critChance)cm*=1.5;
+ const c=clickers.find(x=>x.id===state.clicker)||clickers[0];const z=zoneSize();const arena=document.querySelector(".crit-arena");const rect=arena.getBoundingClientRect();const px=event.clientX-rect.left;const py=event.clientY-rect.top;const cx=rect.width*.5;const cy=rect.height*.5;const zoneEl=document.querySelector(".crit-zone");const zr=zoneEl.getBoundingClientRect();const zx=zr.left+zr.width/2-rect.left;const zy=zr.top+zr.height/2-rect.top;const zoneRadius=Math.max(zr.width,zr.height)*.5;const distance=Math.hypot(px-zx,py-zy);const inZone=distance<=zoneRadius;const fakeEl=document.getElementById("fakeZone");const fakeRect=fakeEl&&getComputedStyle(fakeEl).display!=="none"?fakeEl.getBoundingClientRect():null;const hitFake=fakeRect&&px>=fakeRect.left-rect.left&&px<=fakeRect.right-rect.left&&py>=fakeRect.top-rect.top&&py<=fakeRect.bottom-rect.top;
+ let cm=inZone?critMultiplier():1;if(hitFake){cm=1;$("message").textContent="👻 Fake-Zone! Kein Crit.";state.combo=Math.max(1,state.combo-.25)}if(inZone&&c.bonuses.critChance&&Math.random()<c.bonuses.critChance)cm*=1.5;
  let gain=Math.max(1,Math.floor(state.power*state.combo*state.multiplier*cm*(c.bonuses.click||1)*(1+petBonus("aura"))*rewardMultiplier()));
  if(state.bossHp/boss().hp<.25)gain=Math.floor(gain*(c.bonuses.execute||1));
  let bossDamage=Math.max(1,Math.floor(state.power*state.multiplier*cm*(c.bonuses.boss||1)*(1+petBonus("boss"))));
- if(boss().mechanics.includes("🛡️ Schild")&&!inZone)bossDamage=Math.floor(bossDamage*.7);
+ if(boss().mechanics.includes("🛡️ Schild")&&!inZone)bossDamage=Math.floor(bossDamage*.7);if(boss().mechanics.includes("🌀 Aura Shift")&&!inZone)bossDamage=Math.floor(bossDamage*.85);
  state.aura+=gain;state.bossHp-=bossDamage;state.combo=Math.min(12,state.combo+state.comboBoost*(c.bonuses.combo||1));addQuest("crit",inZone?1:0);addQuest("aura",gain);
  $("message").textContent=(inZone?"💥 "+cm.toFixed(1)+"× CRIT! ":"✨ ")+format(gain)+" Aura";
  if(state.bossHp<=0)defeatBoss();checkLevel();save();render();
@@ -142,10 +148,11 @@ function buyPet(id){const p=pets.find(x=>x.id===id);if(!p||!p.shop||state.stars<
 function togglePet(id){const slots=Math.min(5,1+(skillHas("slots2")?1:0)+(skillHas("slots3")?1:0));if(state.equippedPets.includes(id))state.equippedPets=state.equippedPets.filter(x=>x!==id);else if(state.equippedPets.length<slots)state.equippedPets.push(id);else{$("message").textContent="🐾 Alle Pet-Slots sind belegt.";return}save();render()}
 function prestige(){const next=(state.prestige+1)*500000+500000;if(state.aura<next)return;state.prestige++;state.stars++;state.aura=0;state.level=1;state.power=1;state.multiplier=1;state.combo=1;state.comboBoost=.08;state.powerCost=25;state.multiplierCost=300;state.comboCost=75;state.autoCost=150;state.autoAura=0;state.bossIndex=0;state.bossHp=BOSS_BASE_HP;state.bossTimer=30;state.bossStreak=0;$("message").textContent="🌌 Ascension! +⭐ 1 Stern";save();render()}
 function triggerEvent(){const events=[["⚡ Aura Overload","Aura"],["💎 Crystal Rush","Crystal"],["🎯 Perfect Storm","Perfect Storm"],["👾 Void Invasion","Void"]];const e=events[Math.floor(Math.random()*events.length)];state.event=e[1];state.eventUntil=Date.now()+15000;render();setTimeout(()=>{if(state.eventUntil<=Date.now()){state.event=null;render()}},15100)}
-document.querySelectorAll(".upgrade").forEach(b=>b.onclick=()=>buy(b.dataset.type));document.querySelectorAll("[data-skill='idle']").forEach(b=>b.onclick=()=>{const s=skills.find(x=>x[0]==="idle");buySkill(s[0])});document.querySelector(".crit-arena").addEventListener("click",farm);$("prestigeBtn").onclick=prestige;$("eventBtn").onclick=triggerEvent;
+document.querySelectorAll(".upgrade").forEach(b=>b.onclick=()=>buy(b.dataset.type));document.querySelectorAll("[data-skill='idle']").forEach(b=>b.onclick=()=>{const s=skills.find(x=>x[0]==="idle");buySkill(s[0])});document.querySelector(".crit-arena").addEventListener("pointerdown",(e)=>{if(e.pointerType==="touch")e.preventDefault();farm(e)});$("prestigeBtn").onclick=prestige;$("eventBtn").onclick=triggerEvent;
 $("resetBtn").onclick=()=>{if(confirm("Spielstand wirklich löschen?")){localStorage.removeItem(SAVE_KEY);location.reload()}};
 setInterval(()=>{const now=Date.now();const delta=Math.min(.25,(now-(state.lastTick||now))/1000);state.lastTick=now;if(delta>0){state.bossTimer-=delta;if(state.bossTimer<=0){state.bossHp=boss().hp;state.bossTimer=boss().time;state.bossStreak=0;$("message").textContent="⏱️ Zeit abgelaufen! Der Boss startet neu."}const idle=idleDps()*delta;state.aura+=state.autoAura*delta;state.bossHp-=idle;addQuest("aura",idle);if(state.bossHp<=0)defeatBoss();if(state.event==="Aura"&&state.eventUntil>Date.now())state.aura+=idle*4;checkLevel();save();render()}},250);
 setInterval(()=>{if(state.combo>1){state.combo=1;render()}},1800);
 setInterval(updateCrit,80);
+setInterval(()=>{if(document.visibilityState==="visible" && boss().mechanics.includes("🌀 Aura Shift"))render()},500);
 if(state.lastSeen&&Date.now()-state.lastSeen>60000){const offlineSeconds=Math.min(8*3600,(Date.now()-state.lastSeen)/1000);const offline=Math.floor(idleDps()*offlineSeconds);state.aura+=offline;state.lastSeen=Date.now();$("message").textContent="🌙 Offline-Farming: +"+format(offline)+" Aura"}
 $("auraCore").className="aura-core clicker-"+state.clicker;render();
