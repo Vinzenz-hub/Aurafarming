@@ -81,7 +81,7 @@
   const oldNav=document.querySelector(".bottom-nav");
   const navItems=[
     ["combat","⚔️","Kampf"],
-    ["upgrades","⚡","Upgrades"],
+    ["upgrades","⚡","Shop"],
     ["progress","📈","Fortschritt"],
     ["quests","📜","Quests"],
     ["skills","🌳","Skills"],
@@ -90,10 +90,10 @@
   if(oldNav) oldNav.innerHTML=navItems.map(([id,icon,label])=>`<button class="nav-tab ${id==="combat"?"active":""}" data-ui-section="${id}"><span>${icon}</span><span>${label}</span></button>`).join("");
 
   const titles={
-    upgrades:["UPGRADES","Stärker werden"],
+    upgrades:["SHOP","Stärker werden"],
     progress:["FORTSCHRITT","Prestige & Events"],
     quests:["QUESTS","Mission Control"],
-    skills:["SKILLTREE","Dein Build"],
+    skills:["SKILL-UPGRADES","Dein Build"],
     clickers:["KLICKER","Dein Aura-Stil"],
     pets:["PETS","Deine Begleiter"],
     more:["MEHR","Weitere Systeme"]
