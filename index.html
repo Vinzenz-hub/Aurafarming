@@ -31,15 +31,13 @@
       <div class="stat"><small>PRESTIGE</small><strong id="prestige">0</strong></div>
     </section>
 
-    <nav class="main-nav" aria-label="Spielnavigation">
-      <button class="nav-tab active" data-section="combat">⚔️ Kampf</button>
-      <button class="nav-tab" data-section="progress">📈 Fortschritt</button>
-      <button class="nav-tab" data-section="upgrades">⚡ Upgrades</button>
-      <button class="nav-tab" data-section="clickers">◈ Clicker</button>
-      <button class="nav-tab" data-section="skills">🌳 Skilltree</button>
-      <button class="nav-tab" data-section="pets">🐾 Pets</button>
-    </nav>
-
+    <div class="currency-hud">
+      <button id="currencyToggle" class="currency-toggle" aria-expanded="false">◈ WÄHRUNGEN <span>⌄</span></button>
+      <div id="currencyPanel" class="currency-panel">
+        <div><small>✨ AURA</small><b id="hudAura">0</b></div><div><small>💎 KRISTALLE</small><b id="hudCrystals">0</b></div>
+        <div><small>⭐ STERNE</small><b id="hudStars">0</b></div><div><small>🌳 SKILLPUNKTE</small><b id="hudSkillPoints">0</b></div>
+      </div>
+    </div>
     <section class="meta-stats">
       <div>💎 Kristalle <b id="crystals">0</b></div>
       <div>⭐ Sterne <b id="stars">0</b></div>
@@ -93,10 +91,6 @@
           <button id="prestigeBtn" class="small-btn">Ascension</button>
         </article>
         <article class="panel">
-          <div class="panel-title"><span>📜</span><h3>Quests</h3></div>
-          <div id="questList" class="quest-list"></div>
-        </article>
-        <article class="panel">
           <div class="panel-title"><span>🎲</span><h3>Event</h3></div>
           <div id="eventBox" class="event-box">Kein Event aktiv.</div>
           <button id="eventBtn" class="small-btn">Event prüfen</button>
@@ -104,6 +98,7 @@
       </div>
     </section>
 
+    <section id="quests" class="grid-section nav-panel"><div class="section-heading"><div><p class="tag">QUESTS</p><h2>Mission Control</h2></div><span class="auto-info">Belohnungen in 💎 Kristallen</span></div><div class="quest-panel"><div id="questList" class="quest-list"></div></div></section>
     <section id="upgrades" class="upgrades nav-panel">
       <div class="section-heading"><div><p class="tag">UPGRADES</p><h2>Werde stärker</h2></div><span id="autoInfo" class="auto-info">Auto-Aura: 0/s</span></div>
       <div class="upgrade-grid">
@@ -132,6 +127,10 @@
 
     <footer>Dein Spielstand wird automatisch im Browser gespeichert. Boss-Timer pausiert beim Verlassen der Seite.</footer>
   </main>
+  <nav class="bottom-nav" aria-label="Spielbereiche">
+    <button class="nav-tab active" data-section="combat">⚔️<span>Kampf</span></button><button class="nav-tab" data-section="upgrades">⚡<span>Upgrades</span></button><button class="nav-tab" data-section="progress">📈<span>Fortschritt</span></button><button class="nav-tab" data-section="quests">📜<span>Quests</span></button><button class="nav-tab" data-section="skills">🌳<span>Skills</span></button><button class="nav-tab" data-section="more">☰<span>Mehr</span></button>
+  </nav>
+  <div id="moreMenu" class="more-menu"><button data-section="clickers">◈ Clicker</button><button data-section="pets">🐾 Pets</button></div>
   <script src="script.js"></script>
 </body>
 </html>
