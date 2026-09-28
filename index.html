@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#100a25">
+  <title>✨ Aura Farming</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="background-orb orb-one"></div>
+  <div class="background-orb orb-two"></div>
+
+  <main class="app">
+    <header class="topbar">
+      <div class="logo">✨ <span>Aura Farming</span></div>
+      <button id="resetBtn" class="ghost">Reset</button>
+    </header>
+
+    <section class="hero">
+      <p class="tag">AURA FARMING</p>
+      <h1>Farm deine <span>Aura</span>.</h1>
+      <p class="subtitle">Klicke den Aura-Kern, baue deine Combo auf und kaufe Upgrades.</p>
+    </section>
+
+    <section class="stats">
+      <div class="stat"><small>AURA</small><strong id="aura">0</strong></div>
+      <div class="stat"><small>LEVEL</small><strong id="level">1</strong></div>
+      <div class="stat"><small>PRO KLICK</small><strong id="power">1</strong></div>
+      <div class="stat"><small>COMBO</small><strong id="combo">x1.00</strong></div>
+    </section>
+
+    <section class="farm-area">
+      <div id="comboBadge" class="combo-badge">COMBO x1.00</div>
+      <button id="auraCore" class="aura-core" aria-label="Aura farmen">
+        <div class="core-ring ring-a"></div>
+        <div class="core-ring ring-b"></div>
+        <div class="core-glow"></div>
+        <span class="core-symbol">✦</span>
+        <span class="core-label">AURA</span>
+      </button>
+      <p id="message" class="message">Klick auf den Kern!</p>
+    </section>
+
+    <section class="upgrades">
+      <div class="section-heading">
+        <div>
+          <p class="tag">UPGRADES</p>
+          <h2>Werde stärker</h2>
+        </div>
+        <span id="autoInfo" class="auto-info">Auto-Aura: 0/s</span>
+      </div>
+
+      <div class="upgrade-grid">
+        <button class="upgrade" data-type="power">
+          <span class="upgrade-icon">⚡</span>
+          <span class="upgrade-name">Aura Power</span>
+          <span class="upgrade-desc">+1 Aura pro Klick</span>
+          <span class="upgrade-cost">✨ <b id="powerCost">25</b></span>
+        </button>
+
+        <button class="upgrade" data-type="combo">
+          <span class="upgrade-icon">🔥</span>
+          <span class="upgrade-name">Combo Boost</span>
+          <span class="upgrade-desc">Combo steigt schneller</span>
+          <span class="upgrade-cost">✨ <b id="comboCost">75</b></span>
+        </button>
+
+        <button class="upgrade" data-type="auto">
+          <span class="upgrade-icon">🤖</span>
+          <span class="upgrade-name">Auto Aura</span>
+          <span class="upgrade-desc">Farm automatisch Aura</span>
+          <span class="upgrade-cost">✨ <b id="autoCost">150</b></span>
+        </button>
+      </div>
+    </section>
+
+    <footer>Dein Fortschritt wird automatisch in deinem Browser gespeichert.</footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
