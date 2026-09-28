@@ -11,7 +11,7 @@ body{padding-top:calc(var(--ui-top) + var(--ui-combat-hud,86px) + env(safe-area-
 .ui-brand small{color:#7ef5e0;font-size:.56rem;letter-spacing:.16em}
 .ui-top-btn,.ui-close{border:1px solid #ffffff1b;background:#ffffff0a;color:#eee9f7;border-radius:14px;min-height:44px;padding:0 13px;font-weight:850;cursor:pointer}
 .ui-top-btn:active,.ui-close:active,.ui-bottom-btn:active{transform:scale(.97)}
-.ui-status-sheet{position:fixed;z-index:1400;inset:0;background:#070611f7;backdrop-filter:blur(22px);display:flex;flex-direction:column;transform:translateY(-105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);visibility:hidden}
+.ui-status-sheet{position:fixed;z-index:1100;inset:0;background:#070611f7;backdrop-filter:blur(22px);display:flex;flex-direction:column;transform:translateY(-105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);visibility:hidden}
 .ui-status-sheet.open{transform:translateY(0);visibility:visible}
 .ui-sheet-head{height:calc(76px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 14px 8px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--ui-line)}
 .ui-sheet-title{font-weight:950;font-size:1rem}.ui-sheet-title small{display:block;color:#72f5df;font-size:.56rem;letter-spacing:.16em;margin-bottom:3px}
@@ -62,7 +62,7 @@ body{padding-top:calc(var(--ui-top) + var(--ui-combat-hud,86px) + env(safe-area-
 .more-menu{display:none!important}
 
 /* bottom full-screen sheet */
-.ui-bottom-sheet{position:fixed;z-index:1400;inset:0;background:#070611f8;backdrop-filter:blur(22px);display:flex;flex-direction:column;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);visibility:hidden}
+.ui-bottom-sheet{position:fixed;z-index:1150;inset:0;background:#070611f8;backdrop-filter:blur(22px);display:flex;flex-direction:column;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);visibility:hidden}
 .ui-bottom-sheet.open{transform:translateY(0);visibility:visible}
 .ui-bottom-head{height:calc(76px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 14px 8px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--ui-line);flex:none}
 .ui-bottom-head small{display:block;color:#72f5df;font-size:.56rem;letter-spacing:.16em;margin-bottom:3px}.ui-bottom-head strong{font-size:1rem}
