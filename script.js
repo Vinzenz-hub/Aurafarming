@@ -175,10 +175,11 @@ function updateCrit(){
  const radius=hasShield()&&!state.shieldBroken?safe*.68:safe*(.62+.18*Math.sin(t*.9));
  const x=cx+Math.cos(angle)*radius-zonePx/2;
  const y=cy+Math.sin(angle)*radius-zonePx/2;
- zone.style.left=x+"px";
- zone.style.top=y+"px";
+ zone.style.left="0px";
+ zone.style.top="0px";
  zone.style.width=zonePx+"px";
  zone.style.height=zonePx+"px";
+ zone.style.transform="translate3d("+x+"px,"+y+"px,0)";
 }
 function buy(type){if(type==="idle"){if(skillHas("idle")||state.crystals<50)return;state.crystals-=50;state.skills.push("idle");state.skillPoints++;save();render();return}let cost;if(type==="power"){cost=state.powerCost;if(state.aura<cost)return;state.aura-=cost;state.power++;state.powerCost=Math.ceil(cost*1.55)}if(type==="multiplier"){cost=state.multiplierCost;if(state.aura<cost)return;state.aura-=cost;state.multiplier+=.25;state.multiplierCost=Math.ceil(cost*2.1)}if(type==="combo"){cost=state.comboCost;if(state.aura<cost)return;state.aura-=cost;state.comboBoost+=.025;state.comboCost=Math.ceil(cost*1.8)}if(type==="auto"){cost=state.autoCost;if(state.aura<cost)return;state.aura-=cost;state.autoAura++;state.autoCost=Math.ceil(cost*2)}save();render()}
 function equipClicker(id){const c=clickers.find(x=>x.id===id);if(!c)return;if(!state.ownedClickers.includes(id)){if(state.aura<c.cost)return;state.aura-=c.cost;state.ownedClickers.push(id)}state.clicker=id;save();$("auraCore").className="aura-core clicker-"+id;render()}
