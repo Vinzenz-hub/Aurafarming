@@ -67,7 +67,8 @@
   sheet.className="ui-bottom-sheet";
   sheet.innerHTML=`
     <div class="ui-bottom-head">
-      <div><small id="uiBottomKicker">SYSTEM</small><strong id="uiBottomTitle">Upgrades</strong></div>
+      <div class="ui-bottom-heading"><small id="uiBottomKicker">SYSTEM</small><strong id="uiBottomTitle">Upgrades</strong></div>
+      <div class="ui-context-wallet" id="uiContextWallet"></div>
       <button class="ui-close" id="uiBottomClose">Schließen ✕</button>
     </div>
     <div class="ui-bottom-body" id="uiBottomBody"></div>
@@ -101,6 +102,26 @@
 
   let openSection=null;
 
+  const contextCurrencies={
+    upgrades:[["✨","AURA","aura","uiWalletAura"]],
+    skills:[["💎","KRISTALLE","crystals","uiWalletCrystals"]],
+    clickers:[["✨","AURA","aura","uiWalletAura"]],
+    pets:[["⭐","STERNE","stars","uiWalletStars"]],
+    quests:[["💎","KRISTALLE","crystals","uiWalletCrystals"]],
+    progress:[["✨","AURA","aura","uiWalletAura"],["⭐","STERNE","stars","uiWalletStars"]]
+  };
+
+  function updateContextWallet(section){
+    const wallet=$("uiContextWallet");
+    if(!wallet)return;
+    const list=contextCurrencies[section]||[];
+    wallet.innerHTML=list.map(([icon,label,source,id])=>"<div class='ui-context-currency'><span>"+icon+"</span><small>"+label+"</small><b id='"+id+"'>0</b></div>").join("");
+    list.forEach(([icon,label,source,id])=>{
+      const target=$(id), sourceEl=$(source);
+      if(target&&sourceEl)target.textContent=sourceEl.textContent;
+    });
+  }
+
   function setSheet(section){
     const more=section==="more";
     const target=more?"clickers":section;
@@ -116,6 +137,7 @@
     }
     status.classList.remove("open");
     sheet.classList.add("open");
+    updateContextWallet(section);
     openSection=section;
     document.body.classList.add("ui-sheet-open");
   }
@@ -228,6 +250,8 @@
     if(hp)$("uiBossHp").textContent=hp.textContent+" · "+(timer?timer.textContent:"0")+" s";
     if(bar)$("uiBossHpBar").style.width=bar.style.width||"100%";
     if(num&&phase)$("uiBossMeta").textContent="Boss "+num.textContent+" · "+phase.textContent;
+
+    if(openSection)updateContextWallet(openSection);
 
     const combatBoss=$("uiCombatBoss"), combatMeta=$("uiCombatMeta"), combatTimer=$("uiCombatTimer"), combatDamage=$("uiCombatDamage"), combatHealth=$("uiCombatHealth");
     if(combatBoss) combatBoss.textContent=(name?name.textContent:"Boss")+" "+(emoji?emoji.textContent:"");
