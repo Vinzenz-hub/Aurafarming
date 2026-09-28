@@ -14,6 +14,22 @@
   `;
   document.body.appendChild(top);
 
+  const combatHud=document.createElement("section");
+  combatHud.className="ui-combat-hud";
+  combatHud.innerHTML=`
+    <div class="ui-combat-row">
+      <div class="ui-combat-name">
+        <span class="ui-combat-kicker">AKTIVER BOSS</span>
+        <b class="ui-combat-boss" id="uiCombatBoss">Aura-Schatten 🌑</b>
+        <span class="ui-combat-meta" id="uiCombatMeta">Boss 1 · Phase 1</span>
+      </div>
+      <div class="ui-combat-stat ui-combat-timer"><small>ZEIT</small><b id="uiCombatTimer">30.0 s</b></div>
+      <div class="ui-combat-stat ui-combat-damage"><small>SCHADEN</small><b id="uiCombatDamage">1 / Klick</b></div>
+    </div>
+    <div class="ui-combat-health"><i id="uiCombatHealth"></i></div>
+  `;
+  document.body.appendChild(combatHud);
+
   const status=document.createElement("section");
   status.className="ui-status-sheet";
   status.innerHTML=`
@@ -83,11 +99,12 @@
     more:["MEHR","Weitere Systeme"]
   };
 
+  let openSection=null;
+
   function setSheet(section){
     const more=section==="more";
     const target=more?"clickers":section;
     sections.forEach(s=>s.classList.toggle("ui-view-active",s.id===target));
-    // For Mehr, keep both Clicker and Pets accessible in one sheet.
     if(more){
       $("clickers")?.classList.add("ui-view-active");
       $("pets")?.classList.add("ui-view-active");
@@ -97,13 +114,16 @@
       document.getElementById("uiBottomKicker").textContent=titles[section]?.[0]||"SYSTEM";
       document.getElementById("uiBottomTitle").textContent=titles[section]?.[1]||"System";
     }
+    status.classList.remove("open");
     sheet.classList.add("open");
+    openSection=section;
     document.body.classList.add("ui-sheet-open");
   }
 
   function closeSheets(){
     status.classList.remove("open");
     sheet.classList.remove("open");
+    openSection=null;
     document.body.classList.remove("ui-sheet-open");
   }
 
@@ -114,6 +134,10 @@
       if(section==="combat"){
         closeSheets();
         window.scrollTo({top:0,behavior:"smooth"});
+        return;
+      }
+      if(sheet.classList.contains("open") && openSection===section){
+        closeSheets();
       }else{
         setSheet(section);
       }
@@ -121,11 +145,17 @@
   });
 
   $("uiStatusOpen").onclick=()=>{
-    sheet.classList.remove("open");
-    status.classList.add("open");
+    if(status.classList.contains("open")){
+      closeSheets();
+    }else{
+      sheet.classList.remove("open");
+      openSection=null;
+      status.classList.add("open");
+      document.body.classList.add("ui-sheet-open");
+    }
   };
-  $("uiStatusClose").onclick=()=>status.classList.remove("open");
-  $("uiBottomClose").onclick=()=>sheet.classList.remove("open");
+  $("uiStatusClose").onclick=()=>closeSheets();
+  $("uiBottomClose").onclick=()=>closeSheets();
 
   // Close sheets by tapping the empty backdrop.
   [status,sheet].forEach(el=>el.addEventListener("pointerdown",e=>{
@@ -170,6 +200,14 @@
     if(hp)$("uiBossHp").textContent=hp.textContent+" · "+(timer?timer.textContent:"0")+" s";
     if(bar)$("uiBossHpBar").style.width=bar.style.width||"100%";
     if(num&&phase)$("uiBossMeta").textContent="Boss "+num.textContent+" · "+phase.textContent;
+
+    const combatBoss=$("uiCombatBoss"), combatMeta=$("uiCombatMeta"), combatTimer=$("uiCombatTimer"), combatDamage=$("uiCombatDamage"), combatHealth=$("uiCombatHealth");
+    if(combatBoss) combatBoss.textContent=(name?name.textContent:"Boss")+" "+(emoji?emoji.textContent:"");
+    if(combatMeta) combatMeta.textContent=(num?"Boss "+num.textContent:"Boss")+" · "+(phase?phase.textContent:"");
+    if(combatTimer) combatTimer.textContent=(timer?timer.textContent:"0.0")+" s";
+    const powerNow=$("power");
+    if(combatDamage) combatDamage.textContent=(powerNow?powerNow.textContent:"0")+" / Klick";
+    if(combatHealth) combatHealth.style.width=bar?.style.width||"100%";
   }
   setInterval(syncStatus,250);
   syncStatus();
