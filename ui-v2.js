@@ -5,6 +5,9 @@
   const app=document.querySelector(".app");
   if(!app) return;
 
+  // =============================
+  // UI CONSTRUCTION
+  // =============================
   // Build fixed top status HUD.
   const top=document.createElement("div");
   top.className="ui-topbar";
@@ -90,6 +93,9 @@
   ];
   if(oldNav) oldNav.innerHTML=navItems.map(([id,icon,label])=>`<button class="nav-tab ${id==="combat"?"active":""}" data-ui-section="${id}"><span>${icon}</span><span>${label}</span></button>`).join("");
 
+  // =============================
+  // NAVIGATION STATE & CONTEXT
+  // =============================
   const titles={
     upgrades:["SHOP","Stärker werden"],
     progress:["FORTSCHRITT","Prestige & Events"],
@@ -111,6 +117,9 @@
     progress:[["✨","AURA","aura","uiWalletAura"],["⭐","STERNE","stars","uiWalletStars"]]
   };
 
+  // =============================
+  // SHEET / NAVIGATION CONTROLS
+  // =============================
   function updateContextWallet(section){
     const wallet=$("uiContextWallet");
     if(!wallet)return;
@@ -184,6 +193,9 @@
     if(e.target===el) closeSheets();
   }));
 
+  // =============================
+  // COMBAT PRESENTATION LOOP
+  // =============================
   // Smooth, continuous fake movement. It uses the same combat-field coordinate system as Crit.
   const fake=$("fakeZone");
   let fakeFrame=0;
@@ -197,22 +209,8 @@
         const cx=tr.left+tr.width/2-ar.left,cy=tr.top+tr.height/2-ar.top;
         const bossR=Math.min(tr.width,tr.height)/2;
 
-        // Crit uses direct viewport coordinates; this bypasses arena positioning conflicts.
-        const zone=$("critZone");
-        if(zone){
-          const zoneR=Math.min(zone.getBoundingClientRect().width,zone.getBoundingClientRect().height)/2||50;
-          const safe=Math.max(18,bossR-zoneR*1.15);
-          const radius=safe*(.62+.18*Math.sin(t*.9));
-          const angle=(typeof shieldOpeningAngle==="function" && typeof hasShield==="function" && hasShield() && !window.state?.shieldBroken)
-            ? shieldOpeningAngle()+Math.sin(t*1.35)*.22
-            : t*1.15;
-          const x=tr.left+tr.width/2+Math.cos(angle)*radius-zoneR;
-          const y=tr.top+tr.height/2+Math.sin(angle)*radius-zoneR;
-          zone.style.setProperty("position","fixed","important");
-          zone.style.setProperty("left",x+"px","important");
-          zone.style.setProperty("top",y+"px","important");
-          zone.style.setProperty("transform","none","important");
-        }
+        // Crit-zone movement is owned by script.js (single source of truth).
+        // Keep this UI controller focused on presentation-only combat objects.
 
         if(fake && fake.style.display!=="none"){
           const fakeR=Math.min(fake.getBoundingClientRect().width,fake.getBoundingClientRect().height)/2||30;
@@ -236,6 +234,9 @@
   }
   fakeFrame=requestAnimationFrame(animateCombatObjects);
 
+  // =============================
+  // HUD SYNCHRONIZATION
+  // =============================
   // Keep the top status HUD in sync with the game's existing state/render cycle.
   function syncStatus(){
     const map={
