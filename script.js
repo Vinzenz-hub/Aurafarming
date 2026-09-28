@@ -108,7 +108,7 @@ function render(){
  const target=$("bossTarget"),shieldEl=$("bossShield");
  if(target){const p=bossTargetPos();target.style.left=p.x+"%";target.style.top=p.y+"%";$("bossTargetEmoji").textContent=b.emoji}
  if(shieldEl){const p=bossTargetPos();shieldEl.style.left=p.x+"%";shieldEl.style.top=p.y+"%";shieldEl.classList.toggle("broken",!hasShield()||state.shieldBroken);shieldEl.classList.toggle("exposed",bossHitInfo(arena.clientWidth*p.x/100,arena.clientHeight*p.y/100,arena).opening)}
- if(fake){const show=b.mechanics.includes("👻 Fake-Zonen");fake.style.display=show?"flex":"none";fake.style.left=(18+((state.bossIndex*17)%55))+"%";fake.style.top=(18+((state.bossIndex*29)%55))+"%";}
+ if(fake){const show=b.mechanics.includes("👻 Fake-Zonen");fake.style.display=show?"flex":"none";}
  if(shield)shield.style.display=b.mechanics.includes("🛡️ Schild")?"flex":"none";
  if(core)core.classList.toggle("shifted",b.mechanics.includes("🌀 Aura Shift") && Math.floor(Date.now()/1200)%2===0);
 const max=b.hp;state.bossHp=Math.max(0,Math.min(state.bossHp,max));
@@ -161,7 +161,25 @@ function getBossTime(i){return i<2?30+i*2:i<10?34+(i-2)*2:48}
 function getDropChance(i){if(i===1)return .02;if(i===2)return .02;if(i===9)return .015;if(i===13)return .01;if(i===19)return .005;return 0}
 function dropBossPet(i){const ids={1:"infernoPet",2:"frostPet",9:"voidling",13:"starSerpent",19:"cosmicEmperor"};const id=ids[i];if(id&&!state.ownedPets.includes(id)){state.ownedPets.push(id);$("message").textContent="🎉 Seltener Pet-Drop: "+pets.find(p=>p.id===id).name}}
 function checkLevel(){const need=state.level*1000;if(state.aura>=need){state.level++;state.power+=1;state.aura-=need;$("message").textContent="🎉 Level Up! +1 Power"}}
-function updateCrit(){const speed=zoneSpeed();const z=zoneSize();const angle=Date.now()/800*speed/.012;const margin=12+z*28;const x=margin+(50-margin)*((Math.cos(angle)+1)/2);const y=margin+(50-margin)*((Math.sin(angle*1.17)+1)/2);$("critZone").style.left=x+"%";$("critZone").style.top=y+"%";$("critZone").style.width=(80+z*80)+"px";$("critZone").style.height=(80+z*80)+"px"}
+function updateCrit(){
+ const zone=$("critZone"),arena=document.querySelector(".crit-arena"),target=$("bossTarget");
+ if(!zone||!arena||!target)return;
+ const speed=zoneSpeed(),z=zoneSize(),t=Date.now()/1000;
+ const ar=arena.getBoundingClientRect(),tr=target.getBoundingClientRect();
+ const cx=tr.left+tr.width/2-ar.left,cy=tr.top+tr.height/2-ar.top;
+ const bossR=Math.min(tr.width,tr.height)/2;
+ const zonePx=80+z*80;
+ const safe=Math.max(18,bossR-zonePx*.58);
+ let angle=t*(speed/.012)*1.65;
+ if(hasShield()&&!state.shieldBroken) angle=shieldOpeningAngle()+Math.sin(t*1.35)*.22;
+ const radius=hasShield()&&!state.shieldBroken?safe*.68:safe*(.62+.18*Math.sin(t*.9));
+ const x=cx+Math.cos(angle)*radius-zonePx/2;
+ const y=cy+Math.sin(angle)*radius-zonePx/2;
+ zone.style.left=x+"px";
+ zone.style.top=y+"px";
+ zone.style.width=zonePx+"px";
+ zone.style.height=zonePx+"px";
+}
 function buy(type){if(type==="idle"){if(skillHas("idle")||state.crystals<50)return;state.crystals-=50;state.skills.push("idle");state.skillPoints++;save();render();return}let cost;if(type==="power"){cost=state.powerCost;if(state.aura<cost)return;state.aura-=cost;state.power++;state.powerCost=Math.ceil(cost*1.55)}if(type==="multiplier"){cost=state.multiplierCost;if(state.aura<cost)return;state.aura-=cost;state.multiplier+=.25;state.multiplierCost=Math.ceil(cost*2.1)}if(type==="combo"){cost=state.comboCost;if(state.aura<cost)return;state.aura-=cost;state.comboBoost+=.025;state.comboCost=Math.ceil(cost*1.8)}if(type==="auto"){cost=state.autoCost;if(state.aura<cost)return;state.aura-=cost;state.autoAura++;state.autoCost=Math.ceil(cost*2)}save();render()}
 function equipClicker(id){const c=clickers.find(x=>x.id===id);if(!c)return;if(!state.ownedClickers.includes(id)){if(state.aura<c.cost)return;state.aura-=c.cost;state.ownedClickers.push(id)}state.clicker=id;save();$("auraCore").className="aura-core clicker-"+id;render()}
 function buySkill(id){const s=skills.find(x=>x[0]===id);if(!s||skillHas(id)||state.crystals<s[4])return;state.crystals-=s[4];state.skills.push(id);state.skillPoints++;save();render()}
