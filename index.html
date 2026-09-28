@@ -31,6 +31,15 @@
       <div class="stat"><small>PRESTIGE</small><strong id="prestige">0</strong></div>
     </section>
 
+    <nav class="main-nav" aria-label="Spielnavigation">
+      <button class="nav-tab active" data-section="combat">⚔️ Kampf</button>
+      <button class="nav-tab" data-section="progress">📈 Fortschritt</button>
+      <button class="nav-tab" data-section="upgrades">⚡ Upgrades</button>
+      <button class="nav-tab" data-section="clickers">◈ Clicker</button>
+      <button class="nav-tab" data-section="skills">🌳 Skilltree</button>
+      <button class="nav-tab" data-section="pets">🐾 Pets</button>
+    </nav>
+
     <section class="meta-stats">
       <div>💎 Kristalle <b id="crystals">0</b></div>
       <div>⭐ Sterne <b id="stars">0</b></div>
@@ -39,7 +48,7 @@
       <div>🔥 Boss-Streak <b id="bossStreak">0</b></div>
     </section>
 
-    <section class="boss-card">
+    <section id="combat" class="boss-card nav-panel active-panel">
       <div class="boss-top">
         <div>
           <p class="tag">BOSS <span id="bossNumber">1</span></p>
@@ -60,27 +69,23 @@
         <span id="critBadge" class="crit-badge">🎯 TREFFERZONE</span>
       </div>
 
-      <div id="critArena" class="crit-arena" aria-label="Bewegliche kritische Trefferzone">
+      <div id="critArena" class="crit-arena" aria-label="Boss-Kampfzone – klicke innerhalb des markierten Bereichs">
+        <div class="arena-corner corner-tl"></div><div class="arena-corner corner-tr"></div><div class="arena-corner corner-bl"></div><div class="arena-corner corner-br"></div>
+        <div class="arena-label">BOSS COMBAT FIELD <span>• LIVE TARGET AREA</span></div>
+        <div class="arena-grid"></div>
         <div id="fakeZone" class="fake-zone"><span>FAKE</span></div><div id="shieldZone" class="shield-zone"><span>SHIELD</span></div><div id="critZone" class="crit-zone"><span id="critZoneText">CRIT</span></div>
         <div id="critMarker" class="crit-marker"></div>
+        <button id="auraCore" class="aura-core clicker-basic" aria-label="Aura farmen" tabindex="-1">
+          <div class="core-ring ring-a"></div><div class="core-ring ring-b"></div>
+          <div class="core-glow"></div><span class="core-symbol">✦</span><span class="core-label">AURA</span>
+        </button>
       </div>
-
-      <button id="auraCore" class="aura-core clicker-basic" aria-label="Aura farmen">
-        <div class="core-ring ring-a"></div><div class="core-ring ring-b"></div>
-        <div class="core-glow"></div><span class="core-symbol">✦</span><span class="core-label">AURA</span>
-      </button>
       <p id="message" class="message">Tippe oder klicke den Auraball dort, wo die Crit-Zone erscheint!</p>
     </section>
 
-    <section class="grid-section">
+    <section id="progress" class="grid-section nav-panel">
       <div class="section-heading"><div><p class="tag">FORTSCHRITT</p><h2>Deine Systeme</h2></div></div>
       <div class="panel-grid">
-        <article class="panel">
-          <div class="panel-title"><span>⚡</span><h3>Idle-Schaden</h3></div>
-          <p>Automatischer Boss-Schaden. Idle skaliert bewusst nur abgeschwächt mit Combo und Multiplikatoren.</p>
-          <strong id="idleDetail">0 Schaden/s</strong>
-          <button class="small-btn" data-skill="idle">+ Idle-Skill</button>
-        </article>
         <article class="panel">
           <div class="panel-title"><span>🌌</span><h3>Prestige</h3></div>
           <p id="prestigeText">Prestige 1 wird bei 1.000.000 Aura freigeschaltet.</p>
@@ -99,27 +104,28 @@
       </div>
     </section>
 
-    <section class="upgrades">
+    <section id="upgrades" class="upgrades nav-panel">
       <div class="section-heading"><div><p class="tag">UPGRADES</p><h2>Werde stärker</h2></div><span id="autoInfo" class="auto-info">Auto-Aura: 0/s</span></div>
       <div class="upgrade-grid">
         <button class="upgrade" data-type="power"><span class="upgrade-icon">⚡</span><span class="upgrade-name">Aura Power</span><span class="upgrade-desc">+1 Schaden pro Klick</span><span class="upgrade-cost">✨ <b id="powerCost">25</b></span></button>
         <button class="upgrade" data-type="multiplier"><span class="upgrade-icon">💎</span><span class="upgrade-name">Aura Multiplikator</span><span class="upgrade-desc">+0,25× Aura-Ausbeute</span><span class="upgrade-cost">✨ <b id="multiplierCost">300</b></span></button>
         <button class="upgrade" data-type="combo"><span class="upgrade-icon">🔥</span><span class="upgrade-name">Combo Boost</span><span class="upgrade-desc">Combo steigt schneller</span><span class="upgrade-cost">✨ <b id="comboCost">75</b></span></button>
         <button class="upgrade" data-type="auto"><span class="upgrade-icon">🤖</span><span class="upgrade-name">Auto Aura</span><span class="upgrade-desc">Erzeugt Aura pro Sekunde</span><span class="upgrade-cost">✨ <b id="autoCost">150</b></span></button>
+        <button class="upgrade" data-type="idle"><span class="upgrade-icon">⚡</span><span class="upgrade-name">Idle Clicker</span><span class="upgrade-desc">+10 % automatischer Boss-Schaden</span><span class="upgrade-cost">💎 <b id="idleCost">50</b></span></button>
       </div>
     </section>
 
-    <section class="clickers">
+    <section id="clickers" class="clickers nav-panel">
       <div class="section-heading"><div><p class="tag">KLICKER</p><h2>Dein Aura-Stil</h2></div><span class="auto-info">Jeder Clicker verändert den Auraball.</span></div>
       <div class="clicker-grid" id="clickerGrid"></div>
     </section>
 
-    <section class="section-block">
+    <section id="skills" class="section-block nav-panel">
       <div class="section-heading"><div><p class="tag">SKILLTREE</p><h2>Baue deinen eigenen Build</h2></div><span class="auto-info">Kosten: 💎 Kristalle</span></div>
       <div class="skill-grid" id="skillGrid"></div>
     </section>
 
-    <section class="section-block">
+    <section id="pets" class="section-block nav-panel">
       <div class="section-heading"><div><p class="tag">PETS</p><h2>Begleiter</h2></div><span class="auto-info">Aktive Slots: <b id="petSlots">1</b></span></div>
       <div class="pet-grid" id="petGrid"></div>
     </section>
