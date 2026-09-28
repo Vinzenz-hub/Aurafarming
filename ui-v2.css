@@ -1,5 +1,5 @@
 /* Aura Farming 2.0 — Mobile Game UI v2 */
-:root{--ui-top:72px;--ui-bottom:78px;--ui-panel:#0d0b19ee;--ui-line:#ffffff18;--ui-accent:#72f5df;--ui-purple:#9d7cff}
+:root{--ui-top:72px;--ui-bottom:78px;--ui-panel:#0d0b19ee;--ui-line:#ffffff18;--ui-accent:#72f5df;--ui-purple:#9d7cff;--ui-radius-sm:12px;--ui-radius-md:16px;--ui-radius-lg:18px;--ui-space-1:4px;--ui-space-2:8px;--ui-space-3:12px;--ui-space-4:16px;--ui-space-5:24px}
 html,body{background:#070611}
 body{padding-top:calc(var(--ui-top) + var(--ui-combat-hud,86px) + env(safe-area-inset-top,0px));padding-bottom:calc(var(--ui-bottom) + env(safe-area-inset-bottom,0px));overscroll-behavior-y:none}
 .app{width:100%;max-width:none;margin:0;padding:12px 12px 30px}
@@ -9,7 +9,7 @@ body{padding-top:calc(var(--ui-top) + var(--ui-combat-hud,86px) + env(safe-area-
 .ui-topbar{position:fixed;z-index:1250;top:0;left:0;right:0;height:calc(var(--ui-top) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 10px 8px;display:flex;align-items:flex-end;gap:8px;background:linear-gradient(180deg,#090711 0%,#0b0915f5 78%,#0b091500 100%);border-bottom:1px solid #ffffff10;backdrop-filter:blur(18px)}
 .ui-brand{flex:1;min-width:0;display:flex;align-items:center;gap:8px;padding:0 8px;font-weight:950;font-size:.95rem;white-space:nowrap;overflow:hidden}
 .ui-brand small{color:#7ef5e0;font-size:.56rem;letter-spacing:.16em}
-.ui-top-btn,.ui-close{border:1px solid #ffffff1b;background:#ffffff0a;color:#eee9f7;border-radius:14px;min-height:44px;padding:0 13px;font-weight:850;cursor:pointer}
+.ui-top-btn,.ui-close{border:1px solid #ffffff1b;background:#ffffff0a;color:#eee9f7;border-radius:var(--ui-radius-md);min-height:44px;padding:0 13px;font-weight:850;cursor:pointer}
 .ui-top-btn:active,.ui-close:active,.ui-bottom-btn:active{transform:scale(.97)}
 .ui-status-sheet{position:fixed;z-index:1210;top:calc(var(--ui-top) + env(safe-area-inset-top,0px));left:0;right:0;bottom:calc(var(--ui-bottom) + env(safe-area-inset-bottom,0px));background:#070611f7;backdrop-filter:blur(22px);display:flex;flex-direction:column;transform:translateY(-105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);visibility:hidden}
 .ui-status-sheet.open{transform:translateY(0);visibility:visible}
@@ -17,12 +17,12 @@ body{padding-top:calc(var(--ui-top) + var(--ui-combat-hud,86px) + env(safe-area-
 .ui-sheet-title{font-weight:950;font-size:1rem}.ui-sheet-title small{display:block;color:#72f5df;font-size:.56rem;letter-spacing:.16em;margin-bottom:3px}
 .ui-sheet-body{overflow:auto;flex:1;padding:16px 14px 32px}
 .ui-stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.ui-stat{border:1px solid var(--ui-line);background:#ffffff07;border-radius:16px;padding:12px 13px}
+.ui-stat{border:1px solid var(--ui-line);background:#ffffff07;border-radius:var(--ui-radius-md);padding:12px 13px}
 .ui-stat small{display:block;color:#81798f;font-size:.58rem;font-weight:900;letter-spacing:.11em}.ui-stat b{display:block;margin-top:4px;font-size:1.1rem}
 .ui-stat.accent{border-color:#72f5df30;background:#72f5df08}
 .ui-currency-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:9px}
-.ui-currency{border:1px solid #ffffff12;background:#ffffff06;border-radius:15px;padding:11px 12px}.ui-currency small{display:block;color:#8d849c;font-size:.6rem;font-weight:850}.ui-currency b{display:block;margin-top:3px;font-size:1rem}
-.ui-boss-card{margin-top:14px;border:1px solid #9d7cff28;background:linear-gradient(135deg,#9d7cff0e,#72f5df05);border-radius:18px;padding:14px}
+.ui-currency{border:1px solid #ffffff12;background:#ffffff06;border-radius:var(--ui-radius-md);padding:11px 12px}.ui-currency small{display:block;color:#8d849c;font-size:.6rem;font-weight:850}.ui-currency b{display:block;margin-top:3px;font-size:1rem}
+.ui-boss-card{margin-top:14px;border:1px solid #9d7cff28;background:linear-gradient(135deg,#9d7cff0e,#72f5df05);border-radius:var(--ui-radius-lg);padding:14px}
 .ui-boss-row{display:flex;justify-content:space-between;gap:12px;align-items:center}.ui-boss-name{font-size:1.1rem;font-weight:950}.ui-boss-emoji{font-size:2.5rem}.ui-boss-sub{margin-top:5px;color:#91899f;font-size:.72rem}.ui-boss-bar{height:8px;background:#090711;border-radius:999px;overflow:hidden;margin-top:10px}.ui-boss-bar i{display:block;height:100%;background:linear-gradient(90deg,#ff4f9a,#a66cff,#5fffe2)}
 .ui-resource-note{margin-top:10px;color:#8e879b;font-size:.68rem;line-height:1.45}
 
@@ -30,7 +30,7 @@ body{padding-top:calc(var(--ui-top) + var(--ui-combat-hud,86px) + env(safe-area-
 .ui-combat-hud{position:fixed;z-index:1180;top:calc(var(--ui-top) + env(safe-area-inset-top,0px));left:0;right:0;min-height:var(--ui-combat-hud,86px);padding:8px 12px;background:linear-gradient(180deg,#0a0813f7 0%,#0b0915eb 78%,#0b091500 100%);border-bottom:1px solid #ffffff12;backdrop-filter:blur(16px)}
 .ui-combat-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:9px;max-width:1100px;margin:0 auto}
 .ui-combat-name{min-width:0}.ui-combat-kicker{display:block;color:#72f5dfb8;font-size:.52rem;letter-spacing:.16em;font-weight:950}.ui-combat-boss{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:1rem;font-weight:950}.ui-combat-meta{display:block;color:#8e879b;font-size:.58rem;margin-top:2px}
-.ui-combat-stat{min-width:74px;text-align:center;border:1px solid #ffffff14;background:#ffffff07;border-radius:12px;padding:6px 9px}.ui-combat-stat small{display:block;color:#81798f;font-size:.5rem;letter-spacing:.08em;font-weight:900}.ui-combat-stat b{display:block;margin-top:2px;font-size:.9rem}.ui-combat-timer b{color:#8efee8}.ui-combat-damage b{color:#c7aaff}
+.ui-combat-stat{min-width:74px;text-align:center;border:1px solid #ffffff14;background:#ffffff07;border-radius:var(--ui-radius-sm);padding:6px 9px}.ui-combat-stat small{display:block;color:#81798f;font-size:.5rem;letter-spacing:.08em;font-weight:900}.ui-combat-stat b{display:block;margin-top:2px;font-size:.9rem}.ui-combat-timer b{color:#8efee8}.ui-combat-damage b{color:#c7aaff}
 .ui-combat-health{height:5px;max-width:1100px;margin:7px auto 0;background:#08070e;border-radius:99px;overflow:hidden}.ui-combat-health i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ff4f9a,#a66cff,#5fffe2);transition:width .15s}
 .ui-combat-hud.hidden{display:none}
 
@@ -107,7 +107,7 @@ body.ui-sheet-open .ui-combat-hud{display:none}
 /* Scalable shop upgrades */
 /* Shop purchase selector: quantities select the amount; the purchase button carries the price. */
 .upgrade-purchase{
- width:100%;min-height:46px;margin-top:4px;padding:9px 11px;border:1px solid #72f5df35;border-radius:12px;
+ width:100%;min-height:46px;margin-top:4px;padding:9px 11px;border:1px solid #72f5df35;border-radius:var(--ui-radius-sm);
  background:#72f5df0d;color:#9effed;font-weight:950;font-size:.72rem;letter-spacing:.01em;cursor:pointer;
  transition:transform .12s,border-color .12s,background .12s,opacity .12s;
 }
@@ -132,7 +132,7 @@ body.ui-sheet-open .ui-combat-hud{display:none}
 }
 
 .ui-bottom-body .upgrade-grid{gap:12px}
-.ui-bottom-body .upgrade{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:15px;border:1px solid #ffffff16;background:#ffffff06;border-radius:18px}
+.ui-bottom-body .upgrade{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:15px;border:1px solid #ffffff16;background:#ffffff06;border-radius:var(--ui-radius-lg)}
 .upgrade-level{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#72f5df12;border:1px solid #72f5df25;color:#7ef5e0;font-size:.58rem;font-weight:950;letter-spacing:.08em}
 .upgrade-next{color:#9a92a5;font-size:.68rem}
 .upgrade-next b{color:#f6d56d}
@@ -159,7 +159,7 @@ body.ui-sheet-open .ui-combat-hud{display:none}
 .ui-bottom-heading{min-width:0;flex:1}
 .ui-context-wallet{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .ui-context-currency{
-  min-width:76px;padding:7px 9px;border:1px solid #72f5df25;border-radius:12px;
+  min-width:76px;padding:7px 9px;border:1px solid #72f5df25;border-radius:var(--ui-radius-sm);
   background:linear-gradient(135deg,#72f5df0b,#9d7cff0a);
   box-shadow:inset 0 0 12px #72f5df05;
 }
@@ -355,7 +355,7 @@ body.ui-sheet-open .ui-combat-hud{display:none}
 .ui-bottom-body .upgrade-qty{
   min-height:54px;
   border:1px solid #ffffff14;
-  border-radius:14px;
+  border-radius:var(--ui-radius-md);
   background:linear-gradient(180deg,#ffffff08,#ffffff03);
   color:#d9d3e1;
   box-shadow:inset 0 1px 0 #ffffff08,0 4px 14px #00000018;
@@ -400,7 +400,7 @@ body.ui-sheet-open .ui-combat-hud{display:none}
   gap:5px;
   padding:7px 8px;
   border:1px solid #ffffff0e;
-  border-radius:12px;
+  border-radius:var(--ui-radius-sm);
   background:#ffffff03;
   box-shadow:inset 0 0 14px #00000018;
 }
@@ -459,7 +459,7 @@ body.ui-sheet-open .ui-combat-hud{display:none}
 /* Wallet should feel like the same HUD, not a separate widget */
 .ui-context-currency{
   min-width:74px;
-  border-radius:14px;
+  border-radius:var(--ui-radius-md);
   border:1px solid #72f5df24;
   background:linear-gradient(145deg,#72f5df0b,#9d7cff08);
   box-shadow:inset 0 1px 0 #ffffff08,0 6px 20px #00000015;
