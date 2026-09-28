@@ -335,3 +335,155 @@ body.ui-sheet-open .ui-combat-hud{display:none!important}
 .ui-bottom-body .upgrade-qty.insufficient{
   border-color:#ff5f8f30!important;background:#ff5f8f07!important;color:#ff9ab0!important;
 }
+
+
+/* Final HUD-matched purchase controls */
+.ui-bottom-body .upgrade-purchase[data-type="power"],
+.ui-bottom-body .upgrade-purchase[data-type="multiplier"],
+.ui-bottom-body .upgrade-purchase[data-type="combo"],
+.ui-bottom-body .upgrade-purchase[data-type="auto"]{
+  display:none!important;
+}
+.ui-bottom-body .upgrade{
+  position:relative;
+  padding:17px!important;
+  border:1px solid #ffffff12!important;
+  border-radius:22px!important;
+  background:
+    radial-gradient(circle at 12% 0%,#9d7cff0a,transparent 38%),
+    linear-gradient(145deg,#ffffff07,#ffffff02)!important;
+  box-shadow:inset 0 1px 0 #ffffff08,0 14px 45px #00000018!important;
+}
+.ui-bottom-body .upgrade:focus-within,
+.ui-bottom-body .upgrade:hover{
+  border-color:#72f5df25!important;
+}
+.ui-bottom-body .upgrade-level{
+  background:#72f5df0a!important;
+  border-color:#72f5df2c!important;
+  color:#72f5df!important;
+  box-shadow:inset 0 0 10px #72f5df05;
+}
+.ui-bottom-body .upgrade-buy-grid{
+  gap:6px!important;
+  margin-top:6px!important;
+}
+.ui-bottom-body .upgrade-qty{
+  min-height:54px!important;
+  border:1px solid #ffffff14!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#ffffff08,#ffffff03)!important;
+  color:#d9d3e1!important;
+  box-shadow:inset 0 1px 0 #ffffff08,0 4px 14px #00000018!important;
+  font-size:.72rem!important;
+  letter-spacing:.01em;
+}
+.ui-bottom-body .upgrade-qty small{
+  margin-top:4px!important;
+  color:#f6d56d!important;
+  font-size:.54rem!important;
+  font-weight:950!important;
+}
+.ui-bottom-body .upgrade-qty:not(:disabled):hover,
+.ui-bottom-body .upgrade-qty:not(:disabled):active{
+  border-color:#72f5df65!important;
+  background:linear-gradient(180deg,#72f5df12,#9d7cff08)!important;
+  color:#9effed!important;
+}
+.ui-bottom-body .upgrade-qty.insufficient,
+.ui-bottom-body .upgrade-qty:disabled{
+  opacity:.38!important;
+  filter:saturate(.45);
+  border-color:#ffffff0d!important;
+  background:#ffffff03!important;
+}
+.ui-bottom-body .upgrade-qty.insufficient small,
+.ui-bottom-body .upgrade-qty:disabled small{
+  color:#a39aaa!important;
+}
+.ui-bottom-body .upgrade[data-type="auto"] .upgrade-icon{
+  filter:drop-shadow(0 0 10px #72f5df55);
+}
+.ui-bottom-body .upgrade[data-type="auto"] .upgrade-level{
+  border-color:#72f5df42!important;
+}
+
+/* Skills: dots carry all level-state information */
+.ui-bottom-body .skill-progress{
+  margin:8px 0 3px!important;
+}
+.ui-bottom-body .skill-dots{
+  gap:5px!important;
+  padding:7px 8px!important;
+  border:1px solid #ffffff0e;
+  border-radius:12px;
+  background:#ffffff03;
+  box-shadow:inset 0 0 14px #00000018;
+}
+.ui-bottom-body .skill-dot{
+  height:7px!important;
+  border-radius:999px!important;
+  background:#ffffff0b!important;
+  border:1px solid #ffffff14!important;
+  box-shadow:inset 0 1px 2px #0008!important;
+}
+.ui-bottom-body .skill-dot.filled{
+  background:linear-gradient(90deg,#72f5df,#9d7cff)!important;
+  border-color:#72f5df65!important;
+  box-shadow:0 0 9px #72f5df38!important;
+}
+.ui-bottom-body .skill-dot.next{
+  border-color:#f6d56d70!important;
+  background:#f6d56d10!important;
+}
+.ui-bottom-body .skill-card.active{
+  border-color:#72f5df42!important;
+  box-shadow:0 0 28px #72f5df0c,inset 0 0 22px #72f5df05!important;
+}
+.ui-bottom-body .skill-card:not(.active) .skill-dots{
+  opacity:.72;
+}
+.ui-bottom-body .skill-card.maxed{
+  border-color:#f6d56d45!important;
+}
+.ui-bottom-body .skill-card.maxed .skill-dot.filled{
+  background:linear-gradient(90deg,#f6d56d,#ffb36b)!important;
+  border-color:#f6d56d70!important;
+  box-shadow:0 0 9px #f6d56d35!important;
+}
+.ui-bottom-body .skill-cost{
+  margin-top:5px!important;
+  color:#f6d56d!important;
+  background:#f6d56d08!important;
+  border-color:#f6d56d1c!important;
+}
+.ui-bottom-body .skill-card button{
+  min-height:43px!important;
+  width:100%;
+  margin-top:2px;
+  background:linear-gradient(180deg,#ffffff08,#ffffff03)!important;
+}
+.ui-bottom-body .skill-card button:not(:disabled){
+  border-color:#72f5df32!important;
+  color:#e8e3ee!important;
+}
+.ui-bottom-body .skill-card button:disabled{
+  color:#77717e!important;
+  border-color:#ffffff0d!important;
+}
+
+/* Wallet should feel like the same HUD, not a separate widget */
+.ui-context-currency{
+  min-width:74px!important;
+  border-radius:14px!important;
+  border:1px solid #72f5df24!important;
+  background:linear-gradient(145deg,#72f5df0b,#9d7cff08)!important;
+  box-shadow:inset 0 1px 0 #ffffff08,0 6px 20px #00000015!important;
+}
+.ui-context-currency small{color:#72f5dfb8!important}
+.ui-context-currency b{color:#f4f0f8!important}
+@media(max-width:600px){
+  .ui-bottom-body .upgrade{padding:15px!important;border-radius:20px!important}
+  .ui-bottom-body .upgrade-qty{min-height:56px!important}
+  .ui-bottom-body .skill-dots{gap:4px!important;padding:7px!important}
+}
