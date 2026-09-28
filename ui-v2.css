@@ -152,3 +152,171 @@ body.ui-sheet-open .ui-combat-hud{display:none!important}
   .upgrade-buy-grid{gap:4px}
   .upgrade-buy{min-height:55px;font-size:.7rem}
 }
+
+
+/* Contextual currency wallet */
+.ui-bottom-head{gap:10px}
+.ui-bottom-heading{min-width:0;flex:1}
+.ui-context-wallet{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.ui-context-currency{
+  min-width:76px;padding:7px 9px;border:1px solid #72f5df25;border-radius:12px;
+  background:linear-gradient(135deg,#72f5df0b,#9d7cff0a);
+  box-shadow:inset 0 0 12px #72f5df05;
+}
+.ui-context-currency span{font-size:.75rem;margin-right:3px}
+.ui-context-currency small{color:#8f879c;font-size:.48rem;font-weight:950;letter-spacing:.08em}
+.ui-context-currency b{display:block;margin-top:1px;color:#f3eff8;font-size:.82rem;font-weight:950}
+
+/* Unified game-button language */
+.ui-bottom-body button,
+.ui-bottom-body .upgrade button,
+.ui-bottom-body .skill-card button,
+.ui-bottom-body .pet-card button,
+.ui-bottom-body .clicker-card button{
+  font-family:inherit;
+  -webkit-appearance:none;
+  appearance:none;
+  box-sizing:border-box;
+}
+.ui-bottom-body .upgrade-purchase,
+.ui-bottom-body .upgrade-qty,
+.ui-bottom-body .skill-card button,
+.ui-bottom-body .pet-card button,
+.ui-bottom-body .clicker-card button{
+  border:1px solid #ffffff18!important;
+  border-radius:13px!important;
+  background:linear-gradient(180deg,#ffffff0b,#ffffff04)!important;
+  color:#eeeaf5!important;
+  box-shadow:inset 0 1px 0 #ffffff08,0 5px 18px #00000012;
+}
+.ui-bottom-body .upgrade-purchase{
+  border-color:#72f5df32!important;
+  background:linear-gradient(180deg,#72f5df12,#72f5df06)!important;
+  color:#9effed!important;
+  font-weight:950!important;
+}
+.ui-bottom-body .upgrade-purchase:disabled,
+.ui-bottom-body .skill-card button:disabled,
+.ui-bottom-body .pet-card button:disabled,
+.ui-bottom-body .clicker-card button:disabled{
+  opacity:.32!important;
+  filter:saturate(.35);
+}
+.ui-bottom-body .upgrade-qty{
+  min-height:42px!important;
+  padding:6px 2px!important;
+  color:#c9c2d5!important;
+}
+.ui-bottom-body .upgrade-qty.selected{
+  border-color:#72f5df80!important;
+  background:linear-gradient(180deg,#72f5df1e,#72f5df0a)!important;
+  color:#9effed!important;
+  box-shadow:0 0 16px #72f5df12,inset 0 0 12px #72f5df08!important;
+}
+.ui-bottom-body .upgrade-qty:hover:not(:disabled),
+.ui-bottom-body .skill-card button:hover:not(:disabled),
+.ui-bottom-body .pet-card button:hover:not(:disabled),
+.ui-bottom-body .clicker-card button:hover:not(:disabled){
+  border-color:#9d7cff55!important;
+}
+.ui-bottom-body .upgrade-purchase.insufficient,
+.ui-bottom-body .skill-card button:disabled{
+  border-color:#ff5f8f35!important;
+  background:#ff5f8f07!important;
+}
+.ui-bottom-body .upgrade{
+  overflow:hidden;
+}
+.ui-bottom-body .upgrade-level{
+  margin-top:2px;
+}
+
+/* Ten-point skill progression */
+.ui-bottom-body .skill-card{
+  position:relative;
+  overflow:hidden;
+  border:1px solid #ffffff14!important;
+  background:linear-gradient(145deg,#ffffff07,#ffffff03)!important;
+  transition:border-color .2s,box-shadow .2s,transform .15s;
+}
+.ui-bottom-body .skill-card.active{
+  border-color:#72f5df48!important;
+  box-shadow:0 0 24px #72f5df09,inset 0 0 18px #72f5df05;
+}
+.ui-bottom-body .skill-card.active:after{
+  content:"";
+  position:absolute;
+  top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,#72f5df,#9d7cff);
+  opacity:.7;
+}
+.ui-bottom-body .skill-card.maxed{
+  border-color:#f6d56d48!important;
+  box-shadow:0 0 24px #f6d56d0b,inset 0 0 18px #f6d56d05;
+}
+.skill-progress{
+  width:100%;
+  margin:3px 0 2px;
+}
+.skill-progress-label{
+  display:block;
+  margin-bottom:6px;
+  color:#8f879c;
+  font-size:.53rem;
+  font-weight:950;
+  letter-spacing:.07em;
+}
+.skill-card.active .skill-progress-label{color:#72f5df}
+.skill-card.maxed .skill-progress-label{color:#f6d56d}
+.skill-dots{
+  display:grid;
+  grid-template-columns:repeat(10,1fr);
+  gap:4px;
+  width:100%;
+}
+.skill-dot{
+  display:block;
+  height:6px;
+  border-radius:999px;
+  background:#ffffff10;
+  border:1px solid #ffffff16;
+  box-shadow:inset 0 1px 2px #0008;
+}
+.skill-dot.filled{
+  background:linear-gradient(90deg,#72f5df,#9d7cff);
+  border-color:#72f5df55;
+  box-shadow:0 0 8px #72f5df24;
+}
+.skill-dot.next{
+  border-color:#f6d56d75;
+  background:#f6d56d12;
+}
+.skill-card.maxed .skill-dot.filled{
+  background:linear-gradient(90deg,#f6d56d,#ff9f68);
+  border-color:#f6d56d66;
+  box-shadow:0 0 8px #f6d56d22;
+}
+.skill-cost{
+  display:inline-flex!important;
+  align-items:center;
+  min-height:26px;
+  margin:3px 0 2px;
+  padding:4px 8px;
+  border-radius:9px;
+  background:#ffffff06;
+  border:1px solid #ffffff0d;
+  color:#f6d56d!important;
+  font-size:.7rem;
+  font-weight:950;
+}
+.skill-card.maxed .skill-cost{color:#f6d56d!important;border-color:#f6d56d2e;background:#f6d56d08}
+
+/* Make the current section's currency visually persistent */
+@media(max-width:600px){
+  .ui-bottom-head{align-items:flex-end!important}
+  .ui-context-wallet{gap:4px}
+  .ui-context-currency{min-width:68px;padding:6px 7px}
+  .ui-context-currency small{font-size:.43rem}
+  .ui-context-currency b{font-size:.76rem}
+  .ui-close{padding:0 10px!important}
+}
