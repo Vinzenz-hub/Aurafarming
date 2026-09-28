@@ -173,7 +173,11 @@
   }
 
   function syncCritVisibility(){
-    if(critOverlay) critOverlay.style.display=document.body.classList.contains("ui-sheet-open")?"none":"block";
+    if(!critOverlay)return;
+    const navigationOpen=sheet.classList.contains("open")||status.classList.contains("open");
+    critOverlay.style.setProperty("display",navigationOpen?"none":"flex","important");
+    critOverlay.style.setProperty("visibility",navigationOpen?"hidden":"visible","important");
+    critOverlay.style.setProperty("opacity",navigationOpen?"0":"1","important");
   }
 
   function closeSheets(){
@@ -239,6 +243,8 @@
         // Crit is a viewport overlay, deliberately outside the arena DOM.
         // This avoids every arena positioning/overflow containing-block conflict.
         if(critOverlay){
+          syncCritVisibility();
+          if(critOverlay.style.visibility==="hidden") return;
           const zoneR=Math.min(critOverlay.getBoundingClientRect().width,critOverlay.getBoundingClientRect().height)/2||52;
           const zoneSizePx=80+(typeof zoneSize==="function"?zoneSize():.18)*80;
           const safe=Math.max(18,bossR-zoneSizePx*.58);
