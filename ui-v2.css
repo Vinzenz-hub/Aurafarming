@@ -1,17 +1,17 @@
 /* Aura Farming 2.0 — Mobile Game UI v2 */
 :root{--ui-top:72px;--ui-bottom:78px;--ui-panel:#0d0b19ee;--ui-line:#ffffff18;--ui-accent:#72f5df;--ui-purple:#9d7cff}
 html,body{background:#070611}
-body{padding-top:calc(var(--ui-top) + env(safe-area-inset-top,0px));padding-bottom:calc(var(--ui-bottom) + env(safe-area-inset-bottom,0px));overscroll-behavior-y:none}
+body{padding-top:calc(var(--ui-top) + var(--ui-combat-hud,86px) + env(safe-area-inset-top,0px));padding-bottom:calc(var(--ui-bottom) + env(safe-area-inset-bottom,0px));overscroll-behavior-y:none}
 .app{width:100%;max-width:none;margin:0;padding:12px 12px 30px}
 .app>.topbar,.hero,.stats,.meta-stats,.boss-card,footer{display:none!important}
 
 /* fixed top status rail */
-.ui-topbar{position:fixed;z-index:1200;top:0;left:0;right:0;height:calc(var(--ui-top) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 10px 8px;display:flex;align-items:flex-end;gap:8px;background:linear-gradient(180deg,#090711 0%,#0b0915f5 78%,#0b091500 100%);border-bottom:1px solid #ffffff10;backdrop-filter:blur(18px)}
+.ui-topbar{position:fixed;z-index:1250;top:0;left:0;right:0;height:calc(var(--ui-top) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 10px 8px;display:flex;align-items:flex-end;gap:8px;background:linear-gradient(180deg,#090711 0%,#0b0915f5 78%,#0b091500 100%);border-bottom:1px solid #ffffff10;backdrop-filter:blur(18px)}
 .ui-brand{flex:1;min-width:0;display:flex;align-items:center;gap:8px;padding:0 8px;font-weight:950;font-size:.95rem;white-space:nowrap;overflow:hidden}
 .ui-brand small{color:#7ef5e0;font-size:.56rem;letter-spacing:.16em}
 .ui-top-btn,.ui-close{border:1px solid #ffffff1b;background:#ffffff0a;color:#eee9f7;border-radius:14px;min-height:44px;padding:0 13px;font-weight:850;cursor:pointer}
 .ui-top-btn:active,.ui-close:active,.ui-bottom-btn:active{transform:scale(.97)}
-.ui-status-sheet{position:fixed;z-index:1100;inset:0;background:#070611f7;backdrop-filter:blur(22px);display:flex;flex-direction:column;transform:translateY(-105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);visibility:hidden}
+.ui-status-sheet{position:fixed;z-index:1400;inset:0;background:#070611f7;backdrop-filter:blur(22px);display:flex;flex-direction:column;transform:translateY(-105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);visibility:hidden}
 .ui-status-sheet.open{transform:translateY(0);visibility:visible}
 .ui-sheet-head{height:calc(76px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 14px 8px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--ui-line)}
 .ui-sheet-title{font-weight:950;font-size:1rem}.ui-sheet-title small{display:block;color:#72f5df;font-size:.56rem;letter-spacing:.16em;margin-bottom:3px}
@@ -26,10 +26,18 @@ body{padding-top:calc(var(--ui-top) + env(safe-area-inset-top,0px));padding-bott
 .ui-boss-row{display:flex;justify-content:space-between;gap:12px;align-items:center}.ui-boss-name{font-size:1.1rem;font-weight:950}.ui-boss-emoji{font-size:2.5rem}.ui-boss-sub{margin-top:5px;color:#91899f;font-size:.72rem}.ui-boss-bar{height:8px;background:#090711;border-radius:999px;overflow:hidden;margin-top:10px}.ui-boss-bar i{display:block;height:100%;background:linear-gradient(90deg,#ff4f9a,#a66cff,#5fffe2)}
 .ui-resource-note{margin-top:10px;color:#8e879b;font-size:.68rem;line-height:1.45}
 
+/* compact combat HUD directly below the top navigation */
+.ui-combat-hud{position:fixed;z-index:1180;top:calc(var(--ui-top) + env(safe-area-inset-top,0px));left:0;right:0;min-height:var(--ui-combat-hud,86px);padding:8px 12px;background:linear-gradient(180deg,#0a0813f7 0%,#0b0915eb 78%,#0b091500 100%);border-bottom:1px solid #ffffff12;backdrop-filter:blur(16px)}
+.ui-combat-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:9px;max-width:1100px;margin:0 auto}
+.ui-combat-name{min-width:0}.ui-combat-kicker{display:block;color:#72f5dfb8;font-size:.52rem;letter-spacing:.16em;font-weight:950}.ui-combat-boss{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:1rem;font-weight:950}.ui-combat-meta{display:block;color:#8e879b;font-size:.58rem;margin-top:2px}
+.ui-combat-stat{min-width:74px;text-align:center;border:1px solid #ffffff14;background:#ffffff07;border-radius:12px;padding:6px 9px}.ui-combat-stat small{display:block;color:#81798f;font-size:.5rem;letter-spacing:.08em;font-weight:900}.ui-combat-stat b{display:block;margin-top:2px;font-size:.9rem}.ui-combat-timer b{color:#8efee8}.ui-combat-damage b{color:#c7aaff}
+.ui-combat-health{height:5px;max-width:1100px;margin:7px auto 0;background:#08070e;border-radius:99px;overflow:hidden}.ui-combat-health i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ff4f9a,#a66cff,#5fffe2);transition:width .15s}
+.ui-combat-hud.hidden{display:none!important}
+
 /* clean combat */
-.farm-area{padding:10px 0 14px;margin:0!important}
+.farm-area{display:block!important;visibility:visible!important;position:relative!important;padding:10px 0 14px;margin:0!important}
 .combat-line{margin-bottom:8px}
-.crit-arena{width:100%!important;max-width:980px!important;height:min(68vh,620px)!important;min-height:430px!important;aspect-ratio:auto!important;border-radius:24px!important;overflow:hidden!important;border:1px solid #72f5df2b!important;background:radial-gradient(circle at 50% 45%,#24165b 0,#111326 43%,#080a16 100%)!important;box-shadow:0 20px 80px #0008,inset 0 0 60px #72f5df08!important}
+ .crit-arena{display:block!important;position:relative!important;visibility:visible!important;pointer-events:auto!important;width:100%!important;max-width:980px!important;height:min(68vh,620px)!important;min-height:430px!important;aspect-ratio:auto!important;border-radius:24px!important;overflow:hidden!important;border:1px solid #72f5df2b!important;background:radial-gradient(circle at 50% 45%,#24165b 0,#111326 43%,#080a16 100%)!important;box-shadow:0 20px 80px #0008,inset 0 0 60px #72f5df08!important}
 .arena-grid{position:absolute!important;inset:0!important;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px)!important;background-size:34px 34px!important;opacity:.45!important;pointer-events:none!important}
 .arena-label{position:absolute!important;top:14px!important;left:16px!important;z-index:20!important;font-size:.58rem!important;letter-spacing:.16em!important;color:#72f5dfb8!important;font-weight:950!important}
 .arena-label span{color:#8a8296!important}
@@ -54,7 +62,7 @@ body{padding-top:calc(var(--ui-top) + env(safe-area-inset-top,0px));padding-bott
 .more-menu{display:none!important}
 
 /* bottom full-screen sheet */
-.ui-bottom-sheet{position:fixed;z-index:1150;inset:0;background:#070611f8;backdrop-filter:blur(22px);display:flex;flex-direction:column;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);visibility:hidden}
+.ui-bottom-sheet{position:fixed;z-index:1400;inset:0;background:#070611f8;backdrop-filter:blur(22px);display:flex;flex-direction:column;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);visibility:hidden}
 .ui-bottom-sheet.open{transform:translateY(0);visibility:visible}
 .ui-bottom-head{height:calc(76px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 14px 8px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--ui-line);flex:none}
 .ui-bottom-head small{display:block;color:#72f5df;font-size:.56rem;letter-spacing:.16em;margin-bottom:3px}.ui-bottom-head strong{font-size:1rem}
@@ -72,7 +80,7 @@ body{padding-top:calc(var(--ui-top) + env(safe-area-inset-top,0px));padding-bott
 button{-webkit-tap-highlight-color:transparent}
 button:focus{outline:none}
 @media(max-width:600px){
-  :root{--ui-top:66px;--ui-bottom:76px}
+  :root{--ui-top:66px;--ui-bottom:76px;--ui-combat-hud:82px}
   .ui-brand{font-size:.86rem}.ui-top-btn{min-height:42px;padding:0 11px;font-size:.72rem}
   .crit-arena{height:calc(100svh - 190px)!important;min-height:420px!important;max-height:640px!important}
   .boss-target{min-width:190px!important;min-height:190px!important;width:min(76vw,360px)!important;height:min(76vw,360px)!important}
@@ -80,6 +88,7 @@ button:focus{outline:none}
   .ui-bottom-body .upgrade-grid,.ui-bottom-body .clicker-grid{grid-template-columns:1fr}
 }
 @media(max-width:380px){
+  :root{--ui-combat-hud:78px}
   .bottom-nav .nav-tab{min-height:52px}.bottom-nav .nav-tab span{font-size:.52rem}
   .crit-arena{min-height:390px!important}.boss-target{min-width:175px!important;min-height:175px!important}.boss-shield{min-width:210px!important;min-height:210px!important}
 }
