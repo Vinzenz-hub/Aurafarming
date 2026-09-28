@@ -11,7 +11,7 @@ body{padding-top:calc(var(--ui-top) + var(--ui-combat-hud,86px) + env(safe-area-
 .ui-brand small{color:#7ef5e0;font-size:.56rem;letter-spacing:.16em}
 .ui-top-btn,.ui-close{border:1px solid #ffffff1b;background:#ffffff0a;color:#eee9f7;border-radius:14px;min-height:44px;padding:0 13px;font-weight:850;cursor:pointer}
 .ui-top-btn:active,.ui-close:active,.ui-bottom-btn:active{transform:scale(.97)}
-.ui-status-sheet{position:fixed;z-index:1100;inset:0;background:#070611f7;backdrop-filter:blur(22px);display:flex;flex-direction:column;transform:translateY(-105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);visibility:hidden}
+.ui-status-sheet{position:fixed;z-index:1210;inset:0;background:#070611f7;backdrop-filter:blur(22px);display:flex;flex-direction:column;transform:translateY(-105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);visibility:hidden}
 .ui-status-sheet.open{transform:translateY(0);visibility:visible}
 .ui-sheet-head{height:calc(76px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 14px 8px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--ui-line)}
 .ui-sheet-title{font-weight:950;font-size:1rem}.ui-sheet-title small{display:block;color:#72f5df;font-size:.56rem;letter-spacing:.16em;margin-bottom:3px}
@@ -55,14 +55,14 @@ body{padding-top:calc(var(--ui-top) + var(--ui-combat-hud,86px) + env(safe-area-
 .message{margin:8px 0 0!important;height:22px;font-size:.72rem!important}
 
 /* fixed bottom navigation */
-.bottom-nav{position:fixed!important;z-index:1200!important;left:0!important;right:0!important;bottom:0!important;transform:none!important;width:100%!important;margin:0!important;padding:7px 7px calc(7px + env(safe-area-inset-bottom,0px))!important;display:grid!important;grid-template-columns:repeat(6,1fr)!important;gap:5px!important;background:#090811f5!important;border-top:1px solid #ffffff14!important;backdrop-filter:blur(18px)!important}
+.bottom-nav{position:fixed!important;z-index:1250!important;left:0!important;right:0!important;bottom:0!important;transform:none!important;width:100%!important;margin:0!important;padding:7px 7px calc(7px + env(safe-area-inset-bottom,0px))!important;display:grid!important;grid-template-columns:repeat(6,1fr)!important;gap:5px!important;background:#090811f5!important;border-top:1px solid #ffffff14!important;backdrop-filter:blur(18px)!important}
 .bottom-nav .nav-tab{border:1px solid transparent!important;background:transparent!important;color:#827b8e!important;border-radius:13px!important;min-height:55px!important;padding:5px 2px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;font-size:1rem!important;font-weight:900!important;cursor:pointer!important}
 .bottom-nav .nav-tab span{font-size:.56rem!important;letter-spacing:.02em!important}
 .bottom-nav .nav-tab.active{color:#8efee8!important;background:#72f5df0d!important;border-color:#72f5df30!important}
 .more-menu{display:none!important}
 
 /* bottom full-screen sheet */
-.ui-bottom-sheet{position:fixed;z-index:1150;inset:0;background:#070611f8;backdrop-filter:blur(22px);display:flex;flex-direction:column;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);visibility:hidden}
+.ui-bottom-sheet{position:fixed;z-index:1210;inset:0;background:#070611f8;backdrop-filter:blur(22px);display:flex;flex-direction:column;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);visibility:hidden}
 .ui-bottom-sheet.open{transform:translateY(0);visibility:visible}
 .ui-bottom-head{height:calc(76px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 14px 8px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--ui-line);flex:none}
 .ui-bottom-head small{display:block;color:#72f5df;font-size:.56rem;letter-spacing:.16em;margin-bottom:3px}.ui-bottom-head strong{font-size:1rem}
@@ -92,3 +92,10 @@ button:focus{outline:none}
   .bottom-nav .nav-tab{min-height:52px}.bottom-nav .nav-tab span{font-size:.52rem}
   .crit-arena{min-height:390px!important}.boss-target{min-width:175px!important;min-height:175px!important}.boss-shield{min-width:210px!important;min-height:210px!important}
 }
+
+
+/* Sheets must sit above the combat HUD, while the persistent top/bottom navigation stays usable. */
+.ui-status-sheet,.ui-bottom-sheet{overscroll-behavior:contain}
+.ui-status-sheet .ui-sheet-body{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))}
+.ui-bottom-sheet .ui-bottom-body{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))}
+.ui-status-sheet.open,.ui-bottom-sheet.open{isolation:isolate}
