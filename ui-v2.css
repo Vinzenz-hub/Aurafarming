@@ -320,3 +320,18 @@ body.ui-sheet-open .ui-combat-hud{display:none!important}
   .ui-context-currency b{font-size:.76rem}
   .ui-close{padding:0 10px!important}
 }
+
+.upgrade-purchase[data-type="power"],
+.upgrade-purchase[data-type="multiplier"],
+.upgrade-purchase[data-type="combo"],
+.upgrade-purchase[data-type="auto"]{display:none!important}
+.ui-bottom-body .upgrade-qty{
+  display:flex!important;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;line-height:1!important;
+}
+.ui-bottom-body .upgrade-qty small{
+  display:block!important;color:#f6d56d!important;font-size:.5rem!important;font-weight:950!important;
+}
+.ui-bottom-body .upgrade-qty.insufficient{
+  border-color:#ff5f8f30!important;background:#ff5f8f07!important;color:#ff9ab0!important;
+}
