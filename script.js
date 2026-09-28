@@ -154,7 +154,9 @@ function renderSkills(){
      :"Pro Level: "+desc+" · Aktuell: +"+totalEffect+" %";
    const card=document.createElement("div");
    card.className="skill-card"+(level>0?" active ":"")+(maxed?" maxed":"");
-   card.innerHTML="<div class='pet-emoji'>"+icon+"</div><h3>"+name+"</h3><p>"+effectText+"</p><div class='skill-level'>LEVEL "+level+" / 10</div><span class='skill-cost'>"+(maxed?"✓ MAX LEVEL":"💎 "+format(nextCost))+"</span><button "+(maxed||state.crystals<nextCost?"disabled":"")+">"+(maxed?"Max Level":"Upgrade kaufen")+"</button>";
+   const dots=Array.from({length:10},(_,i)=>"<i class='skill-dot "+(i<level?"filled":"")+(i===level&&level<10?" next":"")+" aria-hidden='true'></i>").join("");
+   const stateLabel=maxed?"MAX LEVEL":level>0?"AKTIV · "+level+"/10":"NOCH NICHT GEKAUFT";
+   card.innerHTML="<div class='pet-emoji'>"+icon+"</div><h3>"+name+"</h3><p>"+effectText+"</p><div class='skill-progress' aria-label='"+level+" von 10 Level gekauft'><span class='skill-progress-label'>"+stateLabel+"</span><div class='skill-dots'>"+dots+"</div></div><span class='skill-cost'>"+(maxed?"✓ MAX LEVEL":"💎 "+format(nextCost))+"</span><button "+(maxed||state.crystals<nextCost?"disabled":"")+">"+(maxed?"Max Level":"Upgrade kaufen")+"</button>";
    card.querySelector("button").onclick=()=>buySkill(id);
    grid.appendChild(card);
  });
