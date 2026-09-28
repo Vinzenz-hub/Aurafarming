@@ -102,7 +102,6 @@ function hasShield(){return boss().mechanics.includes("🛡️ Schild")}
 function resetShield(){state.shieldMax=Math.max(20,Math.round(boss().hp*.22));state.shieldHp=state.shieldMax;state.shieldBroken=!hasShield();state.shieldSeed=Math.random()*Math.PI*2}
 function bossTargetPos(){const t=Date.now()/1100+state.bossIndex*.7;return {x:50+Math.cos(t)*28,y:50+Math.sin(t*1.23)*22}}
 function shieldOpeningAngle(){return Date.now()/1400+state.shieldSeed}
-function bossHitPoint(event,arena){const r=arena.getBoundingClientRect();return {x:event.clientX-r.left,y:event.clientY-r.top}}
 function bossHitInfo(px,py,arena){const r=arena.getBoundingClientRect();const target=document.getElementById("bossTarget");const tr=target?target.getBoundingClientRect():null;const bx=tr?(tr.left+tr.width/2-r.left):r.width/2;const by=tr?(tr.top+tr.height/2-r.top):r.height/2;const bossRadius=tr?Math.min(tr.width,tr.height)/2:Math.min(r.width,r.height)*.13;const d=Math.hypot(px-bx,py-by);const angle=Math.atan2(py-by,px-bx);let delta=Math.atan2(Math.sin(angle-shieldOpeningAngle()),Math.cos(angle-shieldOpeningAngle()));const opening=Math.abs(delta)<.34;return {d,bossRadius,opening,inside:d<=bossRadius}}
 function prestigeMultiplier(){return 1+state.prestige*.10}
 function skillLevel(id){return Math.min(10,Math.max(0,Number(state.skillLevels?.[id])||0))}
@@ -164,7 +163,7 @@ function renderQuests(){const grid=$("questList");grid.innerHTML="";state.quests
 function renderEvent(){const active=state.event&&state.eventUntil>Date.now();$("eventBox").textContent=active?state.event+" aktiv! Bonus läuft.":"Kein Event aktiv."}
 function addQuest(type,amount){state.quests.filter(q=>q.type===type).forEach(q=>{q.progress+=amount;if(q.progress>=q.goal){state.crystals+=Math.round(q.reward*rewardMultiplier());q.progress=0;$("message").textContent="📜 Quest abgeschlossen! 💎 Kristalle erhalten."}})}
 function farm(event){
- const c=clickers.find(x=>x.id===state.clicker)||clickers[0];const z=zoneSize();const arena=document.querySelector(".crit-arena");const rect=arena.getBoundingClientRect();const px=event.clientX-rect.left;const py=event.clientY-rect.top;const targetHit=bossHitInfo(px,py,arena);const zoneEl=document.querySelector(".crit-zone");const zr=zoneEl.getBoundingClientRect();const zx=zr.left+zr.width/2-rect.left;const zy=zr.top+zr.height/2-rect.top;const zoneRadius=Math.max(zr.width,zr.height)*.5;const distance=Math.hypot(px-zx,py-zy);const inZone=distance<=zoneRadius;const validBossHit=targetHit.inside;const fakeEl=document.getElementById("fakeZone");const fakeRect=fakeEl&&getComputedStyle(fakeEl).display!=="none"?fakeEl.getBoundingClientRect():null;const hitFake=fakeRect&&px>=fakeRect.left-rect.left&&px<=fakeRect.right-rect.left&&py>=fakeRect.top-rect.top&&py<=fakeRect.bottom-rect.top;
+ const c=clickers.find(x=>x.id===state.clicker)||clickers[0];const arena=document.querySelector(".crit-arena");const rect=arena.getBoundingClientRect();const px=event.clientX-rect.left;const py=event.clientY-rect.top;const targetHit=bossHitInfo(px,py,arena);const zoneEl=document.querySelector(".crit-zone");const zr=zoneEl.getBoundingClientRect();const zx=zr.left+zr.width/2-rect.left;const zy=zr.top+zr.height/2-rect.top;const zoneRadius=Math.max(zr.width,zr.height)*.5;const distance=Math.hypot(px-zx,py-zy);const inZone=distance<=zoneRadius;const validBossHit=targetHit.inside;const fakeEl=document.getElementById("fakeZone");const fakeRect=fakeEl&&getComputedStyle(fakeEl).display!=="none"?fakeEl.getBoundingClientRect():null;const hitFake=fakeRect&&px>=fakeRect.left-rect.left&&px<=fakeRect.right-rect.left&&py>=fakeRect.top-rect.top&&py<=fakeRect.bottom-rect.top;
  const phase=bossPhase();let cm=inZone?critMultiplier():1;if(hitFake){cm=1;$("message").textContent="👻 Fake-Zone! Kein Crit.";state.combo=Math.max(1,state.combo-.25)}if(inZone&&c.bonuses.critChance&&Math.random()<c.bonuses.critChance)cm*=1.5;
  if(!validBossHit){$("message").textContent="🎯 Ziel verfehlt — triff den Boss.";return} let gain=Math.max(1,Math.floor(state.power*state.combo*state.multiplier*cm*(c.bonuses.click||1)*(1+skillEffect("aura",.10)+skillEffect("aura2",.20))*(1+petBonus("aura"))*rewardMultiplier()));
  if(state.bossHp/boss().hp<.25)gain=Math.floor(gain*(c.bonuses.execute||1));
@@ -198,7 +197,6 @@ function upgradeCost(type,level){
  const growth={power:1.55,multiplier:2.1,combo:1.8,auto:2}[type];
  return Math.ceil(base*Math.pow(growth,level));
 }
-function upgradeNextCost(type){return upgradeCost(type,state.upgradeLevels[type]||0)}
 function bulkUpgradeCost(type,qty){
  let level=state.upgradeLevels[type]||0,total=0;
  for(let i=0;i<qty;i++)total+=upgradeCost(type,level+i);
