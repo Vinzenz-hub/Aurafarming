@@ -105,30 +105,42 @@
       <div class="upgrade-grid">
         <div class="upgrade" data-type="power">
           <span class="upgrade-icon">⚡</span><span class="upgrade-name">Aura Power</span><span class="upgrade-desc">+1 Schaden pro Klick</span>
-          <span class="upgrade-level" id="powerLevel">LEVEL 0</span><span class="upgrade-next">Nächstes Level: ✨ <b id="powerCost">25</b></span>
-          <div class="upgrade-buy-grid"><button class="upgrade-buy" data-type="power" data-qty="1">×1<small>✨ <b class="bulk-cost">25</b></small></button><button class="upgrade-buy" data-type="power" data-qty="5">×5<small>✨ <b class="bulk-cost">25</b></small></button><button class="upgrade-buy" data-type="power" data-qty="10">×10<small>✨ <b class="bulk-cost">25</b></small></button><button class="upgrade-buy" data-type="power" data-qty="25">×25<small>✨ <b class="bulk-cost">25</b></small></button><button class="upgrade-buy" data-type="power" data-qty="100">×100<small>✨ <b class="bulk-cost">25</b></small></button></div>
+          <span class="upgrade-level" id="powerLevel">LEVEL 0</span>
+          <button class="upgrade-purchase" data-type="power" disabled>Kaufen · Multiplikator wählen</button>
+          <div class="upgrade-buy-grid" aria-label="Kaufmenge">
+            <button class="upgrade-qty" data-type="power" data-qty="1">×1</button><button class="upgrade-qty" data-type="power" data-qty="5">×5</button><button class="upgrade-qty" data-type="power" data-qty="10">×10</button><button class="upgrade-qty" data-type="power" data-qty="25">×25</button><button class="upgrade-qty" data-type="power" data-qty="100">×100</button>
+          </div>
         </div>
         <div class="upgrade" data-type="multiplier">
           <span class="upgrade-icon">💎</span><span class="upgrade-name">Aura Multiplikator</span><span class="upgrade-desc">+0,25× Aura-Ausbeute</span>
-          <span class="upgrade-level" id="multiplierLevel">LEVEL 0</span><span class="upgrade-next">Nächstes Level: ✨ <b id="multiplierCost">300</b></span>
-          <div class="upgrade-buy-grid"><button class="upgrade-buy" data-type="multiplier" data-qty="1">×1<small>✨ <b class="bulk-cost">300</b></small></button><button class="upgrade-buy" data-type="multiplier" data-qty="5">×5<small>✨ <b class="bulk-cost">300</b></small></button><button class="upgrade-buy" data-type="multiplier" data-qty="10">×10<small>✨ <b class="bulk-cost">300</b></small></button><button class="upgrade-buy" data-type="multiplier" data-qty="25">×25<small>✨ <b class="bulk-cost">300</b></small></button><button class="upgrade-buy" data-type="multiplier" data-qty="100">×100<small>✨ <b class="bulk-cost">300</b></small></button></div>
+          <span class="upgrade-level" id="multiplierLevel">LEVEL 0</span>
+          <button class="upgrade-purchase" data-type="multiplier" disabled>Kaufen · Multiplikator wählen</button>
+          <div class="upgrade-buy-grid" aria-label="Kaufmenge">
+            <button class="upgrade-qty" data-type="multiplier" data-qty="1">×1</button><button class="upgrade-qty" data-type="multiplier" data-qty="5">×5</button><button class="upgrade-qty" data-type="multiplier" data-qty="10">×10</button><button class="upgrade-qty" data-type="multiplier" data-qty="25">×25</button><button class="upgrade-qty" data-type="multiplier" data-qty="100">×100</button>
+          </div>
         </div>
         <div class="upgrade" data-type="combo">
           <span class="upgrade-icon">🔥</span><span class="upgrade-name">Combo Boost</span><span class="upgrade-desc">Combo steigt schneller</span>
-          <span class="upgrade-level" id="comboLevel">LEVEL 0</span><span class="upgrade-next">Nächstes Level: ✨ <b id="comboCost">75</b></span>
-          <div class="upgrade-buy-grid"><button class="upgrade-buy" data-type="combo" data-qty="1">×1<small>✨ <b class="bulk-cost">75</b></small></button><button class="upgrade-buy" data-type="combo" data-qty="5">×5<small>✨ <b class="bulk-cost">75</b></small></button><button class="upgrade-buy" data-type="combo" data-qty="10">×10<small>✨ <b class="bulk-cost">75</b></small></button><button class="upgrade-buy" data-type="combo" data-qty="25">×25<small>✨ <b class="bulk-cost">75</b></small></button><button class="upgrade-buy" data-type="combo" data-qty="100">×100<small>✨ <b class="bulk-cost">75</b></small></button></div>
+          <span class="upgrade-level" id="comboLevel">LEVEL 0</span>
+          <button class="upgrade-purchase" data-type="combo" disabled>Kaufen · Multiplikator wählen</button>
+          <div class="upgrade-buy-grid" aria-label="Kaufmenge">
+            <button class="upgrade-qty" data-type="combo" data-qty="1">×1</button><button class="upgrade-qty" data-type="combo" data-qty="5">×5</button><button class="upgrade-qty" data-type="combo" data-qty="10">×10</button><button class="upgrade-qty" data-type="combo" data-qty="25">×25</button><button class="upgrade-qty" data-type="combo" data-qty="100">×100</button>
+          </div>
         </div>
         <div class="upgrade" data-type="auto">
           <span class="upgrade-icon">🤖</span><span class="upgrade-name">Auto Aura</span><span class="upgrade-desc">Erzeugt Aura pro Sekunde</span>
-          <span class="upgrade-level" id="autoLevel">LEVEL 0</span><span class="upgrade-next">Nächstes Level: ✨ <b id="autoCost">150</b></span>
-          <div class="upgrade-buy-grid"><button class="upgrade-buy" data-type="auto" data-qty="1">×1<small>✨ <b class="bulk-cost">150</b></small></button><button class="upgrade-buy" data-type="auto" data-qty="5">×5<small>✨ <b class="bulk-cost">150</b></small></button><button class="upgrade-buy" data-type="auto" data-qty="10">×10<small>✨ <b class="bulk-cost">150</b></small></button><button class="upgrade-buy" data-type="auto" data-qty="25">×25<small>✨ <b class="bulk-cost">150</b></small></button><button class="upgrade-buy" data-type="auto" data-qty="100">×100<small>✨ <b class="bulk-cost">150</b></small></button></div>
+          <span class="upgrade-level" id="autoLevel">LEVEL 0</span>
+          <button class="upgrade-purchase" data-type="auto" disabled>Kaufen · Multiplikator wählen</button>
+          <div class="upgrade-buy-grid" aria-label="Kaufmenge">
+            <button class="upgrade-qty" data-type="auto" data-qty="1">×1</button><button class="upgrade-qty" data-type="auto" data-qty="5">×5</button><button class="upgrade-qty" data-type="auto" data-qty="10">×10</button><button class="upgrade-qty" data-type="auto" data-qty="25">×25</button><button class="upgrade-qty" data-type="auto" data-qty="100">×100</button>
+          </div>
         </div>
         <div class="upgrade" data-type="idle">
           <span class="upgrade-icon">⚡</span><span class="upgrade-name">Idle Clicker</span><span class="upgrade-desc">+10 % automatischer Boss-Schaden</span>
-          <span class="upgrade-level" id="idleLevel">LEVEL 0</span><span class="upgrade-next">Kosten: 💎 <b id="idleCost">50</b></span>
-          <div class="upgrade-buy-grid idle-buy-grid"><button class="upgrade-buy" data-type="idle" data-qty="1">Kaufen<small>💎 <b class="bulk-cost">50</b></small></button></div>
+          <span class="upgrade-level" id="idleLevel">LEVEL 0</span>
+          <button class="upgrade-purchase idle-purchase" data-type="idle">Kaufen · 💎 50</button>
         </div>
-      </div>
+      </div></div>
     </section>
 
     <section id="clickers" class="clickers nav-panel">
