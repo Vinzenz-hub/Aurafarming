@@ -79,6 +79,18 @@ if(!Array.isArray(state.quests)||!state.quests.length)state.quests=defaults.ques
 if(!Array.isArray(state.skills))state.skills=[];
 if(!Array.isArray(state.ownedPets))state.ownedPets=[];
 if(!Array.isArray(state.equippedPets))state.equippedPets=[];
+if(!state.upgradeLevels||typeof state.upgradeLevels!=="object")state.upgradeLevels={power:0,multiplier:0,combo:0,auto:0};
+function inferUpgradeLevel(cost,base,growth){
+ let level=0,next=base;
+ while(level<1000&&next<cost){next=Math.ceil(next*growth);level++}
+ return level;
+}
+state.upgradeLevels.power=Math.max(Number(state.upgradeLevels.power)||0,inferUpgradeLevel(state.powerCost,25,1.55));
+state.upgradeLevels.multiplier=Math.max(Number(state.upgradeLevels.multiplier)||0,inferUpgradeLevel(state.multiplierCost,300,2.1));
+state.upgradeLevels.combo=Math.max(Number(state.upgradeLevels.combo)||0,inferUpgradeLevel(state.comboCost,75,1.8));
+state.upgradeLevels.auto=Math.max(Number(state.upgradeLevels.auto)||0,inferUpgradeLevel(state.autoCost,150,2));
+if(!state.skillLevels||typeof state.skillLevels!=="object")state.skillLevels={};
+if(Array.isArray(state.skills))state.skills.forEach(id=>{if(!state.skillLevels[id])state.skillLevels[id]=1});
 if(typeof state.shieldMax!=="number"||typeof state.shieldHp!=="number"){state.shieldMax=30;state.shieldHp=30;state.shieldBroken=!boss().mechanics.includes("🛡️ Schild");}
 function $(id){return document.getElementById(id)}
 function format(n){return Math.floor(n).toLocaleString("de-DE")}
@@ -91,15 +103,17 @@ function shieldOpeningAngle(){return Date.now()/1400+state.shieldSeed}
 function bossHitPoint(event,arena){const r=arena.getBoundingClientRect();return {x:event.clientX-r.left,y:event.clientY-r.top}}
 function bossHitInfo(px,py,arena){const r=arena.getBoundingClientRect();const target=document.getElementById("bossTarget");const tr=target?target.getBoundingClientRect():null;const bx=tr?(tr.left+tr.width/2-r.left):r.width/2;const by=tr?(tr.top+tr.height/2-r.top):r.height/2;const bossRadius=tr?Math.min(tr.width,tr.height)/2:Math.min(r.width,r.height)*.13;const d=Math.hypot(px-bx,py-by);const angle=Math.atan2(py-by,px-bx);let delta=Math.atan2(Math.sin(angle-shieldOpeningAngle()),Math.cos(angle-shieldOpeningAngle()));const opening=Math.abs(delta)<.34;return {d,bossRadius,opening,inside:d<=bossRadius}}
 function prestigeMultiplier(){return 1+state.prestige*.10}
-function skillHas(id){return state.skills.includes(id)}
-function petBonus(type){return state.equippedPets.map(id=>pets.find(p=>p.id===id)).filter(Boolean).filter(p=>p.type===type).reduce((s,p)=>s+p.value,0)*(1+(skillHas("pet")?.10:0)+(skillHas("pet2")?.20:0))}
+function skillLevel(id){return Math.min(10,Math.max(0,Number(state.skillLevels?.[id])||0))}
+function skillHas(id){return skillLevel(id)>0}
+function skillEffect(id,value){return skillLevel(id)*value}
+function petBonus(type){return state.equippedPets.map(id=>pets.find(p=>p.id===id)).filter(Boolean).filter(p=>p.type===type).reduce((s,p)=>s+p.value,0)*(1+skillEffect("pet",.10)+skillEffect("pet2",.20))}
 function rewardMultiplier(){return prestigeMultiplier()*(1+petBonus("reward"))}
-function idleDps(){const b=clickers.find(c=>c.id===state.clicker)||clickers[0];const comboScale=Math.sqrt(Math.max(1,state.combo));const multiScale=Math.sqrt(state.multiplier);return Math.max(0,state.power*.5*comboScale*multiScale*(b.bonuses.idle||1)*(1+(skillHas("idle")?.10:0)+(skillHas("idle2")?.20:0)))}
-function zoneSize(){return Math.min(.32,.18*(1+(skillHas("crit2")?.10:0)+petBonus("zone")))}
+function idleDps(){const b=clickers.find(c=>c.id===state.clicker)||clickers[0];const comboScale=Math.sqrt(Math.max(1,state.combo));const multiScale=Math.sqrt(state.multiplier);return Math.max(0,state.power*.5*comboScale*multiScale*(b.bonuses.idle||1)*(1+skillEffect("idle",.10)+skillEffect("idle2",.20)))}
+function zoneSize(){return Math.min(.32,.18*(1+skillEffect("crit2",.10)+petBonus("zone")))}
 function bossPhase(){const ratio=state.bossHp/Math.max(1,boss().hp);return ratio<=.25?4:ratio<=.5?3:ratio<=.75?2:1}
 function bossPhaseInfo(){return [{label:"PHASE 1",icon:"🟢",desc:"Stabil"},{label:"PHASE 2",icon:"🟡",desc:"Schnellere Angriffe"},{label:"PHASE 3",icon:"🟠",desc:"Schild verstärkt"},{label:"PHASE 4",icon:"🔴",desc:"Enrage"}][bossPhase()-1]}
 function zoneSpeed(){const c=clickers.find(x=>x.id===state.clicker)||clickers[0];const phase=bossPhase();return .012*(c.bonuses.zoneSpeed||1)*(boss().mechanics.includes("⚡ Schnellere Zone")?1.5:1)*(phase>=2?1.18:1)*(phase>=4?1.22:1)}
-function critMultiplier(){const c=clickers.find(x=>x.id===state.clicker)||clickers[0];let m=2;if(skillHas("crit"))m*=1.10;if(c.bonuses.crit)m*=c.bonuses.crit;if(state.event==="Perfect Storm")m*=1.5;return m}
+function critMultiplier(){const c=clickers.find(x=>x.id===state.clicker)||clickers[0];let m=2*(1+skillEffect("crit",.10));if(c.bonuses.crit)m*=c.bonuses.crit;if(state.event==="Perfect Storm")m*=1.5;return m}
 function render(){
  const b=boss();
  const phase=bossPhase(),phaseInfo=bossPhaseInfo();
@@ -118,16 +132,16 @@ const max=b.hp;state.bossHp=Math.max(0,Math.min(state.bossHp,max));
  if(hasShield()&&!state.shieldBroken) $("bossMechanics").innerHTML+="<span class='mechanic'>🛡️ Schild "+format(state.shieldHp)+" / "+format(state.shieldMax)+"</span>";
  $("bossMechanics").innerHTML=b.mechanics.map(x=>"<span class='mechanic'>"+x+"</span>").join("")+"<span class='mechanic phase phase-"+phase+"'>"+phaseInfo.icon+" "+phaseInfo.label+": "+phaseInfo.desc+"</span>";
  $("bossTimer").textContent=Math.max(0,state.bossTimer).toFixed(1);$("bossPhase").className="boss-phase phase-"+phase;$("bossPhase").textContent=phaseInfo.icon+" "+phaseInfo.label+" · "+phaseInfo.desc;$("comboBadge").textContent="COMBO x"+state.combo.toFixed(2);$("critBadge").textContent="🎯 CRIT bis ×"+critMultiplier().toFixed(1);
- $("powerCost").textContent=format(state.powerCost);$("multiplierCost").textContent=format(state.multiplierCost);$("comboCost").textContent=format(state.comboCost);$("autoCost").textContent=format(state.autoCost);$("autoInfo").textContent="Auto-Aura: "+state.autoAura+"/s";
- document.querySelectorAll(".upgrade").forEach(btn=>{const t=btn.dataset.type;const c=t==="power"?state.powerCost:t==="multiplier"?state.multiplierCost:t==="combo"?state.comboCost:t==="auto"?state.autoCost:50;btn.disabled=t==="idle"?skillHas("idle")||state.crystals<c:state.aura<c});
+ renderUpgrades();
+
  $("prestigeBonus").textContent="Belohnungen ×"+prestigeMultiplier().toFixed(2);
  const next=(state.prestige+1)*500000+500000;$("prestigeText").textContent="Nächstes Prestige: "+format(next)+" Aura → ⭐ 1";
  $("prestigeBtn").disabled=state.aura<next;
  renderClickers();renderSkills();renderPets();renderQuests();renderEvent();
 }
 function renderClickers(){const grid=$("clickerGrid");grid.innerHTML="";clickers.forEach(c=>{const owned=state.ownedClickers.includes(c.id),active=state.clicker===c.id;const card=document.createElement("div");card.className="clicker-card"+(active?" active":"")+(owned?"":" locked");card.innerHTML="<button data-c='"+c.id+"' "+(owned?"":"disabled")+"><div class='clicker-preview preview-"+c.id+"'></div><h3>"+c.icon+" "+c.name+"</h3><p>"+c.desc+"</p><span class='price'>"+(owned?(active?"✓ Ausgerüstet":"Ausrüsten"):"✨ "+format(c.cost))+"</span></button>";grid.appendChild(card)});grid.querySelectorAll("[data-c]").forEach(x=>x.onclick=()=>equipClicker(x.dataset.c))}
-function renderSkills(){const grid=$("skillGrid");grid.innerHTML="";skills.forEach(s=>{const [id,icon,name,desc,cost]=s;const owned=skillHas(id);const card=document.createElement("div");card.className="skill-card"+(owned?"":"");card.innerHTML="<div class='pet-emoji'>"+icon+"</div><h3>"+name+"</h3><p>"+desc+"</p><span class='skill-cost'>"+(owned?"✓ Aktiv":"💎 "+cost)+"</span><button "+(owned||state.crystals<cost?"disabled":"")+">"+(owned?"Freigeschaltet":"Skill kaufen")+"</button>";card.querySelector("button").onclick=()=>buySkill(id);grid.appendChild(card)})}
-function renderPets(){const grid=$("petGrid");grid.innerHTML="";$("petSlots").textContent=Math.min(5,1+(skillHas("slots2")?1:0)+(skillHas("slots3")?1:0));pets.forEach(p=>{const owned=state.ownedPets.includes(p.id),equipped=state.equippedPets.includes(p.id);const card=document.createElement("div");card.className="pet-card"+(equipped?" active":"")+(owned?"":" locked");card.innerHTML="<div class='pet-emoji'>"+p.emoji+"</div><h3>"+p.name+"</h3><p>"+p.bonus+"</p><span class='pet-cost'>"+(owned?(equipped?"✓ Ausgerüstet":"Verfügbar"):(p.shop?"⭐ "+p.cost:p.source))+"</span>"+(owned?"<button>"+(equipped?"Ablegen":"Ausrüsten")+"</button>":"<button "+(!p.shop||state.stars<p.cost?"disabled":"")+">Kaufen</button>");const btn=card.querySelector("button");btn.onclick=()=>owned?togglePet(p.id):buyPet(p.id);grid.appendChild(card)})}
+function renderSkills(){const grid=$("skillGrid");grid.innerHTML="";skills.forEach(s=>{const [id,icon,name,desc,cost,type,value]=s;const level=skillLevel(id);const maxed=level>=10;const nextCost=Math.ceil(cost*Math.pow(1.55,level));const totalEffect=(value*level*100).toFixed(type==="slot"?0:0);const effectText=type==="slot"?"+"+level+" Slot"+(level===1?"":"s"):desc.replace(/[+][0-9]+ %|[+][0-9]+/,"+"+totalEffect+" %");const card=document.createElement("div");card.className="skill-card"+(level>0?" active":"")+(maxed?" maxed":"");card.innerHTML="<div class='pet-emoji'>"+icon+"</div><h3>"+name+"</h3><p>"+effectText+"</p><div class='skill-level'>LEVEL "+level+" / 10</div><span class='skill-cost'>"+(maxed?"✓ MAX LEVEL":"💎 "+format(nextCost))+"</span><button "+(maxed||state.crystals<nextCost?"disabled":"")+">"+(maxed?"Max Level":"Skill upgraden")+"</button>";card.querySelector("button").onclick=()=>buySkill(id);grid.appendChild(card)})}
+function renderPets(){const grid=$("petGrid");grid.innerHTML="";$("petSlots").textContent=Math.min(10,1+skillLevel("slots2")+skillLevel("slots3"));pets.forEach(p=>{const owned=state.ownedPets.includes(p.id),equipped=state.equippedPets.includes(p.id);const card=document.createElement("div");card.className="pet-card"+(equipped?" active":"")+(owned?"":" locked");card.innerHTML="<div class='pet-emoji'>"+p.emoji+"</div><h3>"+p.name+"</h3><p>"+p.bonus+"</p><span class='pet-cost'>"+(owned?(equipped?"✓ Ausgerüstet":"Verfügbar"):(p.shop?"⭐ "+p.cost:p.source))+"</span>"+(owned?"<button>"+(equipped?"Ablegen":"Ausrüsten")+"</button>":"<button "+(!p.shop||state.stars<p.cost?"disabled":"")+">Kaufen</button>");const btn=card.querySelector("button");btn.onclick=()=>owned?togglePet(p.id):buyPet(p.id);grid.appendChild(card)})}
 function renderQuests(){const grid=$("questList");grid.innerHTML="";state.quests.forEach(q=>{const el=document.createElement("div");el.className="quest";const pct=Math.min(100,q.progress/q.goal*100);el.innerHTML="<b>"+q.name+"</b> "+format(Math.min(q.progress,q.goal))+"/"+format(q.goal)+"<progress value='"+pct+"' max='100'></progress><br>💎 "+q.reward;grid.appendChild(el)})}
 function renderEvent(){const active=state.event&&state.eventUntil>Date.now();$("eventBox").textContent=active?state.event+" aktiv! Bonus läuft.":"Kein Event aktiv."}
 function addQuest(type,amount){state.quests.filter(q=>q.type===type).forEach(q=>{q.progress+=amount;if(q.progress>=q.goal){state.crystals+=Math.round(q.reward*rewardMultiplier());q.progress=0;$("message").textContent="📜 Quest abgeschlossen! 💎 Kristalle erhalten."}})}
@@ -161,6 +175,40 @@ function getBossTime(i){return i<2?30+i*2:i<10?34+(i-2)*2:48}
 function getDropChance(i){if(i===1)return .02;if(i===2)return .02;if(i===9)return .015;if(i===13)return .01;if(i===19)return .005;return 0}
 function dropBossPet(i){const ids={1:"infernoPet",2:"frostPet",9:"voidling",13:"starSerpent",19:"cosmicEmperor"};const id=ids[i];if(id&&!state.ownedPets.includes(id)){state.ownedPets.push(id);$("message").textContent="🎉 Seltener Pet-Drop: "+pets.find(p=>p.id===id).name}}
 function checkLevel(){const need=state.level*1000;if(state.aura>=need){state.level++;state.power+=1;state.aura-=need;$("message").textContent="🎉 Level Up! +1 Power"}}
+function upgradeCost(type,level){
+ const base={power:25,multiplier:300,combo:75,auto:150}[type];
+ const growth={power:1.55,multiplier:2.1,combo:1.8,auto:2}[type];
+ return Math.ceil(base*Math.pow(growth,level));
+}
+function upgradeNextCost(type){return upgradeCost(type,state.upgradeLevels[type]||0)}
+function bulkUpgradeCost(type,qty){
+ let level=state.upgradeLevels[type]||0,total=0;
+ for(let i=0;i<qty;i++)total+=upgradeCost(type,level+i);
+ return total;
+}
+function renderUpgrades(){
+ const cfg={power:"⚡",multiplier:"💎",combo:"🔥",auto:"🤖"};
+ Object.keys(cfg).forEach(type=>{
+   const level=state.upgradeLevels[type]||0;
+   const levelEl=$(type+"Level"),nextEl=$(type+"Cost");
+   if(levelEl)levelEl.textContent="LEVEL "+level;
+   if(nextEl)nextEl.textContent=format(upgradeNextCost(type));
+   [1,5,10,25,100].forEach(qty=>{
+     const btn=document.querySelector('.upgrade-buy[data-type="'+type+'"][data-qty="'+qty+'"]');
+     if(!btn)return;
+     const cost=bulkUpgradeCost(type,qty);
+     btn.dataset.cost=cost;
+     btn.querySelector(".bulk-cost").textContent=format(cost);
+     btn.disabled=state.aura<cost;
+     btn.classList.toggle("insufficient",state.aura<cost);
+   });
+   const card=document.querySelector('.upgrade[data-type="'+type+'"]');
+   if(card)card.classList.toggle("insufficient",state.aura<upgradeNextCost(type));
+ });
+ const idleBtn=document.querySelector('.upgrade-buy[data-type="idle"]');
+ if(idleBtn)idleBtn.disabled=skillHas("idle")||state.crystals<50;
+ const idleLevel=$("idleLevel");if(idleLevel)idleLevel.textContent="LEVEL "+skillLevel("idle");
+}
 function updateCrit(){
  const zone=$("critZone"),arena=document.querySelector(".crit-arena"),target=$("bossTarget");
  if(!zone||!arena||!target)return;
@@ -180,14 +228,26 @@ function updateCrit(){
  zone.style.width=zonePx+"px";
  zone.style.height=zonePx+"px";
 }
-function buy(type){if(type==="idle"){if(skillHas("idle")||state.crystals<50)return;state.crystals-=50;state.skills.push("idle");state.skillPoints++;save();render();return}let cost;if(type==="power"){cost=state.powerCost;if(state.aura<cost)return;state.aura-=cost;state.power++;state.powerCost=Math.ceil(cost*1.55)}if(type==="multiplier"){cost=state.multiplierCost;if(state.aura<cost)return;state.aura-=cost;state.multiplier+=.25;state.multiplierCost=Math.ceil(cost*2.1)}if(type==="combo"){cost=state.comboCost;if(state.aura<cost)return;state.aura-=cost;state.comboBoost+=.025;state.comboCost=Math.ceil(cost*1.8)}if(type==="auto"){cost=state.autoCost;if(state.aura<cost)return;state.aura-=cost;state.autoAura++;state.autoCost=Math.ceil(cost*2)}save();render()}
+function buy(type,qty=1){
+ if(type==="idle"){if(skillHas("idle")||state.crystals<50)return;state.crystals-=50;state.skills.push("idle");state.skillLevels.idle=1;state.skillPoints++;save();render();return}
+ const total=bulkUpgradeCost(type,qty);if(state.aura<total)return;
+ for(let i=0;i<qty;i++){
+   const level=state.upgradeLevels[type]||0;
+   if(type==="power"){state.power++;state.powerCost=upgradeCost(type,level+1)}
+   if(type==="multiplier"){state.multiplier+=.25;state.multiplierCost=upgradeCost(type,level+1)}
+   if(type==="combo"){state.comboBoost+=.025;state.comboCost=upgradeCost(type,level+1)}
+   if(type==="auto"){state.autoAura++;state.autoCost=upgradeCost(type,level+1)}
+   state.upgradeLevels[type]=level+1;
+ }
+ state.aura-=total;save();render()
+}
 function equipClicker(id){const c=clickers.find(x=>x.id===id);if(!c)return;if(!state.ownedClickers.includes(id)){if(state.aura<c.cost)return;state.aura-=c.cost;state.ownedClickers.push(id)}state.clicker=id;save();$("auraCore").className="aura-core clicker-"+id;render()}
 function buySkill(id){const s=skills.find(x=>x[0]===id);if(!s||skillHas(id)||state.crystals<s[4])return;state.crystals-=s[4];state.skills.push(id);state.skillPoints++;save();render()}
 function buyPet(id){const p=pets.find(x=>x.id===id);if(!p||!p.shop||state.stars<p.cost||state.ownedPets.includes(id))return;state.stars-=p.cost;state.ownedPets.push(id);save();render()}
 function togglePet(id){const slots=Math.min(5,1+(skillHas("slots2")?1:0)+(skillHas("slots3")?1:0));if(state.equippedPets.includes(id))state.equippedPets=state.equippedPets.filter(x=>x!==id);else if(state.equippedPets.length<slots)state.equippedPets.push(id);else{$("message").textContent="🐾 Alle Pet-Slots sind belegt.";return}save();render()}
-function prestige(){const next=(state.prestige+1)*500000+500000;if(state.aura<next)return;state.prestige++;state.stars++;state.aura=0;state.level=1;state.power=1;state.multiplier=1;state.combo=1;state.comboBoost=.08;state.powerCost=25;state.multiplierCost=300;state.comboCost=75;state.autoCost=150;state.autoAura=0;state.bossIndex=0;state.bossHp=BOSS_BASE_HP;state.bossTimer=30;state.bossStreak=0;resetShield();$("message").textContent="🌌 Ascension! +⭐ 1 Stern";save();render()}
+function prestige(){const next=(state.prestige+1)*500000+500000;if(state.aura<next)return;state.prestige++;state.stars++;state.aura=0;state.level=1;state.power=1;state.multiplier=1;state.combo=1;state.comboBoost=.08;state.powerCost=25;state.multiplierCost=300;state.comboCost=75;state.autoCost=150;state.autoAura=0;state.upgradeLevels={power:0,multiplier:0,combo:0,auto:0};state.bossIndex=0;state.bossHp=BOSS_BASE_HP;state.bossTimer=30;state.bossStreak=0;resetShield();$("message").textContent="🌌 Ascension! +⭐ 1 Stern";save();render()}
 function triggerEvent(){const events=[["⚡ Aura Overload","Aura"],["💎 Crystal Rush","Crystal"],["🎯 Perfect Storm","Perfect Storm"],["👾 Void Invasion","Void"]];const e=events[Math.floor(Math.random()*events.length)];state.event=e[1];state.eventUntil=Date.now()+15000;render();setTimeout(()=>{if(state.eventUntil<=Date.now()){state.event=null;render()}},15100)}
-document.querySelectorAll(".upgrade").forEach(b=>b.onclick=()=>buy(b.dataset.type));document.querySelector(".crit-arena").addEventListener("pointerdown",(e)=>{if(e.pointerType==="touch")e.preventDefault();if(e.button!==undefined&&e.button>0)return;farm(e)});document.querySelectorAll(".nav-tab").forEach(tab=>tab.onclick=()=>{const target=tab.dataset.section;if(target==="more"){document.getElementById("moreMenu").classList.toggle("open");return}document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target||(target==="combat"&&x.id==="combatArea")));window.scrollTo({top:0,behavior:"smooth"})});document.getElementById("currencyToggle").onclick=()=>{const p=document.getElementById("currencyPanel"),open=p.classList.toggle("open");document.getElementById("currencyToggle").setAttribute("aria-expanded",open)};document.querySelectorAll(".more-menu button").forEach(b=>b.onclick=()=>{const target=b.dataset.section;document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target));window.scrollTo({top:0,behavior:"smooth"})});$("prestigeBtn").onclick=prestige;$("eventBtn").onclick=triggerEvent;
+document.querySelectorAll(".upgrade-buy").forEach(b=>b.onclick=e=>{e.stopPropagation();buy(b.dataset.type,Number(b.dataset.qty)||1)});document.querySelector(".crit-arena").addEventListener("pointerdown",(e)=>{if(e.pointerType==="touch")e.preventDefault();if(e.button!==undefined&&e.button>0)return;farm(e)});document.querySelectorAll(".nav-tab").forEach(tab=>tab.onclick=()=>{const target=tab.dataset.section;if(target==="more"){document.getElementById("moreMenu").classList.toggle("open");return}document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target||(target==="combat"&&x.id==="combatArea")));window.scrollTo({top:0,behavior:"smooth"})});document.getElementById("currencyToggle").onclick=()=>{const p=document.getElementById("currencyPanel"),open=p.classList.toggle("open");document.getElementById("currencyToggle").setAttribute("aria-expanded",open)};document.querySelectorAll(".more-menu button").forEach(b=>b.onclick=()=>{const target=b.dataset.section;document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target));window.scrollTo({top:0,behavior:"smooth"})});$("prestigeBtn").onclick=prestige;$("eventBtn").onclick=triggerEvent;
 $("resetBtn").onclick=()=>{if(confirm("Spielstand wirklich löschen?")){localStorage.removeItem(SAVE_KEY);location.reload()}};
 setInterval(()=>{const now=Date.now();const delta=Math.min(.25,(now-(state.lastTick||now))/1000);state.lastTick=now;if(delta>0){state.bossTimer-=delta;if(state.bossTimer<=0){state.bossHp=boss().hp;state.bossTimer=boss().time;state.bossStreak=0;resetShield();$("message").textContent="⏱️ Zeit abgelaufen! Der Boss startet neu."}const idle=idleDps()*delta;state.aura+=state.autoAura*delta;let idleBossDamage=idle*(bossPhase()>=3?.85:1);if(hasShield()&&!state.shieldBroken){state.shieldHp=Math.max(0,state.shieldHp-idleBossDamage);if(state.shieldHp<=0){state.shieldBroken=true;state.shieldHp=0;$("message").textContent="🛡️ SHIELD BREAK! Der Boss ist jetzt verwundbar."}}else{state.bossHp-=idleBossDamage}addQuest("aura",idle);if(state.bossHp<=0)defeatBoss();if(state.event==="Aura"&&state.eventUntil>Date.now())state.aura+=idle*4;checkLevel();save();render()}},250);
 setInterval(()=>{if(state.combo>1){state.combo=1;render()}},1800);
