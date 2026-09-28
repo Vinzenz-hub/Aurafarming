@@ -148,9 +148,9 @@ function addQuest(type,amount){state.quests.filter(q=>q.type===type).forEach(q=>
 function farm(event){
  const c=clickers.find(x=>x.id===state.clicker)||clickers[0];const z=zoneSize();const arena=document.querySelector(".crit-arena");const rect=arena.getBoundingClientRect();const px=event.clientX-rect.left;const py=event.clientY-rect.top;const targetHit=bossHitInfo(px,py,arena);const zoneEl=document.querySelector(".crit-zone");const zr=zoneEl.getBoundingClientRect();const zx=zr.left+zr.width/2-rect.left;const zy=zr.top+zr.height/2-rect.top;const zoneRadius=Math.max(zr.width,zr.height)*.5;const distance=Math.hypot(px-zx,py-zy);const inZone=distance<=zoneRadius;const validBossHit=targetHit.inside;const fakeEl=document.getElementById("fakeZone");const fakeRect=fakeEl&&getComputedStyle(fakeEl).display!=="none"?fakeEl.getBoundingClientRect():null;const hitFake=fakeRect&&px>=fakeRect.left-rect.left&&px<=fakeRect.right-rect.left&&py>=fakeRect.top-rect.top&&py<=fakeRect.bottom-rect.top;
  const phase=bossPhase();let cm=inZone?critMultiplier():1;if(hitFake){cm=1;$("message").textContent="👻 Fake-Zone! Kein Crit.";state.combo=Math.max(1,state.combo-.25)}if(inZone&&c.bonuses.critChance&&Math.random()<c.bonuses.critChance)cm*=1.5;
- if(!validBossHit){$("message").textContent="🎯 Ziel verfehlt — triff den Boss.";return} let gain=Math.max(1,Math.floor(state.power*state.combo*state.multiplier*cm*(c.bonuses.click||1)*(1+petBonus("aura"))*rewardMultiplier()));
+ if(!validBossHit){$("message").textContent="🎯 Ziel verfehlt — triff den Boss.";return} let gain=Math.max(1,Math.floor(state.power*state.combo*state.multiplier*cm*(c.bonuses.click||1)*(1+skillEffect("aura",.10)+skillEffect("aura2",.20))*(1+petBonus("aura"))*rewardMultiplier()));
  if(state.bossHp/boss().hp<.25)gain=Math.floor(gain*(c.bonuses.execute||1));
- let bossDamage=Math.max(1,Math.floor(state.power*state.multiplier*cm*(c.bonuses.boss||1)*(1+petBonus("boss"))));
+ let bossDamage=Math.max(1,Math.floor(state.power*state.multiplier*cm*(c.bonuses.boss||1)*(1+skillEffect("power",.10)+skillEffect("power2",.20))*(1+petBonus("boss"))));
  if(boss().mechanics.includes("🛡️ Schild")&&!inZone)bossDamage=Math.floor(bossDamage*(phase>=3?.5:.7));if(boss().mechanics.includes("🌀 Aura Shift")&&!inZone)bossDamage=Math.floor(bossDamage*(phase>=3?.75:.85));if(phase>=4)bossDamage=Math.floor(bossDamage*1.25);
  if(hasShield()&&!state.shieldBroken&&!targetHit.opening){
    state.shieldHp=Math.max(0,state.shieldHp-bossDamage);
@@ -165,7 +165,7 @@ function farm(event){
 }
 function defeatBoss(){
  const b=boss();const timeRatio=state.bossTimer/b.time;let bonus=1;if(timeRatio>.5)bonus=1.1;if(timeRatio>.75)bonus=1.2;if(timeRatio>.9)bonus=1.5;
- const reward=Math.round(b.reward*bonus*rewardMultiplier());state.aura+=reward;state.crystals+=Math.round(b.crystals*(1+petBonus("crystal")));state.bossStreak++;addQuest("boss",1);
+ const reward=Math.round(b.reward*bonus*rewardMultiplier());state.aura+=reward;state.crystals+=Math.round(b.crystals*(1+skillEffect("crystal",.10)+skillEffect("crystal2",.25))*(1+petBonus("crystal")));state.bossStreak++;addQuest("boss",1);
  if(Math.random()<getDropChance(state.bossIndex))dropBossPet(state.bossIndex);
  if(state.bossIndex<19){state.bossIndex++;}else{state.bossIndex++;}state.bossHp=getBossHp(state.bossIndex);state.bossTimer=getBossTime(state.bossIndex);resetShield();state.level++;state.power+=5;
  $("message").textContent="🏆 "+b.name+" besiegt! +"+format(reward)+" Aura";
