@@ -75,6 +75,7 @@ const defaults={
 };
 function readSave(){try{return JSON.parse(localStorage.getItem(SAVE_KEY)||"{}")}catch(e){return {}}}
 let state={...defaults,...readSave()};
+let selectedBulk={power:0,multiplier:0,combo:0,auto:0};
 if(!Array.isArray(state.ownedClickers)||!state.ownedClickers.length)state.ownedClickers=["basic"];
 if(!Array.isArray(state.quests)||!state.quests.length)state.quests=defaults.quests;
 if(!Array.isArray(state.skills))state.skills=[];
@@ -141,7 +142,23 @@ const max=b.hp;state.bossHp=Math.max(0,Math.min(state.bossHp,max));
  renderClickers();renderSkills();renderPets();renderQuests();renderEvent();
 }
 function renderClickers(){const grid=$("clickerGrid");grid.innerHTML="";clickers.forEach(c=>{const owned=state.ownedClickers.includes(c.id),active=state.clicker===c.id;const card=document.createElement("div");card.className="clicker-card"+(active?" active":"")+(owned?"":" locked");card.innerHTML="<button data-c='"+c.id+"' "+(owned?"":"disabled")+"><div class='clicker-preview preview-"+c.id+"'></div><h3>"+c.icon+" "+c.name+"</h3><p>"+c.desc+"</p><span class='price'>"+(owned?(active?"✓ Ausgerüstet":"Ausrüsten"):"✨ "+format(c.cost))+"</span></button>";grid.appendChild(card)});grid.querySelectorAll("[data-c]").forEach(x=>x.onclick=()=>equipClicker(x.dataset.c))}
-function renderSkills(){const grid=$("skillGrid");grid.innerHTML="";skills.forEach(s=>{const [id,icon,name,desc,cost,type,value]=s;const level=skillLevel(id);const maxed=level>=10;const nextCost=Math.ceil(cost*Math.pow(1.55,level));const totalEffect=(value*level*100).toFixed(0);const effectText=type==="slot"?"Aktuell: "+level+" Slot"+(level===1?"":"s"):"Pro Level: "+desc+" · Aktuell: +"+totalEffect+" %";const card=document.createElement("div");card.className="skill-card"+(level>0?" active":"")+(maxed?" maxed":"");card.innerHTML="<div class='pet-emoji'>"+icon+"</div><h3>"+name+"</h3><p>"+effectText+"</p><div class='skill-level'>LEVEL "+level+" / 10</div><span class='skill-cost'>"+(maxed?"✓ MAX LEVEL":"💎 "+format(nextCost))+"</span><button "+(maxed||state.crystals<nextCost?"disabled":"")+">"+(maxed?"Max Level":"Skill upgraden")+"</button>";card.querySelector("button").onclick=()=>buySkill(id);grid.appendChild(card)})}
+function renderSkills(){
+ const grid=$("skillGrid");grid.innerHTML="";
+ skills.forEach(skill=>{
+   const [id,icon,name,desc,cost,type,value]=skill;
+   const level=skillLevel(id),maxed=level>=10;
+   const nextCost=skillUpgradeCost(skill,level);
+   const totalEffect=(value*level*100).toFixed(0);
+   const effectText=type==="slot"
+     ?"Aktuell: "+level+" Slot"+(level===1?"":"s")
+     :"Pro Level: "+desc+" · Aktuell: +"+totalEffect+" %";
+   const card=document.createElement("div");
+   card.className="skill-card"+(level>0?" active ":"")+(maxed?" maxed":"");
+   card.innerHTML="<div class='pet-emoji'>"+icon+"</div><h3>"+name+"</h3><p>"+effectText+"</p><div class='skill-level'>LEVEL "+level+" / 10</div><span class='skill-cost'>"+(maxed?"✓ MAX LEVEL":"💎 "+format(nextCost))+"</span><button "+(maxed||state.crystals<nextCost?"disabled":"")+">"+(maxed?"Max Level":"Upgrade kaufen")+"</button>";
+   card.querySelector("button").onclick=()=>buySkill(id);
+   grid.appendChild(card);
+ });
+}
 function renderPets(){const grid=$("petGrid");grid.innerHTML="";$("petSlots").textContent=Math.min(10,1+skillLevel("slots2")+skillLevel("slots3"));pets.forEach(p=>{const owned=state.ownedPets.includes(p.id),equipped=state.equippedPets.includes(p.id);const card=document.createElement("div");card.className="pet-card"+(equipped?" active":"")+(owned?"":" locked");card.innerHTML="<div class='pet-emoji'>"+p.emoji+"</div><h3>"+p.name+"</h3><p>"+p.bonus+"</p><span class='pet-cost'>"+(owned?(equipped?"✓ Ausgerüstet":"Verfügbar"):(p.shop?"⭐ "+p.cost:p.source))+"</span>"+(owned?"<button>"+(equipped?"Ablegen":"Ausrüsten")+"</button>":"<button "+(!p.shop||state.stars<p.cost?"disabled":"")+">Kaufen</button>");const btn=card.querySelector("button");btn.onclick=()=>owned?togglePet(p.id):buyPet(p.id);grid.appendChild(card)})}
 function renderQuests(){const grid=$("questList");grid.innerHTML="";state.quests.forEach(q=>{const el=document.createElement("div");el.className="quest";const pct=Math.min(100,q.progress/q.goal*100);el.innerHTML="<b>"+q.name+"</b> "+format(Math.min(q.progress,q.goal))+"/"+format(q.goal)+"<progress value='"+pct+"' max='100'></progress><br>💎 "+q.reward;grid.appendChild(el)})}
 function renderEvent(){const active=state.event&&state.eventUntil>Date.now();$("eventBox").textContent=active?state.event+" aktiv! Bonus läuft.":"Kein Event aktiv."}
@@ -188,26 +205,40 @@ function bulkUpgradeCost(type,qty){
  return total;
 }
 function renderUpgrades(){
- const cfg={power:"⚡",multiplier:"💎",combo:"🔥",auto:"🤖"};
- Object.keys(cfg).forEach(type=>{
+ const types=["power","multiplier","combo","auto"];
+ types.forEach(type=>{
    const level=state.upgradeLevels[type]||0;
-   const levelEl=$(type+"Level"),nextEl=$(type+"Cost");
+   const next=upgradeNextCost(type);
+   const selected=selectedBulk[type]||0;
+   const levelEl=$(type+"Level"),purchase=document.querySelector('.upgrade-purchase[data-type="'+type+'"]');
    if(levelEl)levelEl.textContent="LEVEL "+level;
-   if(nextEl)nextEl.textContent=format(upgradeNextCost(type));
-   [1,5,10,25,100].forEach(qty=>{
-     const btn=document.querySelector('.upgrade-buy[data-type="'+type+'"][data-qty="'+qty+'"]');
-     if(!btn)return;
-     const cost=bulkUpgradeCost(type,qty);
-     btn.dataset.cost=cost;
-     btn.querySelector(".bulk-cost").textContent=format(cost);
-     btn.disabled=state.aura<cost;
-     btn.classList.toggle("insufficient",state.aura<cost);
+   document.querySelectorAll('.upgrade-qty[data-type="'+type+'"]').forEach(btn=>{
+     const qty=Number(btn.dataset.qty)||1;
+     btn.classList.toggle("selected",qty===selected);
+     btn.setAttribute("aria-pressed",qty===selected?"true":"false");
    });
    const card=document.querySelector('.upgrade[data-type="'+type+'"]');
-   if(card)card.classList.toggle("insufficient",state.aura<upgradeNextCost(type));
+   if(card)card.classList.toggle("insufficient",state.aura<next);
+   if(purchase){
+     if(!selected){
+       purchase.textContent="Kaufen · Multiplikator wählen";
+       purchase.disabled=true;
+       purchase.classList.remove("insufficient");
+     }else{
+       const cost=bulkUpgradeCost(type,selected);
+       purchase.textContent="Kaufen · ✨ "+format(cost);
+       purchase.disabled=state.aura<cost;
+       purchase.classList.toggle("insufficient",state.aura<cost);
+       purchase.dataset.qty=selected;
+     }
+   }
  });
- const idleBtn=document.querySelector('.upgrade-buy[data-type="idle"]');
- if(idleBtn)idleBtn.disabled=skillHas("idle")||state.crystals<50;
+ const idleBtn=document.querySelector('.upgrade-purchase[data-type="idle"]');
+ if(idleBtn){
+   const owned=skillHas("idle");
+   idleBtn.textContent=owned?"✓ Bereits gekauft":"Kaufen · 💎 50";
+   idleBtn.disabled=owned||state.crystals<50;
+ }
  const idleLevel=$("idleLevel");if(idleLevel)idleLevel.textContent="LEVEL "+skillLevel("idle");
 }
 function updateCrit(){
@@ -243,12 +274,40 @@ function buy(type,qty=1){
  state.aura-=total;save();render()
 }
 function equipClicker(id){const c=clickers.find(x=>x.id===id);if(!c)return;if(!state.ownedClickers.includes(id)){if(state.aura<c.cost)return;state.aura-=c.cost;state.ownedClickers.push(id)}state.clicker=id;save();$("auraCore").className="aura-core clicker-"+id;render()}
-function buySkill(id){const s=skills.find(x=>x[0]===id);if(!s||skillHas(id)||state.crystals<s[4])return;state.crystals-=s[4];state.skills.push(id);state.skillPoints++;save();render()}
+function skillUpgradeCost(skill,level){
+ const base=skill[4];
+ return Math.ceil(base*Math.pow(2.4,level));
+}
+function buySkill(id){
+ const skill=skills.find(x=>x[0]===id);
+ if(!skill)return;
+ const level=skillLevel(id);
+ if(level>=10)return;
+ const cost=skillUpgradeCost(skill,level);
+ if(state.crystals<cost)return;
+ state.crystals-=cost;
+ state.skillLevels[id]=level+1;
+ if(!state.skills.includes(id))state.skills.push(id);
+ state.skillPoints++;
+ save();render();
+}
 function buyPet(id){const p=pets.find(x=>x.id===id);if(!p||!p.shop||state.stars<p.cost||state.ownedPets.includes(id))return;state.stars-=p.cost;state.ownedPets.push(id);save();render()}
 function togglePet(id){const slots=Math.min(5,1+(skillHas("slots2")?1:0)+(skillHas("slots3")?1:0));if(state.equippedPets.includes(id))state.equippedPets=state.equippedPets.filter(x=>x!==id);else if(state.equippedPets.length<slots)state.equippedPets.push(id);else{$("message").textContent="🐾 Alle Pet-Slots sind belegt.";return}save();render()}
 function prestige(){const next=(state.prestige+1)*500000+500000;if(state.aura<next)return;state.prestige++;state.stars++;state.aura=0;state.level=1;state.power=1;state.multiplier=1;state.combo=1;state.comboBoost=.08;state.powerCost=25;state.multiplierCost=300;state.comboCost=75;state.autoCost=150;state.autoAura=0;state.upgradeLevels={power:0,multiplier:0,combo:0,auto:0};state.bossIndex=0;state.bossHp=BOSS_BASE_HP;state.bossTimer=30;state.bossStreak=0;resetShield();$("message").textContent="🌌 Ascension! +⭐ 1 Stern";save();render()}
 function triggerEvent(){const events=[["⚡ Aura Overload","Aura"],["💎 Crystal Rush","Crystal"],["🎯 Perfect Storm","Perfect Storm"],["👾 Void Invasion","Void"]];const e=events[Math.floor(Math.random()*events.length)];state.event=e[1];state.eventUntil=Date.now()+15000;render();setTimeout(()=>{if(state.eventUntil<=Date.now()){state.event=null;render()}},15100)}
-document.querySelectorAll(".upgrade-buy").forEach(b=>b.onclick=e=>{e.stopPropagation();buy(b.dataset.type,Number(b.dataset.qty)||1)});document.querySelector(".crit-arena").addEventListener("pointerdown",(e)=>{if(e.pointerType==="touch")e.preventDefault();if(e.button!==undefined&&e.button>0)return;farm(e)});document.querySelectorAll(".nav-tab").forEach(tab=>tab.onclick=()=>{const target=tab.dataset.section;if(target==="more"){document.getElementById("moreMenu").classList.toggle("open");return}document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target||(target==="combat"&&x.id==="combatArea")));window.scrollTo({top:0,behavior:"smooth"})});document.getElementById("currencyToggle").onclick=()=>{const p=document.getElementById("currencyPanel"),open=p.classList.toggle("open");document.getElementById("currencyToggle").setAttribute("aria-expanded",open)};document.querySelectorAll(".more-menu button").forEach(b=>b.onclick=()=>{const target=b.dataset.section;document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target));window.scrollTo({top:0,behavior:"smooth"})});$("prestigeBtn").onclick=prestige;$("eventBtn").onclick=triggerEvent;
+document.querySelectorAll(".upgrade-qty").forEach(b=>b.onclick=e=>{
+ e.stopPropagation();
+ const type=b.dataset.type,qty=Number(b.dataset.qty)||1;
+ selectedBulk[type]=selectedBulk[type]===qty?0:qty;
+ renderUpgrades();
+});
+document.querySelectorAll(".upgrade-purchase").forEach(b=>b.onclick=e=>{
+ e.stopPropagation();
+ const type=b.dataset.type;
+ if(type==="idle"){buy("idle",1);return}
+ const qty=selectedBulk[type]||0;
+ if(qty>0)buy(type,qty);
+});document.querySelector(".crit-arena").addEventListener("pointerdown",(e)=>{if(e.pointerType==="touch")e.preventDefault();if(e.button!==undefined&&e.button>0)return;farm(e)});document.querySelectorAll(".nav-tab").forEach(tab=>tab.onclick=()=>{const target=tab.dataset.section;if(target==="more"){document.getElementById("moreMenu").classList.toggle("open");return}document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target||(target==="combat"&&x.id==="combatArea")));window.scrollTo({top:0,behavior:"smooth"})});document.getElementById("currencyToggle").onclick=()=>{const p=document.getElementById("currencyPanel"),open=p.classList.toggle("open");document.getElementById("currencyToggle").setAttribute("aria-expanded",open)};document.querySelectorAll(".more-menu button").forEach(b=>b.onclick=()=>{const target=b.dataset.section;document.getElementById("moreMenu").classList.remove("open");document.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x.dataset.section===target));document.querySelectorAll(".nav-panel").forEach(x=>x.classList.toggle("active-panel",x.id===target));window.scrollTo({top:0,behavior:"smooth"})});$("prestigeBtn").onclick=prestige;$("eventBtn").onclick=triggerEvent;
 $("resetBtn").onclick=()=>{if(confirm("Spielstand wirklich löschen?")){localStorage.removeItem(SAVE_KEY);location.reload()}};
 setInterval(()=>{const now=Date.now();const delta=Math.min(.25,(now-(state.lastTick||now))/1000);state.lastTick=now;if(delta>0){state.bossTimer-=delta;if(state.bossTimer<=0){state.bossHp=boss().hp;state.bossTimer=boss().time;state.bossStreak=0;resetShield();$("message").textContent="⏱️ Zeit abgelaufen! Der Boss startet neu."}const idle=idleDps()*delta;state.aura+=state.autoAura*delta;let idleBossDamage=idle*(bossPhase()>=3?.85:1);if(hasShield()&&!state.shieldBroken){state.shieldHp=Math.max(0,state.shieldHp-idleBossDamage);if(state.shieldHp<=0){state.shieldBroken=true;state.shieldHp=0;$("message").textContent="🛡️ SHIELD BREAK! Der Boss ist jetzt verwundbar."}}else{state.bossHp-=idleBossDamage}addQuest("aura",idle);if(state.bossHp<=0)defeatBoss();if(state.event==="Aura"&&state.eventUntil>Date.now())state.aura+=idle*4;checkLevel();save();render()}},250);
 setInterval(()=>{if(state.combo>1){state.combo=1;render()}},1800);
