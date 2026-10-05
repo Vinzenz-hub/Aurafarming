@@ -206,7 +206,7 @@ function getBossHp(i){return Math.max(BOSS_BASE_HP,Math.round(BOSS_BASE_HP*Math.
 function getBossTime(i){return i<2?30+i*2:i<10?34+(i-2)*2:48}
 function getDropChance(i){if(i===1)return .02;if(i===2)return .02;if(i===9)return .015;if(i===13)return .01;if(i===19)return .005;return 0}
 function dropBossPet(i){const ids={1:"infernoPet",2:"frostPet",9:"voidling",13:"starSerpent",19:"cosmicEmperor"};const id=ids[i];if(id&&!state.ownedPets.includes(id)){state.ownedPets.push(id);$("message").textContent="🎉 Seltener Pet-Drop: "+pets.find(p=>p.id===id).name}}
-function checkLevel(){const need=state.level*1000;if(state.aura>=need){state.level++;state.power+=1;state.aura-=need;$("message").textContent="🎉 Level Up! +1 Power"}}
+function checkLevel(){const need=state.level*1000;if(state.aura>=need){state.level++;state.power+=1;$("message").textContent="🎉 Level Up! +1 Power"}}
 /* =============================
    SHOP / UPGRADES
    ============================= */
