@@ -27,6 +27,17 @@ const bossNames=[
  ["Aura Overlord","🌌","Der erste große Endgame-Wächter."]
 ];
 const bosses=bossNames.map((b,i)=>{const hp=getBossHp(i);return {name:b[0],emoji:b[1],desc:b[2],hp,reward:Math.round(hp*1.5),crystals:Math.max(2,Math.round(2+i*.8)),time:i<2?30+i*2:i<10?34+(i-2)*2:48,mechanics:getMechanics(i)}});
+const genericEnemies=[
+ ["Aura-Splitter","🔹","Ein leichter Gegner aus verdichteter Aura."],
+ ["Nebelkriecher","🌫️","Ein flinker Schatten aus dem Nebel."],
+ ["Funkenläufer","⚡","Ein Gegner, der instabile Energie hinterlässt."],
+ ["Kristallling","💠","Eine kleine Kreatur mit harter Kristallhaut."],
+ ["Dunkelwandler","🌘","Ein Wesen, das aus den Rissen der Arena tritt."],
+ ["Sternenplünderer","☄️","Ein schneller Räuber kosmischer Energie."],
+ ["Wurzelwächter","🌱","Ein zäher Gegner aus lebender Materie."],
+ ["Leerenfragment","🕳️","Ein Fragment aus der Leere."],
+ ["Auraschleicher","👾","Ein lautloser Jäger kurz vor dem Boss."],
+];
 
 function getMechanics(i){const m=[];if(i>=1)m.push("⚡ Schnellere Zone");if(i>=2)m.push("👻 Fake-Zonen");if(i>=5)m.push("🛡️ Schild");if(i>=7)m.push("🌀 Aura Shift");return m.slice(0,Math.min(4,1+Math.floor(i/3)));}
 const clickers=[
@@ -107,16 +118,24 @@ if(typeof state.shieldMax!=="number"||typeof state.shieldHp!=="number"){state.sh
 function $(id){return document.getElementById(id)}
 function format(n){return Math.floor(n).toLocaleString("de-DE")}
 function save(){state.lastSeen=Date.now();localStorage.setItem(SAVE_KEY,JSON.stringify(state))}
+
+function isBossLevel(level=state.level){return Math.max(1,Number(level)||1)%10===0}
 function boss(){
- const i=Math.max(0,Number(state.bossIndex)||0);
- if(i<bosses.length)return bosses[i];
- const base=bosses[i%bosses.length],cycle=Math.floor(i/bosses.length);
- const hp=getBossHp(i);
- return {...base,name:base.name+" · Ascendant "+(cycle+1),hp,reward:Math.round(hp*1.5),crystals:Math.max(2,Math.round(base.crystals*Math.pow(1.15,cycle))),time:getBossTime(i)};
+ const level=Math.max(1,Number(state.level)||1);
+ const index=Math.max(0,Number(state.bossIndex)||0);
+ if(!isBossLevel(level)){
+   const stage=(level-1)%10;
+   const base=genericEnemies[stage%genericEnemies.length];
+   const hp=Math.max(1,Math.round(getBossHp(level-1)*.55));
+   return {name:base[0],emoji:base[1],desc:base[2],hp,reward:Math.round(hp*1.1),crystals:0,time:45,mechanics:[],isBoss:false};
+ }
+ const base=bossNames[index%bossNames.length],cycle=Math.floor(index/bossNames.length);
+ const hp=getBossHp(level-1);
+ return {name:base[0]+(cycle?" · Ascendant "+(cycle+1):""),emoji:base[1],desc:base[2],hp,reward:Math.round(hp*1.5),crystals:Math.max(2,Math.round(2+(index%bossNames.length)*.8)*Math.pow(1.15,cycle)),time:getBossTime(index),mechanics:getMechanics(index),isBoss:true};
 }
 function hasShield(){return boss().mechanics.includes("🛡️ Schild")}
 function resetShield(){state.shieldMax=Math.max(20,Math.round(boss().hp*.22));state.shieldHp=state.shieldMax;state.shieldBroken=!hasShield();state.shieldSeed=Math.random()*Math.PI*2}
-function bossTargetPos(){const t=Date.now()/1100+state.bossIndex*.7;return {x:50+Math.cos(t)*28,y:50+Math.sin(t*1.23)*22}}
+function bossTargetPos(){return {x:50,y:48}}
 function shieldOpeningAngle(){return Date.now()/1400+state.shieldSeed}
 function bossHitInfo(px,py,arena){const r=arena.getBoundingClientRect();const target=document.getElementById("bossTarget");const tr=target?target.getBoundingClientRect():null;const bx=tr?(tr.left+tr.width/2-r.left):r.width/2;const by=tr?(tr.top+tr.height/2-r.top):r.height/2;const bossRadius=tr?Math.min(tr.width,tr.height)/2:Math.min(r.width,r.height)*.13;const d=Math.hypot(px-bx,py-by);const angle=Math.atan2(py-by,px-bx);let delta=Math.atan2(Math.sin(angle-shieldOpeningAngle()),Math.cos(angle-shieldOpeningAngle()));const opening=Math.abs(delta)<.34;return {d,bossRadius,opening,inside:d<=bossRadius}}
 function prestigeRequirement(currentPrestige=state.prestige){return (Math.max(0,Number(currentPrestige)||0)+2)*500000}
@@ -141,7 +160,7 @@ function render(){
  const arena=document.querySelector(".crit-arena");
  const fake=document.getElementById("fakeZone"), shield=document.getElementById("shieldZone"), core=document.getElementById("auraCore");
  const target=$("bossTarget"),shieldEl=$("bossShield");
- if(target){const p=bossTargetPos();target.style.left=p.x+"%";target.style.top=p.y+"%";const art=state.bossIndex<20?`boss-assets/boss-${String(state.bossIndex+1).padStart(2,"0")}.png`:null;const image=$("bossTargetImage");if(image){image.hidden=!art;if(art){image.src=art;image.alt=b.name;image.onerror=()=>{image.hidden=true}}}$("bossTargetEmoji").textContent=b.emoji}
+ if(target){const p=bossTargetPos();target.style.left=p.x+"%";target.style.top=p.y+"%";const art=b.isBoss?`boss-assets/boss-${String((state.bossIndex%20)+1).padStart(2,"0")}.png`:null;const image=$("bossTargetImage");if(image){image.hidden=!art;if(art){image.src=art;image.alt=b.name;image.onerror=()=>{image.hidden=true}}}$("bossTargetEmoji").textContent=b.emoji;target.classList.toggle("generic-enemy",!b.isBoss)}
  if(shieldEl){const p=bossTargetPos();shieldEl.style.left=p.x+"%";shieldEl.style.top=p.y+"%";shieldEl.classList.toggle("broken",!hasShield()||state.shieldBroken);shieldEl.classList.toggle("exposed",bossHitInfo(arena.clientWidth*p.x/100,arena.clientHeight*p.y/100,arena).opening)}
  if(fake){const show=b.mechanics.includes("👻 Fake-Zonen");fake.style.display=show?"flex":"none";}
  if(shield)shield.style.display=b.mechanics.includes("🛡️ Schild")?"flex":"none";
@@ -149,7 +168,7 @@ function render(){
 const max=b.hp;state.bossHp=Math.max(0,Math.min(state.bossHp,max));
  $("aura").textContent=format(state.aura);$("level").textContent=state.level;$("power").textContent=format(state.power);$("multiplier").textContent="x"+state.multiplier.toFixed(2);$("combo").textContent="x"+state.combo.toFixed(2);$("prestige").textContent=state.prestige;
  $("crystals").textContent=format(state.crystals);$("stars").textContent=state.stars;$("skillPoints").textContent=state.skillPoints;$("hudAura").textContent=format(state.aura);$("hudCrystals").textContent=format(state.crystals);$("hudStars").textContent=state.stars;$("hudSkillPoints").textContent=state.skillPoints;$("idleDamage").textContent=format(idleDps());$("bossStreak").textContent=state.bossStreak;
- $("bossNumber").textContent=state.bossIndex+1;$("bossName").textContent=b.name;$("bossDesc").textContent=b.desc;$("bossEmoji").querySelector("span").textContent=b.emoji;const cardImage=$("bossCardImage");if(cardImage){const art=state.bossIndex<20?`boss-assets/boss-${String(state.bossIndex+1).padStart(2,"0")}.png`:null;cardImage.hidden=!art;if(art){cardImage.src=art;cardImage.alt=b.name;cardImage.onerror=()=>{cardImage.hidden=true}}}$("bossHp").textContent=format(state.bossHp)+" / "+format(max);$("bossHealth").style.width=(state.bossHp/max*100)+"%";$("bossReward").textContent="Belohnung: +"+format(b.reward*rewardMultiplier())+" Aura";
+ $("bossNumber").textContent=state.level;$("enemyType").textContent=b.isBoss?"BOSS":"GEGNER";$("bossName").textContent=b.name;$("bossDesc").textContent=b.desc;$("bossEmoji").querySelector("span").textContent=b.emoji;const cardImage=$("bossCardImage");if(cardImage){const art=b.isBoss?`boss-assets/boss-${String((state.bossIndex%20)+1).padStart(2,"0")}.png`:null;cardImage.hidden=!art;if(art){cardImage.src=art;cardImage.alt=b.name;cardImage.onerror=()=>{cardImage.hidden=true}}}$("bossHp").textContent=format(state.bossHp)+" / "+format(max);$("bossHealth").style.width=(state.bossHp/max*100)+"%";$("bossReward").textContent="Belohnung: +"+format(b.reward*rewardMultiplier())+" Aura";
  $("bossMechanics").innerHTML=b.mechanics.map(x=>"<span class='mechanic'>"+x+"</span>").join("")+"<span class='mechanic phase phase-"+phase+"'>"+phaseInfo.icon+" "+phaseInfo.label+": "+phaseInfo.desc+"</span>";
  $("bossTimer").textContent=Math.max(0,state.bossTimer).toFixed(1);$("bossPhase").className="boss-phase phase-"+phase;$("bossPhase").textContent=phaseInfo.icon+" "+phaseInfo.label+" · "+phaseInfo.desc;$("comboBadge").textContent="COMBO x"+state.combo.toFixed(2);$("critBadge").textContent="🎯 CRIT bis ×"+critMultiplier().toFixed(1);
  renderUpgrades();
@@ -212,11 +231,15 @@ function farm(event){
 }
 function defeatBoss(){
  const b=boss();const timeRatio=state.bossTimer/b.time;let bonus=1;if(timeRatio>.5)bonus=1.1;if(timeRatio>.75)bonus=1.2;if(timeRatio>.9)bonus=1.5;
- const reward=Math.round(b.reward*bonus*rewardMultiplier());state.aura+=reward;const crystalReward=Math.round(b.crystals*(1+skillEffect("crystal",.10)+skillEffect("crystal2",.25))*(1+petBonus("crystal"))*(state.event==="Crystal"&&state.eventUntil>Date.now()?2:1));
- state.crystals+=crystalReward;state.bossStreak++;addQuest("boss",1);
- if(Math.random()<getDropChance(state.bossIndex))dropBossPet(state.bossIndex);
- state.bossIndex++;state.bossHp=getBossHp(state.bossIndex);state.bossTimer=getBossTime(state.bossIndex);resetShield();state.level++;state.power+=5;
- $("message").textContent="🏆 "+b.name+" besiegt! +"+format(reward)+" Aura";
+ const reward=Math.round(b.reward*(b.isBoss?bonus:1)*rewardMultiplier());state.aura+=reward;
+ if(b.isBoss){
+   const crystalReward=Math.round(b.crystals*(1+skillEffect("crystal",.10)+skillEffect("crystal2",.25))*(1+petBonus("crystal"))*(state.event==="Crystal"&&state.eventUntil>Date.now()?2:1));
+   state.crystals+=crystalReward;state.bossStreak++;addQuest("boss",1);
+   if(Math.random()<getDropChance(state.bossIndex))dropBossPet(state.bossIndex);
+   state.bossIndex++;
+ }
+ state.level++;state.power+=b.isBoss?5:1;state.bossHp=boss().hp;state.bossTimer=boss().time;resetShield();
+ $("message").textContent=(b.isBoss?"🏆 Boss besiegt: ":"⚔️ Gegner besiegt: ")+b.name+" · +"+format(reward)+" Aura";
 }
 function getBossHp(i){const index=Math.max(0,Number(i)||0);const logHp=Math.log(BOSS_BASE_HP)+index*Math.log(BOSS_HP_GROWTH);return Math.max(BOSS_BASE_HP,Math.round(Math.exp(Math.min(Math.log(1e300),logHp))))}
 function getBossTime(i){const base=i<2?30+i*2:i<10?34+(i-2)*2:48;return base+Math.min(30,Math.floor(Math.max(0,i)/bossNames.length)*2)}
@@ -336,7 +359,7 @@ function togglePet(id){const slots=Math.min(5,1+(skillHas("slots2")?1:0)+(skillH
 /* =============================
    PROGRESSION / EVENTS
    ============================= */
-function prestige(){const next=prestigeRequirement(state.prestige);if(state.aura<next)return;state.prestige++;state.stars++;state.aura=0;state.level=1;state.power=1;state.multiplier=1;state.combo=1;state.comboBoost=.08;state.powerCost=25;state.multiplierCost=300;state.comboCost=75;state.autoCost=150;state.autoAura=0;state.upgradeLevels={power:0,multiplier:0,combo:0,auto:0};state.bossIndex=0;state.bossHp=BOSS_BASE_HP;state.bossTimer=30;state.bossStreak=0;resetShield();$("message").textContent="🌌 Ascension! +⭐ 1 Stern";save();render()}
+function prestige(){const next=prestigeRequirement(state.prestige);if(state.aura<next)return;state.prestige++;state.stars++;state.aura=0;state.level=1;state.power=1;state.multiplier=1;state.combo=1;state.comboBoost=.08;state.powerCost=25;state.multiplierCost=300;state.comboCost=75;state.autoCost=150;state.autoAura=0;state.upgradeLevels={power:0,multiplier:0,combo:0,auto:0};state.bossIndex=0;state.bossHp=getBossHp(0)*.55;state.bossTimer=45;state.bossStreak=0;resetShield();$("message").textContent="🌌 Ascension! +⭐ 1 Stern";save();render()}
 function triggerEvent(){
  const now=Date.now();
  if((Number(state.eventCooldownUntil)||0)>now||(state.eventUntil||0)>now)return;
@@ -363,10 +386,10 @@ document.querySelectorAll(".upgrade-purchase").forEach(b=>b.onclick=e=>{
 });
 document.querySelector(".crit-arena").addEventListener("pointerdown",(e)=>{if(e.pointerType==="touch")e.preventDefault();if(e.button!==undefined&&e.button>0)return;farm(e)});$("prestigeBtn").onclick=prestige;$("eventBtn").onclick=triggerEvent;
 $("resetBtn").onclick=()=>{if(confirm("Spielstand wirklich löschen?")){localStorage.removeItem(SAVE_KEY);location.reload()}};
-setInterval(()=>{const now=Date.now();const delta=Math.min(.25,(now-(state.lastTick||now))/1000);state.lastTick=now;if(delta>0){state.bossTimer-=delta;if(state.bossTimer<=0){state.bossHp=boss().hp;state.bossTimer=boss().time;state.bossStreak=0;resetShield();$("message").textContent="⏱️ Zeit abgelaufen! Der Boss startet neu."}const idle=idleDps()*delta;state.aura+=state.autoAura*delta;let idleBossDamage=idle*(bossPhase()>=3?.85:1);if(hasShield()&&!state.shieldBroken){state.shieldHp=Math.max(0,state.shieldHp-idleBossDamage);if(state.shieldHp<=0){state.shieldBroken=true;state.shieldHp=0;$("message").textContent="🛡️ SHIELD BREAK! Der Boss ist jetzt verwundbar."}}else{state.bossHp-=idleBossDamage}addQuest("aura",idle);if(state.bossHp<=0)defeatBoss();if(state.event==="Aura"&&state.eventUntil>Date.now())state.aura+=idle*4;checkLevel();save();render()}},250);
+setInterval(()=>{const now=Date.now();const delta=Math.min(.25,(now-(state.lastTick||now))/1000);state.lastTick=now;if(delta>0){state.bossTimer-=delta;if(state.bossTimer<=0){state.bossHp=boss().hp;state.bossTimer=boss().time;state.bossStreak=0;resetShield();$("message").textContent="⏱️ Zeit abgelaufen! "+(boss().isBoss?"Der Boss":"Der Gegner")+" startet neu."}const idle=idleDps()*delta;state.aura+=state.autoAura*delta;let idleBossDamage=idle*(bossPhase()>=3?.85:1);if(hasShield()&&!state.shieldBroken){state.shieldHp=Math.max(0,state.shieldHp-idleBossDamage);if(state.shieldHp<=0){state.shieldBroken=true;state.shieldHp=0;$("message").textContent="🛡️ SHIELD BREAK! Der Boss ist jetzt verwundbar."}}else{state.bossHp-=idleBossDamage}addQuest("aura",idle);if(state.bossHp<=0)defeatBoss();if(state.event==="Aura"&&state.eventUntil>Date.now())state.aura+=idle*4;checkLevel();save();render()}},250);
 setInterval(()=>{if(state.combo>1){state.combo=1;render()}},1800);
 setInterval(updateCrit,80);
-setInterval(()=>{if(document.visibilityState==="visible" && boss().mechanics.includes("🌀 Aura Shift"))render()},500);
+setInterval(()=>{if(document.visibilityState==="visible" && boss().isBoss && boss().mechanics.includes("🌀 Aura Shift"))render()},500);
 if(state.lastSeen&&Date.now()-state.lastSeen>60000){
  const offlineSeconds=Math.min(8*3600,(Date.now()-state.lastSeen)/1000);
  const offlineRate=idleDps()+Math.max(0,Number(state.autoAura)||0);

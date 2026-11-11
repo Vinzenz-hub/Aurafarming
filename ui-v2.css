@@ -958,3 +958,10 @@ button,.ui-bottom-body button,.ui-bottom-body .small-btn,
 .ui-bottom-sheet[aria-hidden="false"],.ui-status-sheet[aria-hidden="false"]{pointer-events:auto}
 @media(hover:none){.bottom-nav .nav-tab:hover{transform:none;box-shadow:none;filter:none}}
 @media(prefers-reduced-motion:reduce){.bottom-nav .nav-tab,.bottom-nav .nav-tab:before,.ui-bottom-sheet.open,.ui-status-sheet.open{transition:none;animation:none;scroll-behavior:auto}}
+
+
+/* Combat presentation: enemies stay anchored; only the HUD and hit feedback update. */
+.boss-target{left:50%!important;top:48%!important}
+.boss-target.hit{animation:none!important;filter:brightness(1.18)}
+.boss-target.generic-enemy{border-color:#83d9ff99;box-shadow:0 0 22px #55b9ff55,inset 0 0 35px #55b9ff20}
+.boss-target.generic-enemy .boss-target-glow{background:radial-gradient(circle,#63bfff35,transparent 68%)}
