@@ -20,7 +20,8 @@
   const combatHud=document.createElement("section");
   combatHud.className="ui-combat-hud";
   combatHud.innerHTML=`
-    <div class="ui-combat-row">
+    <button class="ui-boss-toggle" id="uiBossToggle" aria-expanded="false" aria-controls="uiBossDetails">
+      <span class="ui-combat-row">
       <div class="ui-combat-name">
         <span class="ui-combat-kicker">AKTIVER BOSS</span>
         <b class="ui-combat-boss" id="uiCombatBoss">Aura-Schatten 🌑</b>
@@ -29,7 +30,16 @@
       <div class="ui-combat-stat ui-combat-timer"><small>ZEIT</small><b id="uiCombatTimer">30.0 s</b></div>
       <div class="ui-combat-stat ui-combat-damage"><small>SCHADEN</small><b id="uiCombatDamage">1 / Klick</b></div>
     </div>
+      </span>
+      <span class="ui-boss-chevron">⌄</span>
+    </button>
     <div class="ui-combat-health"><i id="uiCombatHealth"></i></div>
+    <div class="ui-boss-details" id="uiBossDetails" hidden>
+      <div class="ui-boss-detail-row"><b id="uiBossDetailName">Aura-Schatten</b><span id="uiBossDetailEmoji">🌑</span></div>
+      <p id="uiBossDetailDesc"></p>
+      <div class="ui-boss-detail-meta" id="uiBossDetailPhase"></div>
+      <div class="ui-boss-detail-mechanics" id="uiBossDetailMechanics"></div>
+    </div>
   `;
   document.body.appendChild(combatHud);
 
@@ -205,6 +215,13 @@
     };
   });
 
+  $("uiBossToggle").onclick=()=>{
+    const expanded=combatHud.classList.toggle("boss-expanded");
+    $("uiBossToggle").setAttribute("aria-expanded",String(expanded));
+    $("uiBossDetails").hidden=!expanded;
+    document.body.classList.toggle("ui-boss-expanded",expanded);
+  };
+
   $("uiStatusOpen").onclick=()=>{
     if(status.classList.contains("open")){
       closeSheets();
@@ -298,6 +315,12 @@
     Object.entries(map).forEach(([to,from])=>{const a=$(to),b=$(from);if(a&&b)a.textContent=b.textContent});
     const name=$("bossName"),emoji=$("bossEmoji"),hp=$("bossHp"),bar=$("bossHealth"),timer=$("bossTimer"),num=$("bossNumber"),phase=$("bossPhase");
     if(name)$("uiBossName").textContent=name.textContent;
+    if(name)$("uiBossDetailName").textContent=name.textContent;
+    const desc=$("bossDesc"), phaseText=$("bossPhase"), mechanics=$("bossMechanics"), emojiText=$("bossEmoji")?.querySelector("span");
+    if(desc)$("uiBossDetailDesc").textContent=desc.textContent;
+    if(phaseText)$("uiBossDetailPhase").textContent=phaseText.textContent;
+    if(mechanics)$("uiBossDetailMechanics").innerHTML=mechanics.innerHTML;
+    if(emojiText)$("uiBossDetailEmoji").textContent=emojiText.textContent;
     if(emoji)$("uiBossEmoji").textContent=emoji.textContent;
     if(hp)$("uiBossHp").textContent=hp.textContent+" · "+(timer?timer.textContent:"0")+" s";
     if(bar)$("uiBossHpBar").style.width=bar.style.width||"100%";
