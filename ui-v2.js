@@ -166,7 +166,9 @@
     document.getElementById("uiBottomKicker").textContent=titles[section]?.[0]||"SYSTEM";
     document.getElementById("uiBottomTitle").textContent=titles[section]?.[1]||"System";
     status.classList.remove("open");
+    status.setAttribute("aria-hidden","true");
     sheet.classList.add("open");
+    sheet.setAttribute("aria-hidden","false");
     updateContextWallet(section);
     openSection=section;
     document.body.classList.add("ui-sheet-open");
@@ -184,27 +186,54 @@
   function closeSheets(){
     status.classList.remove("open");
     sheet.classList.remove("open");
+    status.setAttribute("aria-hidden","true");
+    sheet.setAttribute("aria-hidden","true");
     openSection=null;
     document.body.classList.remove("ui-sheet-open");
+    if(typeof setActiveNav==="function")setActiveNav("combat");
     syncCritVisibility();
   }
 
-  oldNav?.querySelectorAll(".nav-tab").forEach(btn=>{
-    btn.onclick=()=>{
-      const section=btn.dataset.uiSection;
-      oldNav.querySelectorAll(".nav-tab").forEach(x=>x.classList.toggle("active",x===btn));
-      if(section==="combat"){
-        closeSheets();
-        window.scrollTo({top:0,behavior:"smooth"});
-        return;
-      }
-      if(sheet.classList.contains("open") && openSection===section){
-        closeSheets();
-      }else{
-        setSheet(section);
-      }
-    };
+  const navButtons=oldNav?[...oldNav.querySelectorAll(".nav-tab")]:[];
+  function setActiveNav(section){
+    navButtons.forEach(button=>{
+      const active=button.dataset.uiSection===section;
+      button.classList.toggle("active",active);
+      button.setAttribute("aria-current",active?"page":"false");
+      button.tabIndex=active?0:-1;
+    });
+  }
+  function openNavigation(section){
+    if(section==="combat"){closeSheets();setActiveNav("combat");window.scrollTo({top:0,behavior:"smooth"});return;}
+    if(sheet.classList.contains("open")&&openSection===section){closeSheets();setActiveNav("combat");return;}
+    setActiveNav(section);setSheet(section);sheet.dataset.navigationState=section;
+  }
+  navButtons.forEach(button=>{
+    button.addEventListener("click",()=>openNavigation(button.dataset.uiSection));
+    button.addEventListener("focus",()=>button.classList.add("keyboard-focus"));
+    button.addEventListener("blur",()=>button.classList.remove("keyboard-focus"));
   });
+  if(navButtons.length){
+    setActiveNav("combat");
+    oldNav.addEventListener("keydown",event=>{
+      const current=navButtons.indexOf(document.activeElement);if(current<0)return;
+      let next=current;
+      if(event.key==="ArrowRight"||event.key==="ArrowDown")next=(current+1)%navButtons.length;
+      else if(event.key==="ArrowLeft"||event.key==="ArrowUp")next=(current-1+navButtons.length)%navButtons.length;
+      else if(event.key==="Home")next=0;else if(event.key==="End")next=navButtons.length-1;else return;
+      event.preventDefault();navButtons[next].focus();
+    });
+  }
+  document.addEventListener("keydown",event=>{
+    if(event.key==="Escape"&&(sheet.classList.contains("open")||status.classList.contains("open")||combatHud.classList.contains("boss-expanded"))){
+      closeSheets();combatHud.classList.remove("boss-expanded");
+      $("uiBossToggle").setAttribute("aria-expanded","false");$("uiBossDetails").hidden=true;
+      document.body.classList.remove("ui-boss-expanded");setActiveNav("combat");
+    }
+  });
+  const navMedia=window.matchMedia("(hover: hover) and (pointer: fine)");
+  oldNav?.classList.toggle("has-hover",navMedia.matches);
+  navMedia.addEventListener?.("change",event=>oldNav?.classList.toggle("has-hover",event.matches));
 
   $("uiBossToggle").onclick=()=>{
     const expanded=combatHud.classList.toggle("boss-expanded");
@@ -220,6 +249,9 @@
       sheet.classList.remove("open");
       openSection=null;
       status.classList.add("open");
+      status.setAttribute("aria-hidden","false");
+      sheet.setAttribute("aria-hidden","true");
+      oldNav?.querySelectorAll(".nav-tab").forEach(x=>x.classList.remove("active"));
       document.body.classList.add("ui-sheet-open");
       syncCritVisibility();
     }
