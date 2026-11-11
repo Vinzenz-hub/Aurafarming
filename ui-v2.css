@@ -941,3 +941,20 @@ button,.ui-bottom-body button,.ui-bottom-body .small-btn,
 @keyframes impactWave{from{opacity:1;transform:scale(.82)}to{opacity:0;transform:scale(1.12)}}
 @media(max-width:700px){.bottom-nav{grid-template-columns:repeat(4,minmax(0,1fr))}.bottom-nav .nav-tab{min-height:43px}.ui-bottom-body .upgrade{padding:12px}.ui-bottom-body .upgrade-qty{font-size:.7rem}}
 @media(prefers-reduced-motion:reduce){.ui-bottom-sheet.open,.ui-status-sheet.open,.boss-target.hit,.crit-arena.hit-confirmed:after{animation:none}}
+
+/* Dynamic navigation controls */
+.bottom-nav{isolation:isolate}
+.bottom-nav .nav-tab{position:relative;isolation:isolate;transition:color .18s ease,border-color .18s ease,background .18s ease,box-shadow .22s ease,transform .18s ease,filter .18s ease}
+.bottom-nav .nav-tab:before{content:"";position:absolute;inset:2px;border:1px solid transparent;border-radius:inherit;opacity:0;transform:scale(.94);transition:opacity .2s ease,transform .2s ease;pointer-events:none;z-index:-1}
+.bottom-nav .nav-tab.active:before{border-color:#70f4ff88;opacity:1;transform:scale(1);box-shadow:inset 0 0 16px #48dfff1c,0 0 18px #48dfff25}
+.bottom-nav .nav-tab.active{color:#eaffff;filter:brightness(1.12)}
+.bottom-nav .nav-tab:focus-visible,.bottom-nav .nav-tab.keyboard-focus{outline:2px solid #a1fbff;outline-offset:2px;box-shadow:0 0 0 4px #48dfff28,0 0 24px #48dfff55}
+.bottom-nav.has-hover .nav-tab:hover{transform:translateY(-3px);filter:brightness(1.2);box-shadow:0 0 22px #48dfff40,inset 0 0 20px #48dfff18}
+.bottom-nav .nav-tab:active{transform:scale(.96)}
+.ui-bottom-sheet,.ui-status-sheet{will-change:transform,opacity;backface-visibility:hidden}
+.ui-bottom-sheet.open,.ui-status-sheet.open{animation:navPanelEnter .24s cubic-bezier(.16,.84,.28,1) both}
+@keyframes navPanelEnter{0%{opacity:0;filter:brightness(.65);transform:translate3d(0,16px,0)}100%{opacity:1;filter:brightness(1);transform:translate3d(0,0,0)}}
+.ui-bottom-sheet:not(.open),.ui-status-sheet:not(.open){pointer-events:none}
+.ui-bottom-sheet[aria-hidden="false"],.ui-status-sheet[aria-hidden="false"]{pointer-events:auto}
+@media(hover:none){.bottom-nav .nav-tab:hover{transform:none;box-shadow:none;filter:none}}
+@media(prefers-reduced-motion:reduce){.bottom-nav .nav-tab,.bottom-nav .nav-tab:before,.ui-bottom-sheet.open,.ui-status-sheet.open{transition:none;animation:none;scroll-behavior:auto}}
