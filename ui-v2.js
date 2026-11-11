@@ -190,6 +190,7 @@
     sheet.setAttribute("aria-hidden","true");
     openSection=null;
     document.body.classList.remove("ui-sheet-open");
+    if(typeof setActiveNav==="function")setActiveNav("combat");
     syncCritVisibility();
   }
 
