@@ -837,3 +837,78 @@ button,.ui-bottom-body button,.ui-bottom-body .small-btn,
   .ui-combat-boss{max-width:150px}
   .bottom-nav .nav-tab span{font-size:.42rem}
 }
+
+
+/* TRUE SINGLE-VIEWPORT MOBILE GAME: only the arena remains on the play screen */
+@media(max-width:700px){
+  html,body{
+    width:100%;height:100%;min-height:0;margin:0;padding:0!important;
+    overflow:hidden!important;overscroll-behavior:none;position:fixed;inset:0;
+    touch-action:pan-x pan-y;
+  }
+  body{height:100dvh;min-height:100dvh;max-height:100dvh}
+  .app{
+    position:fixed;inset:0;width:100%;height:100dvh;min-height:0;max-height:100dvh;
+    margin:0;padding:0;overflow:hidden;overscroll-behavior:none;
+  }
+  /* No legacy page content is allowed to contribute to document height. */
+  .app>.topbar,.app>.hero,.app>.stats,.app>.currency-hud,.app>.meta-stats,
+  .app>.boss-card,.app>footer,.app>.grid-section,.app>.upgrades,
+  .app>.clickers,.app>.section-block{display:none!important}
+  .ui-topbar{position:fixed;z-index:1300;top:0;left:0;right:0;height:calc(48px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 10px 4px}
+  .ui-brand{font-size:.68rem}
+  .ui-top-btn{min-height:32px}
+  .ui-combat-hud{
+    position:fixed;z-index:1280;top:calc(48px + env(safe-area-inset-top,0px));left:0;right:0;
+    height:68px;min-height:68px;max-height:68px;padding:5px 9px 6px;overflow:visible;
+  }
+  .ui-combat-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:5px}
+  .ui-combat-boss{font-size:.73rem}.ui-combat-meta{font-size:.48rem}
+  .ui-combat-stat{min-width:48px;padding:3px 5px}
+  .ui-combat-stat small{font-size:.42rem}.ui-combat-stat b{font-size:.7rem}
+  .ui-combat-health{height:4px;margin:5px auto 0}
+  /* Expanded boss dossier overlays the field instead of changing its layout. */
+  .ui-combat-hud.boss-expanded{height:auto;max-height:44dvh;overflow-y:auto;min-height:0}
+  .ui-boss-details{padding:8px 3px 5px;margin-top:6px}
+  .ui-boss-details p{font-size:.66rem}
+  .ui-boss-detail-mechanics{gap:4px}
+  .farm-area{
+    position:fixed!important;z-index:2;left:0;right:0;
+    top:calc(116px + env(safe-area-inset-top,0px));
+    bottom:calc(58px + env(safe-area-inset-bottom,0px));
+    height:auto!important;min-height:0!important;max-height:none!important;
+    margin:0!important;padding:5px 8px 3px!important;
+    display:flex!important;flex-direction:column;gap:4px;overflow:hidden!important;
+  }
+  .combat-line{flex:none;height:18px;margin:0!important;display:flex;align-items:center;justify-content:center;gap:10px}
+  .combat-line>*{font-size:.55rem}
+  .crit-arena{
+    position:relative;flex:1 1 auto;width:100%;height:auto!important;min-height:0!important;
+    max-height:none!important;aspect-ratio:auto!important;margin:0;border-radius:12px;overflow:hidden;
+  }
+  .boss-target{width:min(64vw,34dvh);height:min(64vw,34dvh);min-width:0;min-height:0;max-width:70%;max-height:70%}
+  .boss-shield{width:min(76vw,40dvh);height:min(76vw,40dvh);min-width:0;min-height:0;max-width:84%;max-height:84%}
+  .crit-zone{width:clamp(64px,18vw,92px);height:clamp(64px,18vw,92px)}
+  .message{flex:none;height:17px;min-height:17px;margin:0!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;font-size:.58rem}
+  .bottom-nav{
+    position:fixed;z-index:1300;left:0;right:0;bottom:0;width:100%;height:calc(58px + env(safe-area-inset-bottom,0px));
+    min-height:0;margin:0;padding:3px 5px calc(3px + env(safe-area-inset-bottom,0px));
+    display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:2px;
+  }
+  .bottom-nav .nav-tab{min-width:0;min-height:0;height:48px;padding:2px 0;border-radius:6px;gap:1px}
+  .bottom-nav .nav-tab span{font-size:.43rem;white-space:nowrap}
+  .ui-bottom-sheet,.ui-status-sheet{
+    position:fixed;z-index:1400;top:calc(48px + env(safe-area-inset-top,0px));
+    bottom:calc(58px + env(safe-area-inset-bottom,0px));left:0;right:0;
+    max-height:none;overflow:hidden;
+  }
+  .ui-bottom-body,.ui-sheet-body{min-height:0;overflow-y:auto;overscroll-behavior:contain}
+  body.ui-sheet-open .farm-area{visibility:hidden;pointer-events:none}
+  body.ui-sheet-open .ui-combat-hud{display:none}
+  body.ui-sheet-open .ui-topbar{opacity:1;pointer-events:auto}
+}
+@media(max-width:380px){
+  .ui-combat-stat{min-width:43px}
+  .ui-combat-boss{max-width:130px}
+  .bottom-nav .nav-tab span{font-size:.39rem}
+}
