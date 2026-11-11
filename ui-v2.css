@@ -790,7 +790,7 @@ button,.ui-bottom-body button,.ui-bottom-body .small-btn,
   .ui-top-btn{min-height:34px;padding:0 10px;font-size:.61rem}
   .ui-combat-hud{top:calc(var(--ui-top) + env(safe-area-inset-top,0px));min-height:var(--ui-combat-hud);padding:5px 10px 7px;transition:min-height .22s ease,background .22s}
   .ui-boss-toggle{display:block;width:100%;padding:0;border:0;background:transparent;color:inherit;text-align:left}
-  .ui-combat-row{grid-template-columns:minmax(0,1fr) auto auto;gap:6px}
+  .ui-combat-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px}
   .ui-combat-boss{font-size:.78rem}
   .ui-combat-meta{font-size:.52rem}
   .ui-combat-stat{min-width:57px;padding:4px 6px}
