@@ -27,6 +27,17 @@ const bossNames=[
  ["Aura Overlord","🌌","Der erste große Endgame-Wächter."]
 ];
 const bosses=bossNames.map((b,i)=>{const hp=getBossHp(i);return {name:b[0],emoji:b[1],desc:b[2],hp,reward:Math.round(hp*1.5),crystals:Math.max(2,Math.round(2+i*.8)),time:i<2?30+i*2:i<10?34+(i-2)*2:48,mechanics:getMechanics(i)}});
+const genericEnemies=[
+ ["Aura-Splitter","🔹","Ein leichter Gegner aus verdichteter Aura."],
+ ["Nebelkriecher","🌫️","Ein flinker Schatten aus dem Nebel."],
+ ["Funkenläufer","⚡","Ein Gegner, der instabile Energie hinterlässt."],
+ ["Kristallling","💠","Eine kleine Kreatur mit harter Kristallhaut."],
+ ["Dunkelwandler","🌘","Ein Wesen, das aus den Rissen der Arena tritt."],
+ ["Sternenplünderer","☄️","Ein schneller Räuber kosmischer Energie."],
+ ["Wurzelwächter","🌱","Ein zäher Gegner aus lebender Materie."],
+ ["Leerenfragment","🕳️","Ein Fragment aus der Leere."],
+ ["Auraschleicher","👾","Ein lautloser Jäger kurz vor dem Boss."],
+];
 
 function getMechanics(i){const m=[];if(i>=1)m.push("⚡ Schnellere Zone");if(i>=2)m.push("👻 Fake-Zonen");if(i>=5)m.push("🛡️ Schild");if(i>=7)m.push("🌀 Aura Shift");return m.slice(0,Math.min(4,1+Math.floor(i/3)));}
 const clickers=[
@@ -107,17 +118,7 @@ if(typeof state.shieldMax!=="number"||typeof state.shieldHp!=="number"){state.sh
 function $(id){return document.getElementById(id)}
 function format(n){return Math.floor(n).toLocaleString("de-DE")}
 function save(){state.lastSeen=Date.now();localStorage.setItem(SAVE_KEY,JSON.stringify(state))}
-const genericEnemies=[
- ["Aura-Splitter","🔹","Ein leichter Gegner aus verdichteter Aura."],
- ["Nebelkriecher","🌫️","Ein flinker Schatten aus dem Nebel."],
- ["Funkenläufer","⚡","Ein Gegner, der instabile Energie hinterlässt."],
- ["Kristallling","💠","Eine kleine Kreatur mit harter Kristallhaut."],
- ["Dunkelwandler","🌘","Ein Wesen, das aus den Rissen der Arena tritt."],
- ["Sternenplünderer","☄️","Ein schneller Räuber kosmischer Energie."],
- ["Wurzelwächter","🌱","Ein zäher Gegner aus lebender Materie."],
- ["Leerenfragment","🕳️","Ein Fragment aus der Leere."],
- ["Auraschleicher","👾","Ein lautloser Jäger kurz vor dem Boss."],
-];
+
 function isBossLevel(level=state.level){return Math.max(1,Number(level)||1)%10===0}
 function boss(){
  const level=Math.max(1,Number(state.level)||1);
