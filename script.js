@@ -3,6 +3,7 @@
    ============================= */
 const SAVE_KEY="aura-farming-save-v3";
 const BOSS_BASE_HP=120;
+const BOSS_HP_GROWTH=1.45;
 const bossNames=[
  ["Aura-Schatten","🌑","Ein dunkler Kern, der deine erste Aura-Prüfung bewacht."],
  ["Flammenbestie","🔥","Eine glühende Aura, die aggressive Treffer verlangt."],
@@ -25,7 +26,7 @@ const bossNames=[
  ["Reality Breaker","🌀","Die Realität selbst wird zur Arena."],
  ["Aura Overlord","🌌","Der erste große Endgame-Wächter."]
 ];
-const bosses=bossNames.map((b,i)=>{const hp=Math.round(120*Math.pow(1.55,i));return {name:b[0],emoji:b[1],desc:b[2],hp,reward:Math.round(hp*1.5),crystals:Math.max(2,Math.round(2+i*.8)),time:i<2?30+i*2:i<10?34+(i-2)*2:48,mechanics:getMechanics(i)}});
+const bosses=bossNames.map((b,i)=>{const hp=getBossHp(i);return {name:b[0],emoji:b[1],desc:b[2],hp,reward:Math.round(hp*1.5),crystals:Math.max(2,Math.round(2+i*.8)),time:i<2?30+i*2:i<10?34+(i-2)*2:48,mechanics:getMechanics(i)}});
 
 function getMechanics(i){const m=[];if(i>=1)m.push("⚡ Schnellere Zone");if(i>=2)m.push("👻 Fake-Zonen");if(i>=5)m.push("🛡️ Schild");if(i>=7)m.push("🌀 Aura Shift");return m.slice(0,Math.min(4,1+Math.floor(i/3)));}
 const clickers=[
@@ -118,6 +119,7 @@ function resetShield(){state.shieldMax=Math.max(20,Math.round(boss().hp*.22));st
 function bossTargetPos(){const t=Date.now()/1100+state.bossIndex*.7;return {x:50+Math.cos(t)*28,y:50+Math.sin(t*1.23)*22}}
 function shieldOpeningAngle(){return Date.now()/1400+state.shieldSeed}
 function bossHitInfo(px,py,arena){const r=arena.getBoundingClientRect();const target=document.getElementById("bossTarget");const tr=target?target.getBoundingClientRect():null;const bx=tr?(tr.left+tr.width/2-r.left):r.width/2;const by=tr?(tr.top+tr.height/2-r.top):r.height/2;const bossRadius=tr?Math.min(tr.width,tr.height)/2:Math.min(r.width,r.height)*.13;const d=Math.hypot(px-bx,py-by);const angle=Math.atan2(py-by,px-bx);let delta=Math.atan2(Math.sin(angle-shieldOpeningAngle()),Math.cos(angle-shieldOpeningAngle()));const opening=Math.abs(delta)<.34;return {d,bossRadius,opening,inside:d<=bossRadius}}
+function prestigeRequirement(currentPrestige=state.prestige){return (Math.max(0,Number(currentPrestige)||0)+2)*500000}
 function prestigeMultiplier(){return 1+state.prestige*.10}
 function skillLevel(id){return Math.min(10,Math.max(0,Number(state.skillLevels?.[id])||0))}
 function skillHas(id){return skillLevel(id)>0}
@@ -153,7 +155,7 @@ const max=b.hp;state.bossHp=Math.max(0,Math.min(state.bossHp,max));
  renderUpgrades();
 
  $("prestigeBonus").textContent="Belohnungen ×"+prestigeMultiplier().toFixed(2);
- const next=(state.prestige+1)*500000+500000;$("prestigeText").textContent="Nächstes Prestige: "+format(next)+" Aura → ⭐ 1";
+ const next=prestigeRequirement(state.prestige);$("prestigeText").textContent="Nächstes Prestige: "+format(next)+" Aura → ⭐ 1";
  $("prestigeBtn").disabled=state.aura<next;
  renderClickers();renderSkills();renderPets();renderQuests();renderEvent();
 }
@@ -216,7 +218,7 @@ function defeatBoss(){
  state.bossIndex++;state.bossHp=getBossHp(state.bossIndex);state.bossTimer=getBossTime(state.bossIndex);resetShield();state.level++;state.power+=5;
  $("message").textContent="🏆 "+b.name+" besiegt! +"+format(reward)+" Aura";
 }
-function getBossHp(i){return Math.max(BOSS_BASE_HP,Math.round(BOSS_BASE_HP*Math.pow(1.55,Math.min(300,Math.max(0,i)))))}
+function getBossHp(i){const index=Math.max(0,Number(i)||0);const logHp=Math.log(BOSS_BASE_HP)+index*Math.log(BOSS_HP_GROWTH);return Math.max(BOSS_BASE_HP,Math.round(Math.exp(Math.min(Math.log(1e300),logHp))))}
 function getBossTime(i){const base=i<2?30+i*2:i<10?34+(i-2)*2:48;return base+Math.min(30,Math.floor(Math.max(0,i)/bossNames.length)*2)}
 function getDropChance(i){if(i===1)return .02;if(i===2)return .02;if(i===9)return .015;if(i===13)return .01;if(i===19)return .005;return 0}
 function dropBossPet(i){const ids={1:"infernoPet",2:"frostPet",9:"voidling",13:"starSerpent",19:"cosmicEmperor"};const id=ids[i];if(id&&!state.ownedPets.includes(id)){state.ownedPets.push(id);$("message").textContent="🎉 Seltener Pet-Drop: "+pets.find(p=>p.id===id).name}}
@@ -334,7 +336,7 @@ function togglePet(id){const slots=Math.min(5,1+(skillHas("slots2")?1:0)+(skillH
 /* =============================
    PROGRESSION / EVENTS
    ============================= */
-function prestige(){const next=(state.prestige+1)*500000+500000;if(state.aura<next)return;state.prestige++;state.stars++;state.aura=0;state.level=1;state.power=1;state.multiplier=1;state.combo=1;state.comboBoost=.08;state.powerCost=25;state.multiplierCost=300;state.comboCost=75;state.autoCost=150;state.autoAura=0;state.upgradeLevels={power:0,multiplier:0,combo:0,auto:0};state.bossIndex=0;state.bossHp=BOSS_BASE_HP;state.bossTimer=30;state.bossStreak=0;resetShield();$("message").textContent="🌌 Ascension! +⭐ 1 Stern";save();render()}
+function prestige(){const next=prestigeRequirement(state.prestige);if(state.aura<next)return;state.prestige++;state.stars++;state.aura=0;state.level=1;state.power=1;state.multiplier=1;state.combo=1;state.comboBoost=.08;state.powerCost=25;state.multiplierCost=300;state.comboCost=75;state.autoCost=150;state.autoAura=0;state.upgradeLevels={power:0,multiplier:0,combo:0,auto:0};state.bossIndex=0;state.bossHp=BOSS_BASE_HP;state.bossTimer=30;state.bossStreak=0;resetShield();$("message").textContent="🌌 Ascension! +⭐ 1 Stern";save();render()}
 function triggerEvent(){
  const now=Date.now();
  if((Number(state.eventCooldownUntil)||0)>now||(state.eventUntil||0)>now)return;
