@@ -45,3 +45,6 @@ button{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}button
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms;animation-iteration-count:1;transition-duration:.01ms;scroll-behavior:auto}
 }
+
+/* Sci-fi boss artwork (first 20 bosses) */
+.boss-target{display:grid;place-items:center;overflow:visible}.boss-target-image{position:absolute;width:175%;height:175%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 0 16px #8d6bff99);animation:bossFloat 3.2s ease-in-out infinite}.boss-target #bossTargetEmoji{position:relative;z-index:1;font-size:0;opacity:0}.boss-emoji{position:relative;display:grid;place-items:center;min-width:96px;min-height:96px}.boss-emoji img{width:116px;height:116px;object-fit:contain;filter:drop-shadow(0 0 14px #8d6bff77)}.boss-emoji span{position:absolute;font-size:0;opacity:0}@keyframes bossFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-7px) scale(1.025)}}@media(prefers-reduced-motion:reduce){.boss-target-image{animation:none}}
