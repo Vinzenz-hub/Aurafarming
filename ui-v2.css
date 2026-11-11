@@ -912,3 +912,32 @@ button,.ui-bottom-body button,.ui-bottom-body .small-btn,
   .ui-combat-boss{max-width:130px}
   .bottom-nav .nav-tab span{font-size:.39rem}
 }
+
+/* === AETHER//OPS refinement === */
+.bottom-nav{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.bottom-nav .nav-tab{min-height:46px;position:relative;overflow:hidden}
+.bottom-nav .nav-tab:hover{color:#e8fdff;border-color:#49eaff8c;background:linear-gradient(135deg,#12394cdd,#211746dd);box-shadow:0 0 18px #48dfff35,inset 0 0 16px #48dfff12;transform:translateY(-2px)}
+.bottom-nav .nav-tab.active{border-color:#61f3ff;background:linear-gradient(135deg,#15546a99,#30205cbb);box-shadow:0 0 0 1px #48eaff20,0 0 24px #48dfff35,inset 0 0 22px #48dfff18}
+.bottom-nav .nav-tab.active:after{content:"";position:absolute;left:22%;right:22%;bottom:2px;height:2px;border-radius:2px;background:#68f5ff;box-shadow:0 0 10px #48eaff}
+.ui-bottom-sheet.open,.ui-status-sheet.open{animation:sheetReveal .22s cubic-bezier(.2,.8,.2,1) both}
+@keyframes sheetReveal{from{opacity:0;transform:translateY(14px);filter:brightness(.7)}to{opacity:1;transform:translateY(0);filter:brightness(1)}}
+.ui-top-btn:hover,.ui-close:hover,.ui-boss-toggle:hover{border-color:#73f7ff;background:linear-gradient(135deg,#16445a,#282052);color:#f1ffff;box-shadow:0 0 20px #48dfff3b,inset 0 0 14px #48dfff12}
+.ui-bottom-body .upgrade-qty:hover:not(:disabled),.ui-bottom-body .upgrade-purchase:hover:not(:disabled),.ui-bottom-body .skill-card button:hover:not(:disabled),.ui-bottom-body .pet-card button:hover:not(:disabled),.ui-bottom-body .clicker-card button:hover:not(:disabled){transform:translateY(-2px);border-color:#83f8ff;box-shadow:0 0 22px #48dfff45,inset 0 0 15px #48dfff15;filter:brightness(1.16)}
+.ui-bottom-body .upgrade-qty.selected{color:#f4ffff;border-color:#8cffff;background:linear-gradient(135deg,#17677a,#3b286c);box-shadow:0 0 0 1px #48f0ff44,0 0 20px #48dfff55,inset 0 0 18px #48dfff20}
+.ui-bottom-body .upgrade-buy-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.ui-bottom-body .upgrade-qty{min-height:34px}
+.ui-bottom-body .upgrade-purchase{width:100%;min-height:40px;margin-top:8px}
+.ui-bottom-body .upgrade{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:7px 10px}
+.ui-bottom-body .upgrade-icon{grid-row:span 2;font-size:1.35rem}
+.ui-bottom-body .upgrade-name{font-weight:900}
+.ui-bottom-body .upgrade-desc{grid-column:2 / 4;margin:0}
+.ui-bottom-body .upgrade-level{grid-column:2 / 4}
+.ui-bottom-body .upgrade-buy-grid,.ui-bottom-body .upgrade-purchase{grid-column:1 / -1}
+.ui-bottom-body .upgrade:hover,.ui-bottom-body .panel:hover,.ui-bottom-body .clicker-card:hover,.ui-bottom-body .skill-card:hover,.ui-bottom-body .pet-card:hover{border-color:#50eaff65;box-shadow:0 0 22px #48dfff16,inset 0 0 20px #48dfff0a}
+.boss-target.hit{animation:bossImpact .19s cubic-bezier(.15,.8,.25,1)}
+@keyframes bossImpact{0%{filter:brightness(1);transform:translate(-50%,-50%) scale(1)}35%{filter:brightness(2.3) drop-shadow(0 0 28px #fff);transform:translate(-50%,-50%) scale(1.1)}100%{filter:brightness(1.15);transform:translate(-50%,-50%) scale(.98)}}
+.crit-arena.hit-confirmed{box-shadow:0 0 0 3px #71faff44,0 0 48px #48eaff66,inset 0 0 65px #48eaff38}
+.crit-arena.hit-confirmed:after{content:"";position:absolute;inset:12%;border:1px solid #a8ffff99;border-radius:50%;box-shadow:0 0 30px #48eaff88;pointer-events:none;animation:impactWave .24s ease-out both;z-index:12}
+@keyframes impactWave{from{opacity:1;transform:scale(.82)}to{opacity:0;transform:scale(1.12)}}
+@media(max-width:700px){.bottom-nav{grid-template-columns:repeat(4,minmax(0,1fr))}.bottom-nav .nav-tab{min-height:43px}.ui-bottom-body .upgrade{padding:12px}.ui-bottom-body .upgrade-qty{font-size:.7rem}}
+@media(prefers-reduced-motion:reduce){.ui-bottom-sheet.open,.ui-status-sheet.open,.boss-target.hit,.crit-arena.hit-confirmed:after{animation:none}}
