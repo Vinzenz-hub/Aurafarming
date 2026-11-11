@@ -95,10 +95,8 @@
   const navItems=[
     ["combat","⚔️","Kampf"],
     ["upgrades","⚡","Shop"],
-    ["progress","📈","Fortschritt"],
-    ["quests","📜","Quests"],
-    ["skills","🌳","Skills"],
-    ["more","☰","Mehr"]
+    ["build","🧬","Build"],
+    ["progress","▤","Progress"]
   ];
   if(oldNav) oldNav.innerHTML=navItems.map(([id,icon,label])=>`<button class="nav-tab ${id==="combat"?"active":""}" data-ui-section="${id}"><span>${icon}</span><span>${label}</span></button>`).join("");
 
@@ -128,21 +126,22 @@
   const titles={
     upgrades:["SHOP","Stärker werden"],
     progress:["FORTSCHRITT","Prestige & Events"],
-    quests:["QUESTS","Mission Control"],
-    skills:["SKILL-UPGRADES","Dein Build"],
-    clickers:["KLICKER","Dein Aura-Stil"],
-    pets:["PETS","Deine Begleiter"],
-    more:["MEHR","Weitere Systeme"]
+    quests:["MISSIONEN","Quests & Events"],
+    skills:["BUILD","Skills, Clicker & Pets"],
+    clickers:["BUILD","Skills, Clicker & Pets"],
+    pets:["BUILD","Skills, Clicker & Pets"],
+    build:["BUILD","Skills, Clicker & Pets"]
   };
 
   let openSection=null;
 
   const contextCurrencies={
     upgrades:[["✨","AURA","aura","uiWalletAura"]],
-    skills:[["💎","KRISTALLE","crystals","uiWalletCrystals"]],
+    skills:[["💎","KRISTALLE","crystals","uiWalletCrystals"],["✨","AURA","aura","uiWalletAura"],["⭐","STERNE","stars","uiWalletStars"]],
     clickers:[["✨","AURA","aura","uiWalletAura"]],
     pets:[["⭐","STERNE","stars","uiWalletStars"]],
     quests:[["💎","KRISTALLE","crystals","uiWalletCrystals"]],
+    build:[["💎","KRISTALLE","crystals","uiWalletCrystals"],["✨","AURA","aura","uiWalletAura"],["⭐","STERNE","stars","uiWalletStars"]],
     progress:[["✨","AURA","aura","uiWalletAura"],["⭐","STERNE","stars","uiWalletStars"]]
   };
 
@@ -161,18 +160,11 @@
   }
 
   function setSheet(section){
-    const more=section==="more";
-    const target=more?"clickers":section;
-    sections.forEach(s=>s.classList.toggle("ui-view-active",s.id===target));
-    if(more){
-      $("clickers")?.classList.add("ui-view-active");
-      $("pets")?.classList.add("ui-view-active");
-      document.getElementById("uiBottomKicker").textContent=titles.more[0];
-      document.getElementById("uiBottomTitle").textContent="Clicker & Pets";
-    }else{
-      document.getElementById("uiBottomKicker").textContent=titles[section]?.[0]||"SYSTEM";
-      document.getElementById("uiBottomTitle").textContent=titles[section]?.[1]||"System";
-    }
+    const groups={build:["skills","clickers","pets"],progress:["progress","quests"]};
+    const visible=groups[section]||[section];
+    sections.forEach(s=>s.classList.toggle("ui-view-active",visible.includes(s.id)));
+    document.getElementById("uiBottomKicker").textContent=titles[section]?.[0]||"SYSTEM";
+    document.getElementById("uiBottomTitle").textContent=titles[section]?.[1]||"System";
     status.classList.remove("open");
     sheet.classList.add("open");
     updateContextWallet(section);
@@ -338,7 +330,7 @@
   setInterval(syncStatus,250);
   syncStatus();
 
-  // Hide the legacy more popup if older script opens it.
+  // Remove the obsolete popup; secondary systems live in grouped sheets.
   const legacyMore=$("moreMenu");
-  if(legacyMore) legacyMore.style.display="none";
+  if(legacyMore) legacyMore.remove();
 })();
