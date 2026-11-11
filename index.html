@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#100a25">
+  <meta name="theme-color" content="#071321">
   <meta name="description" content="Aura Farming – aktives Aura-Boss-Spiel mit Crits, Idle-Schaden, Quests, Pets und Prestige.">
   <title>✨ Aura Farming 2.0</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20261111scifi">
   <link rel="stylesheet" href="ui-v2.css">
 </head>
 <body>
@@ -54,7 +54,7 @@
           <h2 id="bossName">Aura-Schatten</h2>
           <p id="bossDesc">Ein dunkler Kern, der deine erste Aura-Prüfung bewacht.</p>
         </div>
-        <div id="bossEmoji" class="boss-emoji">🌑</div>
+        <div id="bossEmoji" class="boss-emoji"><img id="bossCardImage" alt="" hidden><span>🌑</span></div>
       </div>
       <div class="boss-timer"><span>⏱️</span><b id="bossTimer">30.0</b><span>s</span></div><div id="bossPhase" class="boss-phase phase-1">🟢 PHASE 1 · Stabil</div>
       <div class="boss-bar"><div id="bossHealth" class="boss-health"></div></div>
@@ -73,7 +73,7 @@
         <div class="arena-label">BOSS COMBAT FIELD <span>• LIVE TARGET AREA</span></div>
         <div class="arena-grid"></div>
         <div id="fakeZone" class="fake-zone"><span>FAKE</span></div><div id="shieldZone" class="shield-zone"><span>SHIELD</span></div><div id="critZone" class="crit-zone"><span id="critZoneText">CRIT</span></div>
-        <div id="bossTarget" class="boss-target"><div class="boss-target-glow"></div><span id="bossTargetEmoji">🌑</span></div><div id="bossShield" class="boss-shield"><span>SHIELD</span></div><div id="critMarker" class="crit-marker"></div>
+        <div id="bossTarget" class="boss-target"><div class="boss-target-glow"></div><img id="bossTargetImage" class="boss-target-image" alt="" hidden><span id="bossTargetEmoji">🌑</span></div><div id="bossShield" class="boss-shield"><span>SHIELD</span></div><div id="critMarker" class="crit-marker"></div>
         <button id="auraCore" class="aura-core clicker-basic" aria-label="Aura farmen" tabindex="-1">
           <div class="core-ring ring-a"></div><div class="core-ring ring-b"></div>
           <div class="core-glow"></div><span class="core-symbol">✦</span><span class="core-label">AURA</span>
@@ -156,7 +156,7 @@
     <button class="nav-tab active" data-section="combat">⚔️<span>Kampf</span></button><button class="nav-tab" data-section="upgrades">⚡<span>Upgrades</span></button><button class="nav-tab" data-section="progress">📈<span>Fortschritt</span></button><button class="nav-tab" data-section="quests">📜<span>Quests</span></button><button class="nav-tab" data-section="skills">🌳<span>Skills</span></button><button class="nav-tab" data-section="more">☰<span>Mehr</span></button>
   </nav>
   <div id="moreMenu" class="more-menu"><button data-section="clickers">◈ Clicker</button><button data-section="pets">🐾 Pets</button></div>
-  <script src="script.js?v=20261111a"></script>
+  <script src="script.js?v=20261111b"></script>
   <script src="ui-v2.js?v=56a0d4"></script>
 </body>
 </html>
