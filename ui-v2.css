@@ -567,3 +567,215 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opa
 .fake-zone{border-color:#ff6da8;background:#ff4f9a18;color:#ff9bc0}
 .aura-core.clicker-basic{background:radial-gradient(circle,#f7ffff 0 2%,#8dfaff 3% 8%,#4a9dff 22%,#3c2a9b 46%,#101b42 68%,#050b18 76%);box-shadow:0 0 30px #48eaff,0 0 90px #4d6bff55,inset 0 0 45px #fff5}
 .core-ring{border-color:#6beeffaa}.core-glow{background:#8efaff;box-shadow:0 0 28px #48eaff}.core-symbol{text-shadow:0 0 25px #fff,0 0 45px #48eaff}
+
+
+/* === AETHER//OPS — unified command-bridge interface ===
+   One visual language for the complete game: instrument glass, machined frames,
+   restrained signal cyan and amber, and deliberate control hierarchy. */
+:root{
+  --ui-accent:#7de8f2;
+  --ui-purple:#b49aff;
+  --ui-panel:#091725f7;
+  --ui-line:#70dce52b;
+  --ui-radius-sm:9px;
+  --ui-radius-md:13px;
+  --ui-radius-lg:17px;
+}
+html,body{color:#e8f3f5}
+body{
+  background:
+    radial-gradient(ellipse at 50% -18%,#1b3a4c 0,transparent 48%),
+    radial-gradient(ellipse at 100% 48%,#18243b55 0,transparent 35%),
+    linear-gradient(180deg,#050b12 0%,#09131e 48%,#050a11 100%);
+}
+body:before{
+  opacity:.18;
+  background-image:linear-gradient(#a4e6ed0a 1px,transparent 1px),linear-gradient(90deg,#a4e6ed0a 1px,transparent 1px);
+  background-size:32px 32px;
+  mask-image:linear-gradient(180deg,#000 0%,transparent 78%);
+}
+/* Instrument header and combat readout */
+.ui-topbar{
+  background:linear-gradient(180deg,#050b12 0%,#0a1925f5 100%);
+  border-bottom:1px solid #6ddde64a;
+  box-shadow:0 8px 28px #0009,inset 0 -1px #b1f6ff0b;
+}
+.ui-brand{font-size:.88rem;letter-spacing:.12em;text-transform:uppercase}
+.ui-brand:before{width:7px;height:7px;background:#8cf3ed;box-shadow:0 0 7px #8cf3ed,0 0 17px #8cf3ed}
+.ui-brand small{color:#8bc8d0;letter-spacing:.2em}
+.ui-top-btn,.ui-close{
+  border:1px solid #75cbd44d;border-radius:8px;
+  background:linear-gradient(180deg,#193343,#0b1b29);
+  color:#d6f4f4;box-shadow:inset 0 1px #ffffff18,0 3px 10px #0005;
+  text-transform:uppercase;font-size:.68rem;letter-spacing:.12em;
+}
+.ui-combat-hud{
+  background:linear-gradient(180deg,#0b1b29fa,#08131ff5);
+  border-bottom:1px solid #70dce53b;
+  box-shadow:0 12px 28px #0008;
+}
+.ui-combat-kicker,.ui-sheet-title small,.ui-bottom-head small{color:#80dce4;letter-spacing:.2em}
+.ui-combat-boss{letter-spacing:.025em;color:#f1f8f7}
+.ui-combat-stat{
+  border-radius:7px;border:1px solid #6acbd43b;
+  background:linear-gradient(145deg,#132b3a,#0b1926);
+  box-shadow:inset 0 1px #ffffff12,0 4px 12px #0004;
+}
+.ui-combat-stat small{color:#8faeb8}
+.ui-combat-stat b{color:#d9f5f3;font-variant-numeric:tabular-nums}
+.ui-combat-health{background:#02070d;border:1px solid #5bbac42b;border-radius:2px}
+.ui-combat-health i{background:linear-gradient(90deg,#d77b62,#e9bd75 52%,#83e2d6)}
+/* Panels use layered metal/glass instead of flat generic cards */
+.ui-status-sheet,.ui-bottom-sheet{
+  background:radial-gradient(ellipse at 50% 0%,#1b3544 0%,transparent 38%),linear-gradient(180deg,#091724fc,#060e18fd);
+  border-color:#68cbd32b;box-shadow:0 0 70px #000c,inset 0 1px #d6ffff0c;
+}
+.ui-sheet-head,.ui-bottom-head{
+  background:linear-gradient(90deg,#0d202d,#132735 48%,#0b1b29);
+  border-bottom:1px solid #75d4dc42;
+  box-shadow:inset 0 -1px #ffffff08;
+}
+.ui-sheet-title,.ui-bottom-heading strong{color:#f0f7f5;letter-spacing:.08em;text-transform:uppercase}
+.ui-stat,.ui-currency,.ui-boss-card,.ui-context-currency{
+  position:relative;overflow:hidden;
+  border:1px solid #6fcbd333;border-radius:10px;
+  background:linear-gradient(145deg,#132b3aeb,#0b1926f5);
+  box-shadow:inset 0 1px #ffffff12,0 8px 22px #0004;
+}
+.ui-stat:before,.ui-currency:before,.ui-boss-card:before{
+  content:"";position:absolute;left:0;top:0;width:26px;height:2px;background:#8ce3e5;opacity:.8;
+}
+.ui-stat small,.ui-currency small,.ui-context-currency small{color:#91c4ca;letter-spacing:.13em}
+.ui-stat b,.ui-currency b,.ui-context-currency b{color:#f0f7f5;font-variant-numeric:tabular-nums}
+.ui-stat.accent,.ui-boss-card{
+  border-color:#8bdde05c;
+  background:linear-gradient(135deg,#143747,#101d30 72%,#171d35);
+}
+.ui-boss-name{color:#f4faf8}
+.ui-boss-sub,.ui-resource-note{color:#9bb4bd}
+/* Navigation becomes a physical control rail */
+.bottom-nav{
+  background:linear-gradient(180deg,#102332f7,#07111cfb);
+  border-top:1px solid #70dce54a;
+  box-shadow:0 -10px 30px #000a,inset 0 1px #ffffff0c;
+}
+.bottom-nav .nav-tab{
+  min-height:55px;border:1px solid transparent;border-radius:8px;
+  color:#8ba5ad;background:transparent;gap:4px;
+  transition:background .16s,border-color .16s,color .16s,transform .16s;
+}
+.bottom-nav .nav-tab span{font-size:.57rem;letter-spacing:.1em;text-transform:uppercase}
+.bottom-nav .nav-tab.active{
+  color:#c9f8f2;border-color:#7bd6d65c;
+  background:linear-gradient(180deg,#1b4654,#102735);
+  box-shadow:inset 0 1px #d8ffff22,inset 0 -3px #7bd6d62a,0 0 18px #6ddce51c;
+  text-shadow:0 0 12px #8de5e5a0;
+}
+.bottom-nav .nav-tab:active{transform:translateY(1px)}
+/* All gameplay cards share a framed, machined surface */
+.ui-bottom-body .panel,.ui-bottom-body .upgrade,.ui-bottom-body .clicker-card,
+.ui-bottom-body .skill-card,.ui-bottom-body .pet-card,.ui-bottom-body .quest-panel,
+.ui-bottom-body .quest{
+  position:relative;border:1px solid #6fcbd333;border-radius:12px;
+  background:linear-gradient(145deg,#142a38f2 0%,#0c1a27f5 70%,#101a2bf5);
+  box-shadow:inset 0 1px #ffffff12,0 10px 25px #0005;
+}
+.ui-bottom-body .panel:before,.ui-bottom-body .upgrade:before,
+.ui-bottom-body .clicker-card:before,.ui-bottom-body .skill-card:before,
+.ui-bottom-body .pet-card:before{
+  content:"";position:absolute;top:-1px;left:16px;width:34px;height:2px;
+  background:linear-gradient(90deg,#82e0df,transparent);opacity:.85;
+}
+.ui-bottom-body .section-heading h2{color:#f0f7f5;letter-spacing:.035em}
+.ui-bottom-body .tag{color:#8ddce0;letter-spacing:.2em}
+.ui-bottom-body .panel h3,.ui-bottom-body .upgrade-name,
+.ui-bottom-body .clicker-card h3,.ui-bottom-body .skill-card h3,
+.ui-bottom-body .pet-card h3{color:#eaf5f3;letter-spacing:.025em}
+.ui-bottom-body .panel p,.ui-bottom-body .upgrade-desc,
+.ui-bottom-body .clicker-card p,.ui-bottom-body .skill-card p,
+.ui-bottom-body .pet-card p{color:#9bb2bb}
+.ui-bottom-body .upgrade-level{
+  color:#a8e8e4;border:1px solid #76cfd344;border-radius:5px;
+  background:#07131d;padding:4px 7px;letter-spacing:.13em;
+}
+/* A single coherent button system, with hierarchy by intent */
+button,.ui-bottom-body button,.ui-bottom-body .small-btn,
+.ui-bottom-body .upgrade-purchase,.ui-bottom-body .upgrade-qty,
+.ui-bottom-body .skill-card button,.ui-bottom-body .pet-card button,
+.ui-bottom-body .clicker-card button{
+  font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.ui-bottom-body button,.ui-bottom-body .small-btn,
+.ui-bottom-body .upgrade-purchase,.ui-bottom-body .upgrade-qty,
+.ui-bottom-body .skill-card button,.ui-bottom-body .pet-card button,
+.ui-bottom-body .clicker-card button{
+  border:1px solid #6fcbd34d;border-radius:7px;
+  background:linear-gradient(180deg,#1a3948 0%,#102532 100%);
+  color:#d5efed;box-shadow:inset 0 1px #ffffff1b,0 4px 10px #0004;
+  font-weight:850;letter-spacing:.055em;
+  transition:filter .14s,border-color .14s,box-shadow .14s,transform .14s;
+}
+.ui-bottom-body button:hover:not(:disabled){
+  border-color:#9be9e7;background:linear-gradient(180deg,#24505c,#153343);
+  box-shadow:inset 0 1px #ffffff25,0 0 16px #69d8d52a;
+  filter:brightness(1.08);
+}
+.ui-bottom-body button:active:not(:disabled){transform:translateY(1px);box-shadow:inset 0 2px 5px #0007}
+.ui-bottom-body .upgrade-purchase,.ui-bottom-body .small-btn{
+  min-height:44px;border-color:#9bdbd47a;
+  background:linear-gradient(180deg,#28606a,#17404c 55%,#102d3b);
+  color:#effffb;text-transform:uppercase;letter-spacing:.1em;
+  box-shadow:inset 0 1px #ffffff30,0 4px 14px #0005,0 0 14px #5ed0ce18;
+}
+.ui-bottom-body .upgrade-qty{
+  min-height:40px;background:linear-gradient(180deg,#152c39,#0d1d29);
+  color:#a9c9cc;font-variant-numeric:tabular-nums;
+}
+.ui-bottom-body .upgrade-qty.selected{
+  color:#f0fffb;border-color:#a2eeea;
+  background:linear-gradient(180deg,#28606a,#183b4c);
+  box-shadow:inset 0 1px #ffffff35,0 0 15px #6bd9d333;
+}
+.ui-bottom-body button:disabled{opacity:.38;filter:saturate(.45);box-shadow:none}
+.ui-bottom-body .event-box{
+  border:1px solid #8acbd24a;border-radius:9px;
+  background:linear-gradient(135deg,#142f3c,#121d31);color:#d5eeee;
+}
+.ui-bottom-body .quest{color:#c2d6d8}
+.ui-bottom-body .quest b{color:#f0faf6}
+.ui-bottom-body .upgrade-cost,.ui-bottom-body .price,
+.ui-bottom-body .skill-cost,.ui-bottom-body .pet-cost{color:#f0c985}
+.ui-bottom-body .skill-dot.filled{background:linear-gradient(90deg,#7de2d9,#b49aff);border-color:#9ce8e2;box-shadow:0 0 8px #72d9d955}
+.ui-bottom-body .skill-dot.next{border-color:#e8bd73;background:#e8bd7317}
+.ui-bottom-body .skill-card.active,.ui-bottom-body .clicker-card.active,
+.ui-bottom-body .pet-card.active{border-color:#91e6df;box-shadow:0 0 22px #6bd9d322,inset 0 0 18px #6bd9d30d}
+.ui-bottom-body .clicker-preview{border:1px solid #70cbd34d;background:radial-gradient(circle,#244d5c,#0a1724);box-shadow:inset 0 0 25px #76e2dd1c,0 0 14px #6bd9d31b}
+.ui-context-currency{background:linear-gradient(145deg,#163442,#101d2e);border-color:#75d4dc58}
+/* Tactical arena finish: instrument markings and restrained target glow */
+.crit-arena{
+  border:1px solid #75d6d66b;border-radius:13px;
+  background:radial-gradient(ellipse at 50% 45%,#18394a66 0%,#0c1b2aee 58%,#07111cf5 100%);
+  box-shadow:0 0 0 1px #ffffff08,0 18px 55px #0008,inset 0 0 55px #67d4d512;
+}
+.arena-grid{opacity:.42;background-size:28px 28px;background-image:linear-gradient(#8ddfe10d 1px,transparent 1px),linear-gradient(90deg,#8ddfe10d 1px,transparent 1px)}
+.arena-corner{border-color:#9ce9e5;filter:drop-shadow(0 0 4px #69d4d4)}
+.arena-label{color:#9be2df;letter-spacing:.2em}
+.boss-target{border-color:#a6d8db99;box-shadow:0 0 24px #69d8d477,0 0 75px #5aa7b533,inset 0 0 45px #ffffff22}
+.boss-target-glow{background:radial-gradient(circle,#8de4df42,transparent 68%)}
+.boss-target-image{filter:drop-shadow(0 0 14px #79dedc88) drop-shadow(0 0 28px #9b8bda44)}
+.crit-zone{border-color:#b4eee7;background:#75ddd82a;color:#eafff9;box-shadow:0 0 18px #70d9d988,inset 0 0 18px #70d9d844}
+.crit-marker{background:#f3fffb;box-shadow:0 0 10px #8fe9e2,0 0 20px #fff}
+.shield-zone{border-color:#b49aff;background:#a58bff18;color:#d8ceff;box-shadow:inset 0 0 24px #a58bff35,0 0 16px #a58bff55}
+.fake-zone{border-color:#e98b9e;background:#d96e8918;color:#ffbdc9}
+.aura-core.clicker-basic{background:radial-gradient(circle,#f7fffc 0 2%,#9cece4 3% 8%,#5b9ca9 22%,#3b477d 46%,#17243b 68%,#08121c 76%);box-shadow:0 0 25px #75dcd9,0 0 75px #6c82c544,inset 0 0 38px #fff4}
+.core-ring{border-color:#a5ebe4aa}.core-glow{background:#a1eee4;box-shadow:0 0 24px #76ddd7}
+.core-symbol{text-shadow:0 0 20px #fff,0 0 35px #78ddd8}
+:focus-visible{outline:2px solid #a5eee8!important;outline-offset:3px}
+@media(max-width:600px){
+  .bottom-nav .nav-tab span{font-size:.51rem;letter-spacing:.07em}
+  .ui-bottom-body .panel,.ui-bottom-body .upgrade,.ui-bottom-body .clicker-card,
+  .ui-bottom-body .skill-card,.ui-bottom-body .pet-card{border-radius:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  .bottom-nav .nav-tab,.ui-bottom-body button{transition:none}
+}
