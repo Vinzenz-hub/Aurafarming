@@ -779,3 +779,61 @@ button,.ui-bottom-body button,.ui-bottom-body .small-btn,
 @media(prefers-reduced-motion:reduce){
   .bottom-nav .nav-tab,.ui-bottom-body button{transition:none}
 }
+
+
+/* Mobile viewport composition: one screen, quiet lower dock, pull-down boss dossier */
+@media(max-width:700px){
+  :root{--ui-top:54px;--ui-bottom:62px;--ui-combat-hud:76px}
+  body{padding-top:calc(var(--ui-top) + var(--ui-combat-hud) + env(safe-area-inset-top,0px));padding-bottom:calc(var(--ui-bottom) + env(safe-area-inset-bottom,0px));overflow:hidden}
+  .ui-topbar{height:calc(var(--ui-top) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 12px 5px}
+  .ui-brand{font-size:.72rem;letter-spacing:.1em}
+  .ui-top-btn{min-height:34px;padding:0 10px;font-size:.61rem}
+  .ui-combat-hud{top:calc(var(--ui-top) + env(safe-area-inset-top,0px));min-height:var(--ui-combat-hud);padding:5px 10px 7px;transition:min-height .22s ease,background .22s}
+  .ui-boss-toggle{display:block;width:100%;padding:0;border:0;background:transparent;color:inherit;text-align:left}
+  .ui-combat-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px}
+  .ui-combat-boss{font-size:.78rem}
+  .ui-combat-meta{font-size:.52rem}
+  .ui-combat-stat{min-width:57px;padding:4px 6px}
+  .ui-combat-stat small{font-size:.45rem}
+  .ui-combat-stat b{font-size:.75rem}
+  .ui-combat-health{margin:5px auto 0;height:4px}
+  .ui-boss-chevron{position:absolute;right:12px;top:5px;color:#8fbfc2;font-size:.8rem;transition:transform .2s}
+  .ui-combat-hud.boss-expanded{min-height:190px;background:#0a1926f7;box-shadow:0 18px 32px #000b}
+  .ui-combat-hud.boss-expanded .ui-boss-chevron{transform:rotate(180deg)}
+  .ui-boss-details{padding:10px 4px 4px;border-top:1px solid #75d4dc30;margin-top:8px}
+  .ui-boss-detail-row{display:flex;justify-content:space-between;align-items:center;font-weight:900}
+  .ui-boss-detail-row span{font-size:1.5rem}
+  .ui-boss-details p{margin:5px 0;color:#a8c1c6;font-size:.7rem}
+  .ui-boss-detail-meta{font-size:.65rem;color:#8fe0d8;margin:5px 0}
+  .ui-boss-detail-mechanics{display:flex;flex-wrap:wrap;gap:5px}
+  .ui-boss-detail-mechanics .mechanic{font-size:.57rem;padding:4px 7px}
+  .bottom-nav{min-height:var(--ui-bottom);padding:4px 8px calc(4px + env(safe-area-inset-bottom,0px));gap:3px;background:linear-gradient(180deg,#0b1822d9,#07111cf2);border-top:1px solid #70dce52b;box-shadow:0 -5px 18px #0007;backdrop-filter:blur(14px)}
+  .bottom-nav .nav-tab{min-height:46px;padding:3px 1px;border-radius:7px;gap:1px;color:#71878e}
+  .bottom-nav .nav-tab>span:first-child{font-size:.85rem}
+  .bottom-nav .nav-tab span{font-size:.46rem;letter-spacing:.04em}
+  .bottom-nav .nav-tab.active{background:#6fcacb0c;border-color:#75d4dc2b;color:#b5e6df;box-shadow:none;text-shadow:none}
+  .ui-bottom-sheet{top:calc(54px + env(safe-area-inset-top,0px));bottom:calc(62px + env(safe-area-inset-bottom,0px));}
+  .ui-bottom-head{height:54px;min-height:54px;padding:5px 10px;align-items:center}
+  .ui-bottom-head strong{font-size:.78rem}
+  .ui-bottom-head small{font-size:.48rem}
+  .ui-bottom-head .ui-close{min-height:34px;padding:0 9px;font-size:.58rem}
+  .ui-bottom-body{padding:9px 9px 20px}
+  .ui-bottom-body .section-heading{margin-bottom:8px}
+  .ui-bottom-body .section-heading h2{font-size:1.05rem}
+  .ui-bottom-body .upgrade-grid,.ui-bottom-body .clicker-grid,.ui-bottom-body .skill-grid,.ui-bottom-body .pet-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .ui-bottom-body .upgrade,.ui-bottom-body .panel,.ui-bottom-body .skill-card,.ui-bottom-body .pet-card,.ui-bottom-body .clicker-card{padding:10px}
+  .ui-bottom-body .upgrade-name,.ui-bottom-body .skill-card h3,.ui-bottom-body .pet-card h3,.ui-bottom-body .clicker-card h3{font-size:.78rem}
+  .ui-bottom-body .upgrade-desc,.ui-bottom-body .skill-card p,.ui-bottom-body .pet-card p,.ui-bottom-body .clicker-card p{font-size:.65rem}
+  .ui-bottom-body button{min-height:36px;font-size:.65rem}
+  .ui-bottom-body .upgrade-qty{min-height:32px;padding:4px}
+  .ui-bottom-body .upgrade-purchase,.ui-bottom-body .small-btn{min-height:38px}
+  .crit-arena{height:calc(100svh - 205px);min-height:0;max-height:none;width:100%;border-radius:12px}
+  .farm-area{padding:5px 0}
+  .message{font-size:.65rem;margin-top:5px}
+  body.ui-sheet-open .ui-combat-hud,body.ui-sheet-open .ui-topbar{opacity:.18;pointer-events:none}
+}
+@media(max-width:390px){
+  .ui-combat-stat{min-width:49px}
+  .ui-combat-boss{max-width:150px}
+  .bottom-nav .nav-tab span{font-size:.42rem}
+}
