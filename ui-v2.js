@@ -21,7 +21,7 @@
   combatHud.className="ui-combat-hud";
   combatHud.innerHTML=`
     <button class="ui-boss-toggle" id="uiBossToggle" aria-expanded="false" aria-controls="uiBossDetails">
-      <span class="ui-combat-row">
+      <div class="ui-combat-row">
       <div class="ui-combat-name">
         <span class="ui-combat-kicker">AKTIVER BOSS</span>
         <b class="ui-combat-boss" id="uiCombatBoss">Aura-Schatten 🌑</b>
@@ -30,7 +30,6 @@
       <div class="ui-combat-stat ui-combat-timer"><small>ZEIT</small><b id="uiCombatTimer">30.0 s</b></div>
       <div class="ui-combat-stat ui-combat-damage"><small>SCHADEN</small><b id="uiCombatDamage">1 / Klick</b></div>
     </div>
-      </span>
       <span class="ui-boss-chevron">⌄</span>
     </button>
     <div class="ui-combat-health"><i id="uiCombatHealth"></i></div>
