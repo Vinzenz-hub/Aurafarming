@@ -42,6 +42,21 @@
   `;
   document.body.appendChild(combatHud);
 
+  // Reference-style boss mechanic card lives inside the arena, not in a detached panel.
+  const mechanicPanel=document.createElement("aside");
+  mechanicPanel.className="raid-mechanics";
+  mechanicPanel.setAttribute("aria-live","polite");
+  mechanicPanel.innerHTML="<small>GEGNER-MECHANIKEN</small><div class='raid-mechanics-content'>Keine aktive Mechanik</div>";
+  const combatArena=$("critArena");
+  if(combatArena)combatArena.appendChild(mechanicPanel);
+
+  // Add a compact pause-style status control without altering combat timing semantics.
+  const arenaStamp=document.createElement("div");
+  arenaStamp.className="raid-arena-stamp";
+  arenaStamp.textContent="AURAFARMING // COMBAT SYSTEM";
+  if(combatArena)combatArena.appendChild(arenaStamp);
+
+
   const status=document.createElement("section");
   status.className="ui-status-sheet";
   status.innerHTML=`
@@ -343,11 +358,17 @@
     if(desc)$("uiBossDetailDesc").textContent=desc.textContent;
     if(phaseText)$("uiBossDetailPhase").textContent=phaseText.textContent;
     if(mechanics)$("uiBossDetailMechanics").innerHTML=mechanics.innerHTML;
+    const raidMechanics=document.querySelector(".raid-mechanics-content");
+    if(raidMechanics&&mechanics){
+      raidMechanics.innerHTML=mechanics.innerHTML||"<span>Keine aktive Mechanik</span>";
+      const raidTitle=document.querySelector(".raid-mechanics>small");
+      if(raidTitle)raidTitle.textContent=document.getElementById("enemyType")?.textContent==="BOSS"?"BOSS-MECHANIKEN":"GEGNER-EIGENSCHAFTEN";
+    }
     if(emojiText)$("uiBossDetailEmoji").textContent=emojiText.textContent;
     if(emoji)$("uiBossEmoji").textContent=emoji.textContent;
     if(hp)$("uiBossHp").textContent=hp.textContent+" · "+(timer?timer.textContent:"0")+" s";
     if(bar)$("uiBossHpBar").style.width=bar.style.width||"100%";
-    if(num&&phase)$("uiBossMeta").textContent="Boss "+num.textContent+" · "+phase.textContent;
+    if(num&&phase)$("uiBossMeta").textContent=(document.getElementById("enemyType")?.textContent==="BOSS"?"Boss ":"Gegner ")+num.textContent+" · "+phase.textContent;
 
     if(openSection)updateContextWallet(openSection);
 
@@ -355,7 +376,7 @@
     if(combatBoss) combatBoss.textContent=(name?name.textContent:"Gegner")+" "+(emoji?emoji.textContent:"");
     const isBoss=document.getElementById("enemyType")?.textContent==="BOSS";
     const kicker=$("uiCombatKicker");if(kicker)kicker.textContent=isBoss?"BOSS-KONTAKT":"AKTIVER GEGNER";
-    if(combatMeta) combatMeta.textContent=(num?"Boss "+num.textContent:"Boss")+" · "+(phase?phase.textContent:"");
+    if(combatMeta) combatMeta.textContent=(isBoss?"Boss ":"Gegner ")+(num?num.textContent:"")+" · "+(phase?phase.textContent:"");
     if(combatTimer) combatTimer.textContent=(timer?timer.textContent:"0.0")+" s";
     const powerNow=$("power");
     if(combatDamage) combatDamage.textContent=(powerNow?powerNow.textContent:"0")+" / Klick";
