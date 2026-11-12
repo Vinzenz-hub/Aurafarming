@@ -1136,3 +1136,26 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 #critArena .arena-corner{z-index:12!important;filter:drop-shadow(0 0 8px #54eaff)}
 #message{backdrop-filter:blur(8px);box-shadow:0 0 22px #48dfff18}
 @media(max-width:700px){.crit-arena{background-position:52% center!important}.boss-target.boss-enemy .boss-target-image{filter:drop-shadow(0 0 18px #a45cffb9) drop-shadow(0 0 42px #3cdbff55)!important}}
+
+/* BOSS COMBAT TELEGRAPH + IMPACT ANIMATION SET */
+.boss-target.enemy-animated .boss-target-image{transform-origin:50% 70%;animation:raidEnemyIdle 2.8s ease-in-out infinite!important}
+.boss-target.enemy-animated.hit .boss-target-image{animation:raidEnemyHit .24s ease-out!important}
+.boss-target.boss-variant-0 .boss-target-image{filter:drop-shadow(0 0 28px #a75cffcc) drop-shadow(0 0 80px #733bff70)!important}
+.boss-target.boss-variant-1 .boss-target-image{filter:drop-shadow(0 0 28px #42eaffcc) drop-shadow(0 0 80px #236dff70)!important}
+.boss-target.boss-variant-2 .boss-target-image{filter:drop-shadow(0 0 28px #ff58d8cc) drop-shadow(0 0 80px #a52bff70)!important}
+.boss-target.boss-variant-3 .boss-target-image{filter:drop-shadow(0 0 28px #a8ff70bb) drop-shadow(0 0 80px #37bd8b66)!important}
+.crit-arena.boss-warning .boss-target.boss-enemy .boss-target-image{animation:raidBossCharge .52s ease-in-out infinite alternate!important}
+.crit-arena.boss-attack-0:after{background:radial-gradient(ellipse at 50% 55%,#ff8a3b42,transparent 58%),linear-gradient(180deg,#ff702522,transparent 65%)!important;animation:raidWarningWave .65s ease-in-out infinite alternate}
+.crit-arena.boss-attack-1:after{background:radial-gradient(ellipse at 50% 52%,#4deaff45,transparent 56%),linear-gradient(90deg,#4deaff22,transparent 50%,#4deaff22)!important;animation:raidShieldPulse .8s ease-in-out infinite alternate}
+.crit-arena.boss-attack-2:after{background:radial-gradient(ellipse at 50% 52%,#a34aff65,transparent 62%),linear-gradient(180deg,#4b19a833,transparent)!important;animation:raidVoidSurge .75s ease-in-out infinite alternate}
+.crit-arena.boss-impact .boss-target.boss-enemy .boss-target-image{animation:raidBossImpact .72s cubic-bezier(.15,.75,.2,1)!important}
+.crit-arena.boss-impact:after{animation:raidImpactFlash .62s ease-out!important}
+@keyframes raidEnemyIdle{0%,100%{transform:translateY(0) rotate(-1deg) scale(1)}50%{transform:translateY(-9px) rotate(1deg) scale(1.035)}}
+@keyframes raidEnemyHit{0%{transform:translateX(0) scale(1)}25%{transform:translateX(-9px) scale(.96)}55%{transform:translateX(8px) scale(1.04)}100%{transform:translateX(0) scale(1)}}
+@keyframes raidBossCharge{from{transform:scale(1) translateY(0);filter:brightness(1)}to{transform:scale(1.035) translateY(-7px);filter:brightness(1.42)}}
+@keyframes raidBossImpact{0%{transform:scale(1.06);filter:brightness(2.2)}45%{transform:scale(.975) translateY(7px);filter:brightness(1.5)}100%{transform:scale(1);filter:brightness(1)}}
+@keyframes raidWarningWave{from{opacity:.5}to{opacity:1}}
+@keyframes raidShieldPulse{from{opacity:.3}to{opacity:.95}}
+@keyframes raidVoidSurge{from{opacity:.35;filter:hue-rotate(0)}to{opacity:1;filter:hue-rotate(35deg)}}
+@keyframes raidImpactFlash{0%{opacity:1}100%{opacity:.3}}
+@media(prefers-reduced-motion:reduce){.boss-target.enemy-animated .boss-target-image,.crit-arena.boss-warning .boss-target.boss-enemy .boss-target-image{animation:none!important}}
