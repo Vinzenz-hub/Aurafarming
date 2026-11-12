@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Funkenläufer">
+ <defs>
+  <radialGradient id="body" cx="48%" cy="34%" r="70%"><stop offset="0" stop-color="#ffd35e"/><stop offset=".45" stop-color="#9b3e25"/><stop offset="1" stop-color="#080d20"/></radialGradient>
+  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff" stop-opacity=".9"/><stop offset=".45" stop-color="#ffd35e"/><stop offset="1" stop-color="#9b3e25"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ </defs>
+ <ellipse cx="256" cy="450" rx="140" ry="25" fill="#ffd35e" opacity=".2"/>
+ <g filter="url(#glow)" stroke="url(#edge)" stroke-width="9" stroke-linejoin="round">
+  <path d="M184 180 L80 110 125 255Z" fill="#9b3e25" opacity=".92"/><path d="M328 180 L432 110 387 255Z" fill="#9b3e25" opacity=".92"/>
+  <path d="M256 60 L300 160 375 125 338 230 415 295 310 320 256 440 202 320 97 295 174 230 137 125 212 160Z" fill="url(#body)"/>
+  <path d="M205 112 L230 35 256 112 282 35 307 112" fill="#9b3e25"/>
+  <path d="M190 290 L135 385 225 350 M322 290 L377 385 287 350" fill="none" stroke="#ffd35e" stroke-width="17" stroke-linecap="round"/>
+  <path d="M180 215 Q256 260 332 215" fill="none" stroke="#ffd35e" stroke-width="8" opacity=".75"/>
+ </g>
+ <g fill="#f4ffff" filter="url(#glow)"><ellipse cx="207" cy="216" rx="25" ry="36"/><ellipse cx="305" cy="216" rx="25" ry="36"/></g>
+ <g fill="#9b3e25"><ellipse cx="210" cy="220" rx="10" ry="25"/><ellipse cx="302" cy="220" rx="10" ry="25"/></g>
+ <path d="M225 310 Q256 335 287 310" fill="none" stroke="#ffd35e" stroke-width="12" stroke-linecap="round"/>
+ <path d="M256 135 L276 175 256 195 236 175Z" fill="#fff" opacity=".7"/>
+ <g fill="#ffd35e" opacity=".9"><circle cx="110" cy="350" r="7"/><circle cx="398" cy="350" r="7"/><circle cx="150" cy="105" r="5"/><circle cx="362" cy="105" r="5"/></g>
+ </svg>

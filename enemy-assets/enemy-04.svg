@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Kristallling">
+ <defs>
+  <radialGradient id="body" cx="48%" cy="34%" r="70%"><stop offset="0" stop-color="#78f0cb"/><stop offset=".45" stop-color="#236b63"/><stop offset="1" stop-color="#080d20"/></radialGradient>
+  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff" stop-opacity=".9"/><stop offset=".45" stop-color="#78f0cb"/><stop offset="1" stop-color="#236b63"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ </defs>
+ <ellipse cx="256" cy="450" rx="140" ry="25" fill="#78f0cb" opacity=".2"/>
+ <g filter="url(#glow)" stroke="url(#edge)" stroke-width="9" stroke-linejoin="round">
+  <path d="M165 150 L70 95 105 270Z" fill="#236b63" opacity=".92"/><path d="M347 150 L442 95 407 270Z" fill="#236b63" opacity=".92"/>
+  <path d="M256 45 L370 145 345 315 256 435 167 315 142 145Z" fill="url(#body)"/>
+  <path d="M205 112 L230 35 256 112 282 35 307 112" fill="#236b63"/>
+  <path d="M190 290 L135 385 225 350 M322 290 L377 385 287 350" fill="none" stroke="#78f0cb" stroke-width="17" stroke-linecap="round"/>
+  <path d="M180 215 Q256 260 332 215" fill="none" stroke="#78f0cb" stroke-width="8" opacity=".75"/>
+ </g>
+ <g fill="#f4ffff" filter="url(#glow)"><ellipse cx="207" cy="216" rx="25" ry="36"/><ellipse cx="305" cy="216" rx="25" ry="36"/></g>
+ <g fill="#236b63"><ellipse cx="210" cy="220" rx="10" ry="25"/><ellipse cx="302" cy="220" rx="10" ry="25"/></g>
+ <path d="M225 310 Q256 335 287 310" fill="none" stroke="#78f0cb" stroke-width="12" stroke-linecap="round"/>
+ <path d="M256 135 L276 175 256 195 236 175Z" fill="#fff" opacity=".7"/>
+ <g fill="#78f0cb" opacity=".9"><circle cx="110" cy="350" r="7"/><circle cx="398" cy="350" r="7"/><circle cx="150" cy="105" r="5"/><circle cx="362" cy="105" r="5"/></g>
+ </svg>
