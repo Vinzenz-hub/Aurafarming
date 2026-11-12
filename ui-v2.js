@@ -23,7 +23,7 @@
     <button class="ui-boss-toggle" id="uiBossToggle" aria-expanded="false" aria-controls="uiBossDetails">
       <div class="ui-combat-row">
       <div class="ui-combat-name">
-        <span class="ui-combat-kicker">AKTIVER BOSS</span>
+        <span class="ui-combat-kicker" id="uiCombatKicker">AKTIVER GEGNER</span>
         <b class="ui-combat-boss" id="uiCombatBoss">Aura-Schatten 🌑</b>
         <span class="ui-combat-meta" id="uiCombatMeta">Boss 1 · Phase 1</span>
       </div>
@@ -352,7 +352,9 @@
     if(openSection)updateContextWallet(openSection);
 
     const combatBoss=$("uiCombatBoss"), combatMeta=$("uiCombatMeta"), combatTimer=$("uiCombatTimer"), combatDamage=$("uiCombatDamage"), combatHealth=$("uiCombatHealth");
-    if(combatBoss) combatBoss.textContent=(name?name.textContent:"Boss")+" "+(emoji?emoji.textContent:"");
+    if(combatBoss) combatBoss.textContent=(name?name.textContent:"Gegner")+" "+(emoji?emoji.textContent:"");
+    const isBoss=document.getElementById("enemyType")?.textContent==="BOSS";
+    const kicker=$("uiCombatKicker");if(kicker)kicker.textContent=isBoss?"BOSS-KONTAKT":"AKTIVER GEGNER";
     if(combatMeta) combatMeta.textContent=(num?"Boss "+num.textContent:"Boss")+" · "+(phase?phase.textContent:"");
     if(combatTimer) combatTimer.textContent=(timer?timer.textContent:"0.0")+" s";
     const powerNow=$("power");
