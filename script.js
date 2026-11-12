@@ -198,6 +198,8 @@ function render(){
  const b=boss();
  const phase=bossPhase(),phaseInfo=bossPhaseInfo();
  const arena=document.querySelector(".crit-arena");
+ arena.classList.toggle("boss-fight",!!b.isBoss);arena.classList.toggle("enemy-fight",!b.isBoss);
+ const arenaLabel=arena.querySelector(".arena-label");if(arenaLabel)arenaLabel.innerHTML=b.isBoss?"BOSS ARENA <span>• ELITE TARGET</span>":"ENEMY FIELD <span>• STANDARD TARGET</span>";
  arena.classList.toggle("boss-warning",!!state.bossAttackTelegraph);
  const fake=document.getElementById("fakeZone"), shield=document.getElementById("shieldZone"), core=document.getElementById("auraCore");
  const target=$("bossTarget"),shieldEl=$("bossShield");
