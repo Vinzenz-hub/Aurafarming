@@ -998,3 +998,48 @@ button,.ui-bottom-body button,.ui-bottom-body .small-btn,
  .boss-target-image{filter:drop-shadow(0 0 14px #55dfff77)!important}
 }
 @media(prefers-reduced-motion:reduce){.boss-target-image,.boss-target.generic-enemy .boss-target-image{animation:none}}
+
+
+/* === NEBULA RAID: reference-inspired cinematic combat interface === */
+:root{--raid-cyan:#54f4ff;--raid-violet:#a36cff;--raid-pink:#ff55d8;--raid-ink:#050713}
+html,body{background:#030611;color:#eafaff}
+body{background:radial-gradient(ellipse at 50% 18%,#32145e55 0,transparent 48%),radial-gradient(ellipse at 12% 78%,#063e5860 0,transparent 38%),linear-gradient(180deg,#030611,#08091a 52%,#030611)}
+.ui-topbar{background:linear-gradient(180deg,#030611f7,#071326eF 82%,transparent);border-bottom:1px solid #54f4ff35;box-shadow:0 8px 35px #030611aa}
+.ui-brand{letter-spacing:.09em;text-transform:uppercase;text-shadow:0 0 16px #54f4ff66}
+.ui-brand:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--raid-cyan);box-shadow:0 0 12px var(--raid-cyan);margin-right:3px}
+.ui-combat-hud{background:linear-gradient(100deg,#080d20f5,#11102bf2 55%,#071c2bf2);border-bottom:1px solid #9b6cff66;box-shadow:0 12px 38px #02040dcc,inset 0 -1px #54f4ff22}
+.ui-combat-kicker{color:var(--raid-cyan);letter-spacing:.22em}
+.ui-combat-boss{color:#f4f1ff;text-shadow:0 0 18px #a36cff88;letter-spacing:.025em}
+.ui-combat-stat{border:1px solid #54f4ff3b;background:linear-gradient(145deg,#10253b99,#21113a99);box-shadow:inset 0 0 18px #54f4ff0c}
+.ui-combat-timer b{color:#8ffaff;text-shadow:0 0 12px #54f4ff88}
+.ui-combat-damage b{color:#d2adff;text-shadow:0 0 12px #a36cff88}
+.ui-combat-health{height:7px;background:#080817;border:1px solid #ffffff1c;box-shadow:0 0 12px #a36cff22}
+.ui-combat-health i{background:linear-gradient(90deg,#ff4f9c,#b05dff 48%,#4ff5ff);box-shadow:0 0 15px #9f66ff}
+.farm-area{padding:10px 0 16px}
+.combat-line{display:flex;justify-content:center;gap:12px}
+.combat-line>*{border:1px solid #54f4ff45;background:#07172bd9;padding:6px 12px;border-radius:5px;letter-spacing:.12em;text-shadow:0 0 12px currentColor}
+.crit-arena{isolation:isolate;max-width:1120px;border:1px solid #55eaff75;border-radius:9px;background:radial-gradient(ellipse at 50% 54%,#28134c 0,#10152d 44%,#050a18 100%);box-shadow:0 0 0 1px #a36cff26,0 24px 90px #000b,0 0 48px #3bdfff20,inset 0 0 100px #6b3aff20}
+.crit-arena:before{content:"";position:absolute;inset:10px;z-index:1;pointer-events:none;border:1px solid #54f4ff27;clip-path:polygon(0 0,18% 0,18% 2px,2px 2px,2px 18%,0 18%,0 0,82% 0,100% 0,100% 18%,calc(100% - 2px) 18%,calc(100% - 2px) 2px,82% 2px,82% 0,100% 82%,100% 100%,82% 100%,82% calc(100% - 2px),calc(100% - 2px) calc(100% - 2px),calc(100% - 2px) 82%,100% 82%,18% 100%,0 100%,0 82%,2px 82%,2px calc(100% - 2px),18% calc(100% - 2px),18% 100%)}
+.arena-grid{background-image:linear-gradient(#8deaff0b 1px,transparent 1px),linear-gradient(90deg,#8deaff0b 1px,transparent 1px),radial-gradient(ellipse at center,transparent 30%,#050713a8 100%);background-size:42px 42px,42px 42px,100% 100%;opacity:.8}
+.arena-label{top:20px;left:22px;color:#83f7ff;letter-spacing:.24em;text-shadow:0 0 12px #54f4ff99}
+.arena-label span{color:#a99bc5}
+.boss-target.boss-enemy{width:min(100%,1040px)!important;height:100%!important;max-width:100%!important;max-height:100%!important}
+.boss-target-image{filter:drop-shadow(0 0 26px #8f5cff88) drop-shadow(0 0 62px #43dfff44)!important}
+.boss-target.generic-enemy{width:min(39vw,290px)!important;height:min(39vw,290px)!important;max-width:45%!important;max-height:65%!important}
+.boss-target.generic-enemy .boss-target-image{filter:drop-shadow(0 0 18px #4feaffbb) drop-shadow(0 0 38px #995eff66)!important}
+.crit-zone{border:2px solid #7affff;border-radius:50%;background:radial-gradient(circle,#7bffff35 0 30%,#7bffff12 55%,transparent 70%);box-shadow:0 0 0 5px #54f4ff12,0 0 22px #54f4ffcc,inset 0 0 22px #54f4ff55}
+.crit-zone:after{content:"";position:absolute;inset:9px;border:1px dashed #b8ffff99;border-radius:50%;animation:raidSpin 5s linear infinite}
+.crit-zone span{color:#eaffff;font-weight:1000;letter-spacing:.16em;text-shadow:0 0 12px #54f4ff}
+.fake-zone{border-color:#ff67c8;background:#ff3e871c;box-shadow:0 0 28px #ff3e8799,inset 0 0 18px #ff3e8733}
+.boss-shield{filter:drop-shadow(0 0 18px #54eaff88)}
+.message{color:#b8eaff;text-shadow:0 0 10px #54f4ff55;letter-spacing:.04em}
+.bottom-nav{background:linear-gradient(180deg,#0a1024f5,#050914f8);border-top:1px solid #54f4ff55;box-shadow:0 -8px 34px #000a,0 0 25px #5c45a822}
+.bottom-nav .nav-tab.active{background:linear-gradient(135deg,#123e55cc,#38205dcc);border-color:#67f6ff;box-shadow:0 0 22px #48dfff3b,inset 0 0 18px #48dfff20}
+.ui-bottom-sheet,.ui-status-sheet{background:linear-gradient(160deg,#080d20fa,#100b25fa 70%,#061321fa);border:1px solid #54f4ff35;box-shadow:0 0 45px #000b}
+.ui-bottom-head,.ui-sheet-head{background:#0a1328;border-bottom:1px solid #54f4ff35}
+.ui-stat,.ui-currency,.ui-bottom-body .upgrade,.ui-bottom-body .panel,.ui-bottom-body .skill-card,.ui-bottom-body .pet-card,.ui-bottom-body .clicker-card,.quest{background:linear-gradient(145deg,#101c32dd,#17102bdd);border-color:#57dcf52e;box-shadow:inset 0 0 22px #54f4ff08}
+.ui-bottom-body button,.ui-top-btn,.ui-close{border-color:#54f4ff55;background:linear-gradient(135deg,#10283c,#21143e);color:#eaffff}
+@keyframes raidSpin{to{transform:rotate(360deg)}}
+@media(min-width:701px){.crit-arena{height:min(72vh,760px);min-height:560px}.boss-target.boss-enemy{height:100%!important}.ui-combat-hud{padding-left:max(20px,calc((100vw - 1120px)/2));padding-right:max(20px,calc((100vw - 1120px)/2))}}
+@media(max-width:700px){.crit-arena{border-radius:5px}.arena-label{top:11px;left:12px;font-size:.48rem}.boss-target.boss-enemy{width:118%!important;height:96%!important}.crit-zone{border-width:1px}.crit-zone:after{inset:6px}}
+@media(prefers-reduced-motion:reduce){.crit-zone:after{animation:none}}
