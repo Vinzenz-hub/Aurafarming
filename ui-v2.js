@@ -376,7 +376,7 @@
     if(combatBoss) combatBoss.textContent=(name?name.textContent:"Gegner")+" "+(emoji?emoji.textContent:"");
     const isBoss=document.getElementById("enemyType")?.textContent==="BOSS";
     const kicker=$("uiCombatKicker");if(kicker)kicker.textContent=isBoss?"BOSS-KONTAKT":"AKTIVER GEGNER";
-    if(combatMeta) combatMeta.textContent=(isBoss?"Boss ":"Gegner ")+(num?num.textContent:"")+" · "+(phase?phase.textContent:"");
+    if(combatMeta) combatMeta.textContent="Level "+(num?num.textContent:"")+" · "+(phase?phase.textContent:"");
     if(combatTimer) combatTimer.textContent=(timer?timer.textContent:"0.0")+" s";
     const powerNow=$("power");
     if(combatDamage) combatDamage.textContent=(powerNow?powerNow.textContent:"0")+" / Klick";
