@@ -176,7 +176,7 @@ function resetShield(){state.shieldMax=Math.max(20,Math.round(boss().hp*.22));st
 if(!Number(state.bossAttackAt))resetBossAttack();
 function bossTargetPos(){return {x:50,y:48}}
 function shieldOpeningAngle(){return Date.now()/1400+state.shieldSeed}
-function bossHitInfo(px,py,arena){const r=arena.getBoundingClientRect();const target=document.getElementById("bossTarget");const tr=target?target.getBoundingClientRect():null;const bx=tr?(tr.left+tr.width/2-r.left):r.width/2;const by=tr?(tr.top+tr.height/2-r.top):r.height/2;const bossRadius=tr?Math.min(tr.width,tr.height)/2:Math.min(r.width,r.height)*.13;const d=Math.hypot(px-bx,py-by);const angle=Math.atan2(py-by,px-bx);let delta=Math.atan2(Math.sin(angle-shieldOpeningAngle()),Math.cos(angle-shieldOpeningAngle()));const opening=Math.abs(delta)<.34;return {d,bossRadius,opening,inside:d<=bossRadius}}
+function bossHitInfo(px,py,arena){const r=arena.getBoundingClientRect();const target=document.getElementById("bossTarget");const tr=target?target.getBoundingClientRect():null;const bx=tr?(tr.left+tr.width/2-r.left):r.width/2;const by=tr?(tr.top+tr.height/2-r.top):r.height/2;const rx=tr?tr.width*.46:Math.min(r.width,r.height)*.13;const ry=tr?tr.height*.46:Math.min(r.width,r.height)*.13;const dx=px-bx,dy=py-by;const d=Math.hypot(dx,dy);const normalized=Math.hypot(dx/Math.max(1,rx),dy/Math.max(1,ry));const angle=Math.atan2(dy,dx);let delta=Math.atan2(Math.sin(angle-shieldOpeningAngle()),Math.cos(angle-shieldOpeningAngle()));const opening=Math.abs(delta)<.34;return {d,bossRadius:Math.min(rx,ry),opening,inside:normalized<=1}}
 function prestigeRequirement(currentPrestige=state.prestige){return (Math.max(0,Number(currentPrestige)||0)+2)*500000}
 function prestigeMultiplier(){return 1+state.prestige*.10}
 function skillLevel(id){return Math.min(10,Math.max(0,Number(state.skillLevels?.[id])||0))}
@@ -200,7 +200,7 @@ function render(){
  arena.classList.toggle("boss-warning",!!state.bossAttackTelegraph);
  const fake=document.getElementById("fakeZone"), shield=document.getElementById("shieldZone"), core=document.getElementById("auraCore");
  const target=$("bossTarget"),shieldEl=$("bossShield");
- if(target){const p=bossTargetPos();target.style.left=p.x+"%";target.style.top=p.y+"%";const art=b.isBoss?`boss-assets/boss-${String((state.bossIndex%20)+1).padStart(2,"0")}.png`:null;const image=$("bossTargetImage");if(image){image.hidden=!art;if(art){image.src=art;image.alt=b.name;image.onerror=()=>{image.hidden=true}}}$("bossTargetEmoji").textContent=b.emoji;target.classList.toggle("generic-enemy",!b.isBoss)}
+ if(target){const p=bossTargetPos();target.style.left=p.x+"%";target.style.top=p.y+"%";const art=b.isBoss?`boss-assets/boss-${String((state.bossIndex%20)+1).padStart(2,"0")}.png`:`enemy-assets/enemy-${String(((state.level-1)%9)+1).padStart(2,"0")}.svg`;const image=$("bossTargetImage");if(image){image.hidden=false;image.src=art;image.alt=b.name;image.onerror=()=>{image.hidden=true}}$("bossTargetEmoji").textContent=b.emoji;target.classList.toggle("generic-enemy",!b.isBoss);target.classList.toggle("boss-enemy",!!b.isBoss)}
  if(shieldEl){const p=bossTargetPos();shieldEl.style.left=p.x+"%";shieldEl.style.top=p.y+"%";shieldEl.classList.toggle("broken",!hasShield()||state.shieldBroken);shieldEl.classList.toggle("exposed",bossHitInfo(arena.clientWidth*p.x/100,arena.clientHeight*p.y/100,arena).opening)}
  if(fake){const show=b.mechanics.includes("👻 Fake-Zonen");fake.style.display=show?"flex":"none";}
  if(shield)shield.style.display=b.mechanics.includes("🛡️ Schild")?"flex":"none";
@@ -208,7 +208,7 @@ function render(){
 const max=b.hp;state.bossHp=Math.max(0,Math.min(state.bossHp,max));
  $("aura").textContent=format(state.aura);$("level").textContent=state.level;$("power").textContent=format(state.power);$("multiplier").textContent="x"+state.multiplier.toFixed(2);$("combo").textContent="x"+state.combo.toFixed(2);$("prestige").textContent=state.prestige;
  $("crystals").textContent=format(state.crystals);$("stars").textContent=state.stars;$("skillPoints").textContent=state.skillPoints;$("hudAura").textContent=format(state.aura);$("hudCrystals").textContent=format(state.crystals);$("hudStars").textContent=state.stars;$("hudSkillPoints").textContent=state.skillPoints;$("idleDamage").textContent=format(idleDps());$("bossStreak").textContent=state.bossStreak;
- $("bossNumber").textContent=state.level;$("enemyType").textContent=b.isBoss?"BOSS":"GEGNER";$("bossName").textContent=b.name;$("bossDesc").textContent=b.desc;$("bossEmoji").querySelector("span").textContent=b.emoji;const cardImage=$("bossCardImage");if(cardImage){const art=b.isBoss?`boss-assets/boss-${String((state.bossIndex%20)+1).padStart(2,"0")}.png`:null;cardImage.hidden=!art;if(art){cardImage.src=art;cardImage.alt=b.name;cardImage.onerror=()=>{cardImage.hidden=true}}}$("bossHp").textContent=format(state.bossHp)+" / "+format(max);$("bossHealth").style.width=(state.bossHp/max*100)+"%";$("bossReward").textContent="Belohnung: +"+format(b.reward*rewardMultiplier())+" Aura";
+ $("bossNumber").textContent=state.level;$("enemyType").textContent=b.isBoss?"BOSS":"GEGNER";$("bossName").textContent=b.name;const arenaLabel=$("critArena").querySelector(".arena-label");if(arenaLabel)arenaLabel.innerHTML=b.isBoss?"BOSS ARENA <span>• LIVE TARGET AREA</span>":"ENEMY FIELD <span>• LIVE TARGET AREA</span>";$("critArena").setAttribute("aria-label",b.isBoss?"Boss-Kampfzone":"Gegner-Kampfzone");$("bossDesc").textContent=b.desc;$("bossEmoji").querySelector("span").textContent=b.emoji;const cardImage=$("bossCardImage");if(cardImage){const art=b.isBoss?`boss-assets/boss-${String((state.bossIndex%20)+1).padStart(2,"0")}.png`:null;cardImage.hidden=!art;if(art){cardImage.src=art;cardImage.alt=b.name;cardImage.onerror=()=>{cardImage.hidden=true}}}$("bossHp").textContent=format(state.bossHp)+" / "+format(max);$("bossHealth").style.width=(state.bossHp/max*100)+"%";$("bossReward").textContent="Belohnung: +"+format(b.reward*rewardMultiplier())+" Aura";
  $("bossMechanics").innerHTML=(b.isBoss?b.mechanics.map(x=>"<span class='mechanic'>"+x+"</span>").join("")+"<span class='mechanic phase phase-"+phase+"'>"+phaseInfo.icon+" "+phaseInfo.label+": "+phaseInfo.desc+"</span>":"<span class='mechanic enemy-trait'>"+b.trait.name+": "+b.trait.desc+"</span>")+(b.isBoss&&state.bossAttackTelegraph?"<span class='mechanic boss-warning-label'>⚠️ "+bossAttackNames[state.bossAttackType]+" in 2 s</span>":"")+(state.bossDebuffUntil>Date.now()&&state.bossDebuff?"<span class='mechanic boss-debuff'>"+(state.bossDebuff==="overload"?"⚡ Schockwelle":state.bossDebuff==="armor"?"🛡️ Rüstungsimpuls":"🌀 Leerensturm")+" · "+Math.ceil((state.bossDebuffUntil-Date.now())/1000)+" s</span>":"");
  $("bossTimer").textContent=Math.max(0,state.bossTimer).toFixed(1);$("bossPhase").className="boss-phase phase-"+phase;$("bossPhase").textContent=b.isBoss?phaseInfo.icon+" "+phaseInfo.label+" · "+phaseInfo.desc:"⚔️ GEGNER-EIGENSCHAFT";$("comboBadge").textContent="COMBO x"+state.combo.toFixed(2);$("critBadge").textContent="🎯 CRIT bis ×"+critMultiplier().toFixed(1);
  renderUpgrades();
@@ -367,20 +367,19 @@ function updateCrit(){
  const zone=$("critZone"),arena=document.querySelector(".crit-arena"),target=$("bossTarget");
  if(!zone||!arena||!target)return;
  const speed=zoneSpeed(),z=zoneSize(),t=Date.now()/1000;
- const ar=arena.getBoundingClientRect(),tr=target.getBoundingClientRect();
- const cx=tr.left+tr.width/2-ar.left,cy=tr.top+tr.height/2-ar.top;
- const bossR=Math.min(tr.width,tr.height)/2;
- const zonePx=80+z*80;
- const safe=Math.max(18,bossR-zonePx*.58);
- let angle=t*(speed/.012)*1.65;
- if(hasShield()&&!state.shieldBroken) angle=shieldOpeningAngle()+Math.sin(t*1.35)*.22;
- const radius=hasShield()&&!state.shieldBroken?safe*.68:safe*(.62+.18*Math.sin(t*.9));
- const x=cx+Math.cos(angle)*radius-zonePx/2;
- const y=cy+Math.sin(angle)*radius-zonePx/2;
- zone.style.setProperty("--crit-left",x+"px");
- zone.style.setProperty("--crit-top",y+"px");
- zone.style.width=zonePx+"px";
- zone.style.height=zonePx+"px";
+ const ar=arena.getBoundingClientRect(),zonePx=Math.max(62,80+z*80);
+ const maxX=Math.max(12,(ar.width-zonePx)*.46),maxY=Math.max(12,(ar.height-zonePx)*.43);
+ const shielded=hasShield()&&!state.shieldBroken;
+ const theta=shielded?shieldOpeningAngle():t*(speed/.012)*1.38;
+ const pulse=.5+.5*Math.sin(t*.47+Math.sin(t*.19));
+ const radial=shielded?.62:(.22+.72*pulse);
+ const spiralX=Math.cos(theta)+.18*Math.cos(theta*2.15+t*.31);
+ const spiralY=Math.sin(theta)+.2*Math.sin(theta*1.72-t*.23);
+ const x=ar.width/2+spiralX*maxX*radial-zonePx/2;
+ const y=ar.height*.49+spiralY*maxY*radial-zonePx/2;
+ zone.style.left=Math.max(4,Math.min(ar.width-zonePx-4,x))+"px";
+ zone.style.top=Math.max(4,Math.min(ar.height-zonePx-4,y))+"px";
+ zone.style.width=zonePx+"px";zone.style.height=zonePx+"px";
 }
 function buy(type,qty=1){
  if(type==="idle"){if(skillHas("idle")||state.crystals<50)return;state.crystals-=50;state.skills.push("idle");state.skillLevels.idle=1;state.skillPoints++;save();render();return}
