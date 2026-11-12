@@ -25,13 +25,6 @@ namespace AuraFarming
             baseScale = transform.localScale;
             renderers = GetComponentsInChildren<Renderer>();
             propertyBlock = new MaterialPropertyBlock();
-            foreach (Renderer renderer in renderers)
-            {
-                renderer.GetPropertyBlock(propertyBlock);
-                propertyBlock.SetColor("_BaseColor", bodyColor);
-                propertyBlock.SetColor("_Color", bodyColor);
-                renderer.SetPropertyBlock(propertyBlock);
-            }
             IdlePhase = Random.value * 6.28f;
         }
 
