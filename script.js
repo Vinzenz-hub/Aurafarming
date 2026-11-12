@@ -150,17 +150,18 @@ function hasShield(){return boss().mechanics.includes("🛡️ Schild")}
 const bossAttackNames=["Energieeruption","Schildimpuls","Leerensturm"];
 function resetBossAttack(){state.bossAttackAt=Date.now()+14000;state.bossAttackTelegraph=false;state.bossAttackType=(Math.max(0,state.bossIndex)+Math.max(0,state.prestige||0))%3;state.bossDebuff=null;state.bossDebuffUntil=0}
 function tickBossAttack(now=Date.now()){
- const enemy=boss();
- if(!enemy.isBoss){state.bossAttackTelegraph=false;state.bossDebuff=null;state.bossDebuffUntil=0;return}
+ const enemy=boss(),arena=$("critArena");
+ if(!enemy.isBoss){state.bossAttackTelegraph=false;state.bossDebuff=null;state.bossDebuffUntil=0;arena.classList.remove("boss-warning","boss-impact","boss-attack-0","boss-attack-1","boss-attack-2");return}
  if(state.bossDebuffUntil<=now){state.bossDebuff=null;state.bossDebuffUntil=0}
  if(!state.bossAttackAt)resetBossAttack();
  if(now<state.bossAttackAt)return;
  if(!state.bossAttackTelegraph){
    state.bossAttackTelegraph=true;state.bossAttackAt=now+2200;
    $("message").textContent="⚠️ Boss-Angriff: "+bossAttackNames[state.bossAttackType]+" – 2 Sekunden!";
-   $("critArena").classList.add("boss-warning");return;
+   arena.classList.remove("boss-impact","boss-attack-0","boss-attack-1","boss-attack-2");
+   arena.classList.add("boss-warning","boss-attack-"+state.bossAttackType);return;
  }
- state.bossAttackTelegraph=false;$("critArena").classList.remove("boss-warning");
+ state.bossAttackTelegraph=false;arena.classList.remove("boss-warning","boss-attack-0","boss-attack-1","boss-attack-2");arena.classList.add("boss-impact");
  if(state.bossAttackType===0){
    state.bossDebuff="overload";state.bossDebuffUntil=now+5500;state.combo=Math.max(1,state.combo-.35);
    $("message").textContent="💥 SCHOCKWELLE! Crit-Zone 5,5 s beschleunigt · Combo gestört.";
@@ -200,7 +201,7 @@ function render(){
  arena.classList.toggle("boss-warning",!!state.bossAttackTelegraph);
  const fake=document.getElementById("fakeZone"), shield=document.getElementById("shieldZone"), core=document.getElementById("auraCore");
  const target=$("bossTarget"),shieldEl=$("bossShield");
- if(target){const p=bossTargetPos();target.style.left=p.x+"%";target.style.top=p.y+"%";const art=b.isBoss?`boss-assets/boss-${String((state.bossIndex%20)+1).padStart(2,"0")}.png`:`enemy-assets/enemy-${String(((state.level-1)%9)+1).padStart(2,"0")}.svg`;const image=$("bossTargetImage");if(image){image.hidden=false;image.src=art;image.alt=b.name;image.onerror=()=>{image.hidden=true}}$("bossTargetEmoji").textContent=b.emoji;target.classList.toggle("generic-enemy",!b.isBoss);target.classList.toggle("boss-enemy",!!b.isBoss)}
+ if(target){const p=bossTargetPos();target.style.left=p.x+"%";target.style.top=p.y+"%";target.classList.toggle("boss-variant-0",!!b.isBoss&&state.bossIndex%4===0);target.classList.toggle("boss-variant-1",!!b.isBoss&&state.bossIndex%4===1);target.classList.toggle("boss-variant-2",!!b.isBoss&&state.bossIndex%4===2);target.classList.toggle("boss-variant-3",!!b.isBoss&&state.bossIndex%4===3);target.classList.toggle("enemy-animated",!b.isBoss);const art=b.isBoss?`boss-assets/boss-${String((state.bossIndex%20)+1).padStart(2,"0")}.png`:`enemy-assets/enemy-${String(((state.level-1)%9)+1).padStart(2,"0")}.svg`;const image=$("bossTargetImage");if(image){image.hidden=false;image.src=art;image.alt=b.name;image.onerror=()=>{image.hidden=true}}$("bossTargetEmoji").textContent=b.emoji;target.classList.toggle("generic-enemy",!b.isBoss);target.classList.toggle("boss-enemy",!!b.isBoss)}
  if(shieldEl){const p=bossTargetPos();shieldEl.style.left=p.x+"%";shieldEl.style.top=p.y+"%";shieldEl.classList.toggle("broken",!hasShield()||state.shieldBroken);shieldEl.classList.toggle("exposed",bossHitInfo(arena.clientWidth*p.x/100,arena.clientHeight*p.y/100,arena).opening)}
  if(fake){const show=b.mechanics.includes("👻 Fake-Zonen");fake.style.display=show?"flex":"none";}
  if(shield)shield.style.display=b.mechanics.includes("🛡️ Schild")?"flex":"none";
