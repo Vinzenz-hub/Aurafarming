@@ -120,20 +120,58 @@ function format(n){return Math.floor(n).toLocaleString("de-DE")}
 function save(){state.lastSeen=Date.now();localStorage.setItem(SAVE_KEY,JSON.stringify(state))}
 
 function isBossLevel(level=state.level){return Math.max(1,Number(level)||1)%10===0}
+const enemyTraits=[
+ {id:"balanced",name:"Ausgewogen",desc:"Keine besondere Schwäche oder Stärke."},
+ {id:"evasive",name:"Flinker Gegner",desc:"Die Crit-Zone bewegt sich 30 % schneller."},
+ {id:"volatile",name:"Energiegeladen",desc:"Crit-Treffer verursachen 30 % mehr Schaden."},
+ {id:"armored",name:"Gepanzert",desc:"Normale Treffer verursachen 35 % weniger Schaden."},
+ {id:"drainer",name:"Combo-Brecher",desc:"Fake-Zonen kosten zusätzliche Combo."},
+ {id:"swift",name:"Sturmjäger",desc:"Die Crit-Zone bewegt sich 20 % schneller."},
+ {id:"resilient",name:"Zäh",desc:"30 % mehr Lebenspunkte, dafür 30 % mehr Aura."},
+ {id:"unstable",name:"Leerenkern",desc:"Normale Treffer sind schwächer, Crits besonders stark."},
+ {id:"bounty",name:"Aura-Beute",desc:"Gewährt 30 % mehr Aura."}
+];
+function enemyTrait(level=state.level){return enemyTraits[(Math.max(1,Number(level)||1)-1)%enemyTraits.length]}
 function boss(){
  const level=Math.max(1,Number(state.level)||1);
  const index=Math.max(0,Number(state.bossIndex)||0);
  if(!isBossLevel(level)){
    const stage=(level-1)%10;
    const base=genericEnemies[stage%genericEnemies.length];
-   const hp=Math.max(1,Math.round(getBossHp(level-1)*.55));
-   return {name:base[0],emoji:base[1],desc:base[2],hp,reward:Math.round(hp*1.1),crystals:0,time:45,mechanics:[],isBoss:false};
+   const trait=enemyTrait(level);
+   const hp=Math.max(1,Math.round(getBossHp(level-1)*.55*(trait.id==="resilient"?1.3:1)));
+   return {name:base[0],emoji:base[1],desc:base[2],hp,reward:Math.round(hp*1.1),crystals:0,time:45,mechanics:[],isBoss:false,trait};
  }
  const base=bossNames[index%bossNames.length],cycle=Math.floor(index/bossNames.length);
  const hp=getBossHp(level-1);
  return {name:base[0]+(cycle?" · Ascendant "+(cycle+1):""),emoji:base[1],desc:base[2],hp,reward:Math.round(hp*1.5),crystals:Math.max(2,Math.round(2+(index%bossNames.length)*.8)*Math.pow(1.15,cycle)),time:getBossTime(index),mechanics:getMechanics(index),isBoss:true};
 }
 function hasShield(){return boss().mechanics.includes("🛡️ Schild")}
+const bossAttackNames=["Energieeruption","Schildimpuls","Leerensturm"];
+function resetBossAttack(){state.bossAttackAt=Date.now()+14000;state.bossAttackTelegraph=false;state.bossAttackType=(Math.max(0,state.bossIndex)+Math.max(0,state.prestige||0))%3;state.bossDebuff=null;state.bossDebuffUntil=0}
+function tickBossAttack(now=Date.now()){
+ const enemy=boss();
+ if(!enemy.isBoss){state.bossAttackTelegraph=false;state.bossDebuff=null;state.bossDebuffUntil=0;return}
+ if(state.bossDebuffUntil<=now){state.bossDebuff=null;state.bossDebuffUntil=0}
+ if(!state.bossAttackAt)resetBossAttack();
+ if(now<state.bossAttackAt)return;
+ if(!state.bossAttackTelegraph){
+   state.bossAttackTelegraph=true;state.bossAttackAt=now+2200;
+   $("message").textContent="⚠️ Boss-Angriff: "+bossAttackNames[state.bossAttackType]+" – 2 Sekunden!";
+   $("critArena").classList.add("boss-warning");return;
+ }
+ state.bossAttackTelegraph=false;$("critArena").classList.remove("boss-warning");
+ if(state.bossAttackType===0){
+   state.bossDebuff="overload";state.bossDebuffUntil=now+5500;state.combo=Math.max(1,state.combo-.35);
+   $("message").textContent="💥 SCHOCKWELLE! Crit-Zone 5,5 s beschleunigt · Combo gestört.";
+ }else if(state.bossAttackType===1){
+   if(hasShield()&&!state.shieldBroken){state.shieldHp=Math.min(state.shieldMax,Math.round(state.shieldHp+state.shieldMax*.35));$("message").textContent="🛡️ SCHILDIMPULS! Boss-Schild regeneriert 35 %."}
+   else{state.bossDebuff="armor";state.bossDebuffUntil=now+5000;$("message").textContent="🛡️ RÜSTUNGSIMPULS! Boss nimmt 5 s lang 25 % weniger Schaden."}
+ }else{
+   state.bossDebuff="void";state.bossDebuffUntil=now+5000;$("message").textContent="🌀 LEERENSTURM! Crit-Zone 5 s lang verkleinert.";
+ }
+ state.bossAttackType=(state.bossAttackType+1)%3;state.bossAttackAt=now+14000;save();
+}
 function resetShield(){state.shieldMax=Math.max(20,Math.round(boss().hp*.22));state.shieldHp=state.shieldMax;state.shieldBroken=!hasShield();state.shieldSeed=Math.random()*Math.PI*2}
 if(!Number(state.bossAttackAt))resetBossAttack();
 function bossTargetPos(){return {x:50,y:48}}
