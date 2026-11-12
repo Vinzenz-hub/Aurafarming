@@ -1159,3 +1159,22 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 @keyframes raidVoidSurge{from{opacity:.35;filter:hue-rotate(0)}to{opacity:1;filter:hue-rotate(35deg)}}
 @keyframes raidImpactFlash{0%{opacity:1}100%{opacity:.3}}
 @media(prefers-reduced-motion:reduce){.boss-target.enemy-animated .boss-target-image,.crit-arena.boss-warning .boss-target.boss-enemy .boss-target-image{animation:none!important}}
+
+/* REFERENCE MATCH: clear hierarchy between boss encounters and standard enemies */
+.crit-arena{background-color:#030817!important;background-image:linear-gradient(180deg,#02061518 0%,#02061508 44%,#02061588 100%),url("arena-assets/voidlord-arena.svg")!important;background-position:center center!important;background-size:cover!important}
+.crit-arena .arena-grid{opacity:.09!important;mix-blend-mode:screen}
+.crit-arena .arena-label{z-index:14!important;top:15px!important;left:18px!important;padding:7px 11px!important;border:1px solid #54eaff66!important;border-radius:5px!important;background:#050b1bd9!important;backdrop-filter:blur(8px)}
+.crit-arena.boss-fight{box-shadow:0 0 0 1px #9b63ff55,0 0 55px #8244ff33,inset 0 0 110px #7e38ff20!important}
+.crit-arena.boss-fight:before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at 50% 48%,transparent 28%,#02051518 60%,#020515a8 100%),linear-gradient(180deg,#05091c35,transparent 34%,transparent 66%,#020515aa);animation:bossNebulaBreath 8s ease-in-out infinite alternate}
+.crit-arena.boss-fight .boss-target.boss-enemy{width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;z-index:7!important}
+.crit-arena.boss-fight .boss-target.boss-enemy .boss-target-image{object-fit:contain!important;transform:scale(1.06);filter:drop-shadow(0 12px 20px #02030c) drop-shadow(0 0 32px #a45cffdd) drop-shadow(0 0 95px #3cdbff77)!important}
+.crit-arena.enemy-fight .boss-target.generic-enemy{width:min(40vw,260px)!important;height:min(40vw,260px)!important;max-width:46%!important;max-height:60%!important}
+.crit-arena.enemy-fight .arena-label{border-color:#54eaff55!important}
+@keyframes bossNebulaBreath{from{opacity:.58}to{opacity:1}}
+@media(max-width:700px){
+ .crit-arena{height:calc(100svh - 215px)!important;min-height:410px!important;background-position:50% center!important}
+ .crit-arena.boss-fight .boss-target.boss-enemy{width:116%!important;height:100%!important;max-width:116%!important}
+ .crit-arena.boss-fight .boss-target.boss-enemy .boss-target-image{transform:scale(1.1)}
+ .crit-arena .arena-label{top:9px!important;left:9px!important;font-size:.52rem!important}
+}
+@media(prefers-reduced-motion:reduce){.crit-arena.boss-fight:before{animation:none}}
