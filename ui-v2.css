@@ -1114,3 +1114,25 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
  .raid-arena-stamp{display:none}
 }
 @media(prefers-reduced-motion:reduce){.boss-target-image,.crit-zone:after{animation:none!important}}
+
+/* VOIDLORD: layered illustrated environment and combat depth */
+.crit-arena{
+ background-color:#030817!important;
+ background-image:linear-gradient(180deg,#03081724 0%,#03081708 48%,#03081772 100%),url("arena-assets/voidlord-arena.svg")!important;
+ background-position:center center!important;background-size:cover!important;background-repeat:no-repeat!important;
+}
+.crit-arena:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.65;
+ background:radial-gradient(ellipse at 50% 65%,transparent 15%,#03081745 72%,#020510a8 100%),
+ linear-gradient(90deg,#03081755,transparent 22%,transparent 78%,#03081755)}
+.crit-arena:after{z-index:3!important;background:linear-gradient(180deg,#02061524 0%,transparent 30%,transparent 68%,#020615d9 100%),radial-gradient(ellipse at 50% 48%,transparent 38%,#02061555 100%)!important}
+.arena-grid{mix-blend-mode:screen!important;opacity:.18!important}
+.boss-target.boss-enemy{z-index:6!important}
+.boss-target.boss-enemy .boss-target-image{filter:drop-shadow(0 8px 15px #02030c) drop-shadow(0 0 28px #a45cffc9) drop-shadow(0 0 76px #3cdbff55)!important}
+.boss-target.boss-enemy:before{content:"";position:absolute;inset:18% 13% 6%;border-radius:50%;background:radial-gradient(ellipse,#a04bff30,transparent 68%);filter:blur(24px);z-index:-1}
+.boss-target.generic-enemy .boss-target-image{filter:drop-shadow(0 8px 12px #02030c) drop-shadow(0 0 20px #51eaffb0)!important}
+.raid-mechanics{backdrop-filter:blur(10px);border-color:#61eaff99;box-shadow:0 12px 36px #000b,0 0 24px #7a48ff24,inset 0 0 22px #50eaff0a}
+.raid-mechanics-content>*{border-left-color:#bb75ff;background:linear-gradient(90deg,#a45cff24,#48dfff08);border-radius:0 5px 5px 0}
+.crit-zone{backdrop-filter:blur(2px)}
+#critArena .arena-corner{z-index:12!important;filter:drop-shadow(0 0 8px #54eaff)}
+#message{backdrop-filter:blur(8px);box-shadow:0 0 22px #48dfff18}
+@media(max-width:700px){.crit-arena{background-position:52% center!important}.boss-target.boss-enemy .boss-target-image{filter:drop-shadow(0 0 18px #a45cffb9) drop-shadow(0 0 42px #3cdbff55)!important}}
