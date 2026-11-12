@@ -251,7 +251,7 @@ function addQuest(type,amount){state.quests.filter(q=>q.type===type).forEach(q=>
    ============================= */
 function farm(event){
  const c=clickers.find(x=>x.id===state.clicker)||clickers[0];const arena=document.querySelector(".crit-arena");const rect=arena.getBoundingClientRect();const px=event.clientX-rect.left;const py=event.clientY-rect.top;const targetHit=bossHitInfo(px,py,arena);const zoneEl=document.querySelector(".crit-zone");const zr=zoneEl.getBoundingClientRect();const zx=zr.left+zr.width/2-rect.left;const zy=zr.top+zr.height/2-rect.top;const zoneRadius=Math.max(zr.width,zr.height)*.5;const distance=Math.hypot(px-zx,py-zy);const inZone=distance<=zoneRadius;const validBossHit=targetHit.inside;const fakeEl=document.getElementById("fakeZone");const fakeRect=fakeEl&&getComputedStyle(fakeEl).display!=="none"?fakeEl.getBoundingClientRect():null;const hitFake=fakeRect&&px>=fakeRect.left-rect.left&&px<=fakeRect.right-rect.left&&py>=fakeRect.top-rect.top&&py<=fakeRect.bottom-rect.top;
- const enemy=boss(),phase=enemy.isBoss?bossPhase():1;let cm=inZone?critMultiplier():1;if(hitFake){cm=1;$("message").textContent="👻 Fake-Zone! Kein Crit.";state.combo=Math.max(1,state.combo-(enemy.trait?.id==="drainer"?.5:.25))}if(inZone&&c.bonuses.critChance&&Math.random()<c.bonuses.critChance)cm*=1.5;
+ const enemy=boss(),phase=enemy.isBoss?bossPhase():1;const isCritical=inZone&&!hitFake;let cm=isCritical?critMultiplier():1;if(hitFake){cm=1;state.combo=Math.max(1,state.combo-(enemy.trait?.id==="drainer"?.5:.25))}if(isCritical&&c.bonuses.critChance&&Math.random()<c.bonuses.critChance)cm*=1.5;
  if(!validBossHit){$("message").textContent="🎯 Ziel verfehlt — triff den Boss.";return} const hitTarget=$("bossTarget");if(hitTarget){hitTarget.classList.remove("hit");void hitTarget.offsetWidth;hitTarget.classList.add("hit");setTimeout(()=>hitTarget.classList.remove("hit"),190)} const hitArena=$("critArena");if(hitArena){hitArena.classList.remove("hit-confirmed");void hitArena.offsetWidth;hitArena.classList.add("hit-confirmed");setTimeout(()=>hitArena.classList.remove("hit-confirmed"),260)} let gain=Math.max(1,Math.floor(state.power*state.combo*state.multiplier*cm*(c.bonuses.click||1)*(1+skillEffect("aura",.10)+skillEffect("aura2",.20))*(1+petBonus("aura"))*rewardMultiplier()));
  if(state.event==="Aura"&&state.eventUntil>Date.now())gain=Math.floor(gain*2);
  if(state.bossHp/boss().hp<.25)gain=Math.floor(gain*(c.bonuses.execute||1));
@@ -273,9 +273,9 @@ function farm(event){
  }else{
    state.bossHp-=bossDamage;
  }
- showDamageNumber(shieldHit?shownDamage:bossDamage,inZone,shieldHit,event,arena);
- state.aura+=gain;state.combo=Math.min(12,state.combo+state.comboBoost*(c.bonuses.combo||1));addQuest("crit",inZone?1:0);addQuest("aura",gain);
- $("message").textContent=(inZone?"💥 "+cm.toFixed(1)+"× CRIT! ":"✨ ")+format(gain)+" Aura"+(enemy.isBoss&&phase>=4?" — 🔴 ENRAGE!":"");
+ showDamageNumber(shieldHit?shownDamage:bossDamage,isCritical,shieldHit,event,arena);
+ state.aura+=gain;if(!hitFake)state.combo=Math.min(12,state.combo+state.comboBoost*(c.bonuses.combo||1));addQuest("crit",isCritical?1:0);addQuest("aura",gain);
+ $("message").textContent=hitFake?"👻 Fake-Zone! Kein Crit · Combo reduziert.":(isCritical?"💥 "+cm.toFixed(1)+"× CRIT! ":"✨ ")+format(gain)+" Aura"+(enemy.isBoss&&phase>=4?" — 🔴 ENRAGE!":"");
  if(state.bossHp<=0)defeatBoss();checkLevel();save();render();
 }
 function showDamageNumber(amount,isCrit,shieldHit,event,arena){
@@ -308,6 +308,11 @@ function checkLevel(){
    const gained=targetLevel-state.level;
    state.level=targetLevel;
    state.power+=gained;
+   // A level-up can replace the current enemy mid-fight; reset every enemy-bound timer and defense.
+   state.bossHp=boss().hp;
+   state.bossTimer=boss().time;
+   resetShield();
+   resetBossAttack();
    $("message").textContent="🎉 "+gained+" Level"+(gained===1?"":"s")+" aufgestiegen! +"+gained+" Power";
  }
 }
