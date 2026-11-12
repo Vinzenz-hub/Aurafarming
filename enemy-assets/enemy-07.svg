@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Wurzelwächter">
+ <defs>
+  <radialGradient id="body" cx="48%" cy="34%" r="70%"><stop offset="0" stop-color="#a6e66f"/><stop offset=".45" stop-color="#35653c"/><stop offset="1" stop-color="#080d20"/></radialGradient>
+  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff" stop-opacity=".9"/><stop offset=".45" stop-color="#a6e66f"/><stop offset="1" stop-color="#35653c"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ </defs>
+ <ellipse cx="256" cy="450" rx="140" ry="25" fill="#a6e66f" opacity=".2"/>
+ <g filter="url(#glow)" stroke="url(#edge)" stroke-width="9" stroke-linejoin="round">
+  <path d="M175 160 Q45 95 80 300 Q130 270 190 285Z" fill="#35653c" opacity=".92"/><path d="M337 160 Q467 95 432 300 Q382 270 322 285Z" fill="#35653c" opacity=".92"/>
+  <path d="M256 70 C340 90 380 170 350 270 L256 435 162 270 C132 170 172 90 256 70Z" fill="url(#body)"/>
+  <path d="M205 112 L230 35 256 112 282 35 307 112" fill="#35653c"/>
+  <path d="M190 290 L135 385 225 350 M322 290 L377 385 287 350" fill="none" stroke="#a6e66f" stroke-width="17" stroke-linecap="round"/>
+  <path d="M180 215 Q256 260 332 215" fill="none" stroke="#a6e66f" stroke-width="8" opacity=".75"/>
+ </g>
+ <g fill="#f4ffff" filter="url(#glow)"><ellipse cx="207" cy="216" rx="25" ry="36"/><ellipse cx="305" cy="216" rx="25" ry="36"/></g>
+ <g fill="#35653c"><ellipse cx="210" cy="220" rx="10" ry="25"/><ellipse cx="302" cy="220" rx="10" ry="25"/></g>
+ <path d="M225 310 Q256 335 287 310" fill="none" stroke="#a6e66f" stroke-width="12" stroke-linecap="round"/>
+ <path d="M256 135 L276 175 256 195 236 175Z" fill="#fff" opacity=".7"/>
+ <g fill="#a6e66f" opacity=".9"><circle cx="110" cy="350" r="7"/><circle cx="398" cy="350" r="7"/><circle cx="150" cy="105" r="5"/><circle cx="362" cy="105" r="5"/></g>
+ </svg>
