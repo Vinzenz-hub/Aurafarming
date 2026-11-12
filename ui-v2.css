@@ -965,3 +965,16 @@ button,.ui-bottom-body button,.ui-bottom-body .small-btn,
 .boss-target.hit{animation:none!important;filter:brightness(1.18)}
 .boss-target.generic-enemy{border-color:#83d9ff99;box-shadow:0 0 22px #55b9ff55,inset 0 0 35px #55b9ff20}
 .boss-target.generic-enemy .boss-target-glow{background:radial-gradient(circle,#63bfff35,transparent 68%)}
+
+/* Combat depth: readable enemy traits, boss telegraphs and floating damage */
+.damage-number{position:absolute;z-index:40;pointer-events:none;font-weight:1000;font-size:clamp(1rem,3vw,1.55rem);letter-spacing:.02em;color:#dffcff;text-shadow:0 2px 5px #00111d,0 0 14px #4beaff;white-space:nowrap;animation:damageFloat 1s ease-out forwards}
+.damage-number.critical{color:#ffe59a;font-size:clamp(1.3rem,4vw,2rem);text-shadow:0 2px 5px #251400,0 0 18px #ffb84b}
+.damage-number.shield-damage{color:#cbbcff;text-shadow:0 2px 5px #160d35,0 0 16px #9b7cff}
+@keyframes damageFloat{0%{opacity:0;transform:translateY(12px) scale(.75)}15%{opacity:1;transform:translateY(0) scale(1.08)}100%{opacity:0;transform:translateY(-48px) scale(.92)}}
+.crit-arena.boss-warning{border-color:#ffb36d;box-shadow:0 0 0 2px #ff9b4b55,0 0 42px #ff713b66,inset 0 0 55px #ff6e352b}
+.crit-arena.boss-warning:before{content:"⚠ BOSS-ANGRIFF – AUSWEICHEN / CRIT TREFFEN";position:absolute;z-index:35;top:12%;left:50%;transform:translateX(-50%);padding:7px 12px;border:1px solid #ffb36d;border-radius:7px;background:#321b1bef;color:#ffe2c5;font-size:clamp(.55rem,1.6vw,.78rem);font-weight:1000;letter-spacing:.1em;white-space:nowrap;pointer-events:none;animation:warningPulse .55s ease-in-out infinite alternate}
+@keyframes warningPulse{to{filter:brightness(1.6);box-shadow:0 0 18px #ff713b88}}
+.boss-warning-label{border-color:#ffb36d!important;color:#ffe0bd!important}
+.enemy-trait{border-color:#6de3ff!important;color:#c8f6ff!important}
+.boss-debuff{border-color:#bd9aff!important;color:#e2d5ff!important}
+@media(prefers-reduced-motion:reduce){.damage-number,.crit-arena.boss-warning:before{animation:none;opacity:1}}
