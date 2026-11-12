@@ -978,3 +978,23 @@ button,.ui-bottom-body button,.ui-bottom-body .small-btn,
 .enemy-trait{border-color:#6de3ff!important;color:#c8f6ff!important}
 .boss-debuff{border-color:#bd9aff!important;color:#e2d5ff!important}
 @media(prefers-reduced-motion:reduce){.damage-number,.crit-arena.boss-warning:before{animation:none;opacity:1}}
+
+/* Arena scale pass: bosses are large full-field artwork, never enclosed by a target ring. */
+.boss-target{left:50%!important;top:48%!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;display:grid!important;place-items:center!important;filter:none!important;transition:filter .15s!important}
+.boss-target.boss-enemy{width:min(96%,940px)!important;height:96%!important;max-width:96%!important;max-height:96%!important;min-width:0!important;min-height:0!important}
+.boss-target.generic-enemy{width:min(34vw,250px)!important;height:min(34vw,250px)!important;max-width:42%!important;max-height:58%!important;min-width:92px!important;min-height:92px!important}
+.boss-target .boss-target-glow{inset:4%;border-radius:50%;background:radial-gradient(ellipse,#67dfff25,transparent 72%);filter:blur(24px);z-index:0}
+.boss-target-image{position:relative!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important;z-index:2;animation:bossFloat 4.2s ease-in-out infinite;filter:drop-shadow(0 0 22px #55dfff66) drop-shadow(0 0 46px #9877ff44)!important}
+.boss-target.generic-enemy .boss-target-image{width:150%!important;height:150%!important;filter:drop-shadow(0 0 18px #69dcff99)!important;animation:enemyHover 2.8s ease-in-out infinite}
+.boss-target #bossTargetEmoji{display:none!important}
+.boss-target.boss-enemy.hit{filter:brightness(1.22)!important}
+.crit-zone{z-index:28!important;transition:none!important;will-change:left,top}
+.fake-zone{z-index:29!important}
+.boss-shield{z-index:21!important}
+@keyframes enemyHover{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-9px) rotate(2deg)}}
+@media(max-width:700px){
+ .boss-target.boss-enemy{width:112%!important;height:94%!important;max-width:112%!important;max-height:94%!important}
+ .boss-target.generic-enemy{width:min(48vw,190px)!important;height:min(48vw,190px)!important;max-width:52%!important;max-height:54%!important;min-width:84px!important;min-height:84px!important}
+ .boss-target-image{filter:drop-shadow(0 0 14px #55dfff77)!important}
+}
+@media(prefers-reduced-motion:reduce){.boss-target-image,.boss-target.generic-enemy .boss-target-image{animation:none}}
