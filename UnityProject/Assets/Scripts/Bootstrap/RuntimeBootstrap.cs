@@ -71,7 +71,7 @@ namespace AuraFarming
             {
                 CreateChildPrimitive(root.transform, PrimitiveType.Capsule, "Left Claw", new Vector3(-1.05f, -0.3f, 0), new Vector3(0.42f, 1.1f, 0.42f), body).transform.localRotation = Quaternion.Euler(0, 0, -35);
                 CreateChildPrimitive(root.transform, PrimitiveType.Capsule, "Right Claw", new Vector3(1.05f, -0.3f, 0), new Vector3(0.42f, 1.1f, 0.42f), body).transform.localRotation = Quaternion.Euler(0, 0, 35);
-                for (int i = 0; i < 5; i++) CreateChildPrimitive(root.transform, PrimitiveType.Cone, "Crown Spike", new Vector3((i - 2) * 0.35f, 1.12f + Mathf.Abs(i - 2) * 0.08f, 0), new Vector3(0.22f, 0.55f, 0.22f), energy);
+                for (int i = 0; i < 5; i++) CreateChildPrimitive(root.transform, PrimitiveType.Cylinder, "Crown Spike", new Vector3((i - 2) * 0.35f, 1.12f + Mathf.Abs(i - 2) * 0.08f, 0), new Vector3(0.22f, 0.55f, 0.22f), energy);
             }
             SphereCollider collider = root.AddComponent<SphereCollider>();
             collider.radius = isBoss ? 1.05f : 0.85f;
@@ -83,7 +83,7 @@ namespace AuraFarming
 
         private Transform CreateCritMarker()
         {
-            GameObject marker = CreatePrimitive(PrimitiveType.Sphere, "Moving Crit Target", new Vector3(0, 0.12f, 0), Vector3.one * 0.34f, new Color(0.15f, 0.95f, 1f), false);
+            GameObject marker = CreatePrimitive(PrimitiveType.Sphere, "Moving Crit Target", new Vector3(0, 2.25f, 0.35f), Vector3.one * 0.34f, new Color(0.15f, 0.95f, 1f), false);
             return marker.transform;
         }
 
