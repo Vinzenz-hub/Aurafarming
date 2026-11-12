@@ -124,7 +124,8 @@ namespace AuraFarming
             float t = Time.time * 0.62f;
             float x = Mathf.Cos(t) * 2.25f + Mathf.Cos(t * 2.1f) * 0.32f;
             float z = Mathf.Sin(t * 1.18f) * 1.25f + Mathf.Sin(t * 1.7f) * 0.2f;
-            critMarker.position = new Vector3(x, 0.12f, z);
+            Vector3 center = CurrentEnemy.transform.position;
+            critMarker.position = center + new Vector3(x, 0.15f + Mathf.Sin(t * 0.9f) * 0.42f, -0.82f + z * 0.08f);
         }
 
         public void BuyPowerUpgrade()
