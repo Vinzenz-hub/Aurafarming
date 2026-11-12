@@ -1178,3 +1178,8 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
  .crit-arena .arena-label{top:9px!important;left:9px!important;font-size:.52rem!important}
 }
 @media(prefers-reduced-motion:reduce){.crit-arena.boss-fight:before{animation:none}}
+
+/* Combat input reliability: the whole active arena is the tap target. */
+.crit-arena{touch-action:manipulation!important;pointer-events:auto!important}
+.crit-arena .boss-target,.crit-arena .arena-grid,.crit-arena .arena-label,
+.crit-arena .raid-mechanics,.crit-arena .raid-arena-stamp{pointer-events:none!important}
