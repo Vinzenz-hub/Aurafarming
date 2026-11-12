@@ -210,7 +210,7 @@ const max=b.hp;state.bossHp=Math.max(0,Math.min(state.bossHp,max));
  $("crystals").textContent=format(state.crystals);$("stars").textContent=state.stars;$("skillPoints").textContent=state.skillPoints;$("hudAura").textContent=format(state.aura);$("hudCrystals").textContent=format(state.crystals);$("hudStars").textContent=state.stars;$("hudSkillPoints").textContent=state.skillPoints;$("idleDamage").textContent=format(idleDps());$("bossStreak").textContent=state.bossStreak;
  $("bossNumber").textContent=state.level;$("enemyType").textContent=b.isBoss?"BOSS":"GEGNER";$("bossName").textContent=b.name;$("bossDesc").textContent=b.desc;$("bossEmoji").querySelector("span").textContent=b.emoji;const cardImage=$("bossCardImage");if(cardImage){const art=b.isBoss?`boss-assets/boss-${String((state.bossIndex%20)+1).padStart(2,"0")}.png`:null;cardImage.hidden=!art;if(art){cardImage.src=art;cardImage.alt=b.name;cardImage.onerror=()=>{cardImage.hidden=true}}}$("bossHp").textContent=format(state.bossHp)+" / "+format(max);$("bossHealth").style.width=(state.bossHp/max*100)+"%";$("bossReward").textContent="Belohnung: +"+format(b.reward*rewardMultiplier())+" Aura";
  $("bossMechanics").innerHTML=(b.isBoss?b.mechanics.map(x=>"<span class='mechanic'>"+x+"</span>").join("")+"<span class='mechanic phase phase-"+phase+"'>"+phaseInfo.icon+" "+phaseInfo.label+": "+phaseInfo.desc+"</span>":"<span class='mechanic enemy-trait'>"+b.trait.name+": "+b.trait.desc+"</span>")+(b.isBoss&&state.bossAttackTelegraph?"<span class='mechanic boss-warning-label'>⚠️ "+bossAttackNames[state.bossAttackType]+" in 2 s</span>":"")+(state.bossDebuffUntil>Date.now()&&state.bossDebuff?"<span class='mechanic boss-debuff'>"+(state.bossDebuff==="overload"?"⚡ Schockwelle":state.bossDebuff==="armor"?"🛡️ Rüstungsimpuls":"🌀 Leerensturm")+" · "+Math.ceil((state.bossDebuffUntil-Date.now())/1000)+" s</span>":"");
- $("bossTimer").textContent=Math.max(0,state.bossTimer).toFixed(1);$("bossPhase").className="boss-phase phase-"+phase;$("bossPhase").textContent=phaseInfo.icon+" "+phaseInfo.label+" · "+phaseInfo.desc;$("comboBadge").textContent="COMBO x"+state.combo.toFixed(2);$("critBadge").textContent="🎯 CRIT bis ×"+critMultiplier().toFixed(1);
+ $("bossTimer").textContent=Math.max(0,state.bossTimer).toFixed(1);$("bossPhase").className="boss-phase phase-"+phase;$("bossPhase").textContent=b.isBoss?phaseInfo.icon+" "+phaseInfo.label+" · "+phaseInfo.desc:"⚔️ GEGNER-EIGENSCHAFT";$("comboBadge").textContent="COMBO x"+state.combo.toFixed(2);$("critBadge").textContent="🎯 CRIT bis ×"+critMultiplier().toFixed(1);
  renderUpgrades();
 
  $("prestigeBonus").textContent="Belohnungen ×"+prestigeMultiplier().toFixed(2);
@@ -255,13 +255,13 @@ function farm(event){
  if(!validBossHit){$("message").textContent="🎯 Ziel verfehlt — triff den Boss.";return} const hitTarget=$("bossTarget");if(hitTarget){hitTarget.classList.remove("hit");void hitTarget.offsetWidth;hitTarget.classList.add("hit");setTimeout(()=>hitTarget.classList.remove("hit"),190)} const hitArena=$("critArena");if(hitArena){hitArena.classList.remove("hit-confirmed");void hitArena.offsetWidth;hitArena.classList.add("hit-confirmed");setTimeout(()=>hitArena.classList.remove("hit-confirmed"),260)} let gain=Math.max(1,Math.floor(state.power*state.combo*state.multiplier*cm*(c.bonuses.click||1)*(1+skillEffect("aura",.10)+skillEffect("aura2",.20))*(1+petBonus("aura"))*rewardMultiplier()));
  if(state.event==="Aura"&&state.eventUntil>Date.now())gain=Math.floor(gain*2);
  if(state.bossHp/boss().hp<.25)gain=Math.floor(gain*(c.bonuses.execute||1));
- if(!enemy.isBoss&&(enemy.trait.id==="resilient"||enemy.trait.id==="bounty"))gain=Math.floor(gain*(enemy.trait.id==="resilient"?1.3:1.3));
+ if(!enemy.isBoss&&(enemy.trait.id==="resilient"||enemy.trait.id==="bounty"))gain=Math.floor(gain*1.3);
  let bossDamage=Math.max(1,Math.floor(state.power*state.multiplier*cm*(c.bonuses.boss||1)*(1+skillEffect("power",.10)+skillEffect("power2",.20))*(1+petBonus("boss"))));
  if(state.event==="Void"&&state.eventUntil>Date.now())bossDamage=Math.floor(bossDamage*1.5);
  if(!enemy.isBoss){
    if(enemy.trait.id==="armored"&&!inZone)bossDamage=Math.floor(bossDamage*.65);
    if(enemy.trait.id==="unstable"&&!inZone)bossDamage=Math.floor(bossDamage*.8);
-   if(enemy.trait.id==="volatile"&&inZone)bossDamage=Math.floor(bossDamage*1.3);
+   
  }
  if(state.bossDebuff==="armor"&&state.bossDebuffUntil>Date.now())bossDamage=Math.floor(bossDamage*.75);
  if(enemy.isBoss&&enemy.mechanics.includes("🛡️ Schild")&&!inZone)bossDamage=Math.floor(bossDamage*(phase>=3?.5:.7));if(enemy.isBoss&&enemy.mechanics.includes("🌀 Aura Shift")&&!inZone)bossDamage=Math.floor(bossDamage*(phase>=3?.75:.85));if(enemy.isBoss&&phase>=4)bossDamage=Math.floor(bossDamage*1.25);
