@@ -1043,3 +1043,74 @@ body{background:radial-gradient(ellipse at 50% 18%,#32145e55 0,transparent 48%),
 @media(min-width:701px){.crit-arena{height:min(72vh,760px);min-height:560px}.boss-target.boss-enemy{height:100%!important}.ui-combat-hud{padding-left:max(20px,calc((100vw - 1120px)/2));padding-right:max(20px,calc((100vw - 1120px)/2))}}
 @media(max-width:700px){.crit-arena{border-radius:5px}.arena-label{top:11px;left:12px;font-size:.48rem}.boss-target.boss-enemy{width:118%!important;height:96%!important}.crit-zone{border-width:1px}.crit-zone:after{inset:6px}}
 @media(prefers-reduced-motion:reduce){.crit-zone:after{animation:none}}
+
+
+/* === VOIDLORD RAID: full-screen cinematic battle composition === */
+:root{--raid-cyan:#52edff;--raid-violet:#a76aff;--raid-blue:#246dff;--raid-deep:#030817}
+body{background:#020611!important;color:#eafaff}
+body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 50% 28%,#4920a044,transparent 48%),radial-gradient(ellipse at 10% 70%,#0873a044,transparent 40%),linear-gradient(180deg,#030611,#080d21 55%,#020611)}
+.ui-topbar{position:relative;z-index:60;background:linear-gradient(180deg,#030611fa,#07142af2)!important;border-bottom:1px solid #4cecff55!important;box-shadow:0 8px 32px #000b,0 0 22px #4cecff17!important}
+.ui-combat-hud{position:relative;z-index:55;display:grid;grid-template-columns:minmax(150px,250px) minmax(0,1fr);grid-template-areas:"identity timer" "health health";align-items:center;gap:8px 16px;width:min(100% - 28px,1500px);margin:12px auto 8px;padding:12px 18px!important;border:1px solid #4deaff88!important;border-radius:12px;background:linear-gradient(105deg,#07142af7,#11112df5 58%,#071a2bf5)!important;box-shadow:0 0 0 2px #4deaff10,0 10px 36px #000b,inset 0 0 24px #54eaff0b!important}
+.ui-boss-toggle{grid-area:identity;display:contents}
+.ui-combat-row{display:contents}
+.ui-combat-name{grid-area:identity;display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;padding-left:5px}
+.ui-combat-kicker{font-size:.62rem!important;letter-spacing:.2em!important;color:#61f3ff!important}
+.ui-combat-boss{font-size:clamp(1.05rem,2.1vw,1.65rem)!important;line-height:1.1;color:#fff!important;text-shadow:0 0 16px #9a6bff99}
+.ui-combat-meta{font-size:.78rem;color:#bdc9ed}
+.ui-combat-stat.ui-combat-timer{grid-area:timer;justify-self:end;min-width:112px;padding:8px 14px!important;border:1px solid #53eaff55!important;border-radius:9px;background:#07152be8!important}
+.ui-combat-damage{display:none!important}
+.ui-combat-health{grid-area:health;width:100%;height:15px!important;margin:0!important;border:1px solid #5beeffaa!important;border-radius:6px!important;background:#170b20!important;overflow:hidden;box-shadow:0 0 16px #50eaff22}
+.ui-combat-health:after{content:"";position:absolute;inset:0;pointer-events:none}
+.ui-combat-health i{background:linear-gradient(90deg,#ff315c,#ff4c76 45%,#e92750)!important;box-shadow:0 0 16px #ff386b!important}
+.ui-boss-chevron{position:absolute;right:14px;bottom:26px;color:#a9edff}
+.ui-boss-details{position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:100;padding:14px;border:1px solid #58eaff77;border-radius:10px;background:#071020f7;box-shadow:0 12px 34px #000c}
+#combatArea{position:relative;width:100%;max-width:none;margin:0;padding:0 14px 88px!important}
+#combatArea .combat-line{position:absolute;left:24px;bottom:100px;z-index:42;display:flex;gap:10px}
+#combatArea .combo-badge,#combatArea .crit-badge{padding:8px 13px;border:1px solid #55eaff88;border-radius:9px;background:linear-gradient(135deg,#062a3ceF,#11102df0);box-shadow:0 0 20px #48dfff26;color:#dffcff;font-weight:900}
+.crit-arena{position:relative;width:100%!important;max-width:none!important;height:calc(100svh - 250px)!important;min-height:470px!important;max-height:900px!important;margin:0 auto!important;overflow:hidden!important;border:1px solid #55eaff88!important;border-radius:12px!important;background:
+ radial-gradient(ellipse at 50% 62%,#5631a4a6 0,transparent 34%),
+ radial-gradient(ellipse at 50% 82%,#0d9dc76b 0,transparent 44%),
+ radial-gradient(ellipse at 50% 35%,#182b68 0,#09142f 48%,#030817 100%)!important;
+ box-shadow:0 0 0 2px #9a6bff19,0 0 48px #3ccfff2c,0 24px 80px #000c,inset 0 0 100px #0b0d2e!important}
+.crit-arena:after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,#03081766 0,transparent 26%,transparent 70%,#020612b8 100%),radial-gradient(ellipse at 50% 50%,transparent 40%,#03081766 100%)}
+.arena-grid{z-index:1!important;opacity:.32!important;background-size:48px 48px!important}
+.arena-label{z-index:5!important;top:16px!important;left:20px!important;padding:7px 10px;border:1px solid #52eaff55;border-radius:5px;background:#06152bc9;color:#7af6ff!important;font-size:.62rem;letter-spacing:.2em}
+.boss-target.boss-enemy{width:min(98%,1280px)!important;height:100%!important;max-width:100%!important;max-height:100%!important;top:50%!important;z-index:4!important}
+.boss-target-image{filter:drop-shadow(0 0 24px #9e68ff99) drop-shadow(0 0 60px #35dfff55)!important;animation:raidBossHover 5s ease-in-out infinite!important}
+.boss-target.generic-enemy{width:min(48vw,350px)!important;height:min(48vw,350px)!important;z-index:4!important}
+.raid-mechanics{position:absolute;z-index:15;top:78px;left:18px;width:min(245px,34vw);padding:14px 15px;border:1px solid #55eaff88;border-radius:10px;background:linear-gradient(145deg,#07162beF,#100d2ceF);box-shadow:0 10px 32px #0009,0 0 22px #48dfff1d;pointer-events:none}
+.raid-mechanics>small{display:block;margin-bottom:9px;color:#5ef0ff;font-weight:1000;letter-spacing:.12em;font-size:.68rem}
+.raid-mechanics-content{display:grid;gap:7px;color:#e8edff;font-size:.83rem}
+.raid-mechanics-content>*{padding:6px 8px;border-left:2px solid #a66cff;background:#a36cff12}
+.raid-arena-stamp{position:absolute;right:18px;bottom:16px;z-index:8;color:#7defff88;font-size:.55rem;letter-spacing:.18em;pointer-events:none}
+.crit-zone{z-index:35!important;border:2px solid #85ffff!important;background:radial-gradient(circle,#75ffff40 0 24%,#75ffff16 50%,transparent 72%)!important;box-shadow:0 0 0 5px #55eaff1b,0 0 24px #55f5ffdd,inset 0 0 20px #55eaff77!important}
+.crit-zone:after{content:"";position:absolute;inset:9px;border:1px dashed #caffffb0;border-radius:50%;animation:raidReticleSpin 4s linear infinite}
+.crit-zone span{font-size:.68rem;font-weight:1000;color:#fff;text-shadow:0 0 10px #54efff}
+.fake-zone{z-index:36!important}
+.boss-shield{z-index:24!important}
+#message{position:absolute;bottom:12px;left:50%;z-index:45;transform:translateX(-50%);width:min(92%,700px);padding:8px 12px;border:1px solid #4ceaff44;border-radius:8px;background:#061126d9;text-align:center;font-size:.78rem}
+.bottom-nav{position:fixed!important;z-index:80;left:50%!important;bottom:12px!important;transform:translateX(-50%)!important;width:min(760px,calc(100% - 24px))!important;padding:8px!important;border:1px solid #4deaff88!important;border-radius:14px!important;background:linear-gradient(110deg,#071126f5,#11102bf5)!important;box-shadow:0 10px 38px #000c,0 0 24px #4deaff20!important;backdrop-filter:blur(14px)}
+.bottom-nav .nav-tab{min-height:58px!important;border-radius:10px!important;color:#c5d2f4!important}
+.bottom-nav .nav-tab.active{background:linear-gradient(145deg,#0b5571,#30205b)!important;border:1px solid #67f6ff!important;box-shadow:0 0 22px #48dfff66,inset 0 0 18px #48dfff25!important}
+.ui-bottom-sheet,.ui-status-sheet{z-index:100!important}
+@keyframes raidBossHover{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-7px) scale(1.012)}}
+@keyframes raidReticleSpin{to{transform:rotate(360deg)}}
+@media(min-width:900px){.crit-arena{height:calc(100svh - 225px)!important;min-height:540px!important}.raid-mechanics{top:24px;left:24px}}
+@media(max-width:700px){
+ .ui-combat-hud{width:calc(100% - 16px);margin:7px auto;padding:9px 10px!important;grid-template-columns:minmax(0,1fr) auto;gap:6px}
+ .ui-combat-stat.ui-combat-timer{min-width:78px;padding:6px 8px!important}
+ .ui-combat-timer small{font-size:.55rem}
+ .ui-combat-timer b{font-size:1rem}
+ #combatArea{padding:0 6px 74px!important}
+ .crit-arena{height:calc(100svh - 205px)!important;min-height:390px!important;border-radius:7px!important}
+ .raid-mechanics{top:56px;left:8px;width:min(190px,48vw);padding:9px;font-size:.7rem}
+ .raid-mechanics>small{font-size:.56rem}
+ .raid-mechanics-content{font-size:.68rem}
+ #combatArea .combat-line{left:12px;bottom:82px;gap:6px}
+ #combatArea .combo-badge,#combatArea .crit-badge{padding:6px 8px;font-size:.68rem}
+ #message{bottom:6px;font-size:.68rem}
+ .bottom-nav{bottom:6px!important;width:calc(100% - 12px)!important;padding:5px!important}
+ .bottom-nav .nav-tab{min-height:48px!important;font-size:.72rem}
+ .raid-arena-stamp{display:none}
+}
+@media(prefers-reduced-motion:reduce){.boss-target-image,.crit-zone:after{animation:none!important}}
