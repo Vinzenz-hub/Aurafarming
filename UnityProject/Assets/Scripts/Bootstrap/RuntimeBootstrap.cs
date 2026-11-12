@@ -33,7 +33,7 @@ namespace AuraFarming
             Camera camera = new GameObject("Main Camera").AddComponent<Camera>();
             camera.tag = "MainCamera";
             camera.transform.position = new Vector3(0, 5.6f, -10.5f);
-            camera.transform.rotation = Quaternion.Euler(25f, 0, 0);
+            camera.transform.LookAt(new Vector3(0, 1.75f, 1.0f));
             camera.fieldOfView = 48f;
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(0.015f, 0.025f, 0.075f);
