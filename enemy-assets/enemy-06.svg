@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Sternenplünderer">
+ <defs>
+  <radialGradient id="body" cx="48%" cy="34%" r="70%"><stop offset="0" stop-color="#ff9a62"/><stop offset=".45" stop-color="#7b2945"/><stop offset="1" stop-color="#080d20"/></radialGradient>
+  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff" stop-opacity=".9"/><stop offset=".45" stop-color="#ff9a62"/><stop offset="1" stop-color="#7b2945"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ </defs>
+ <ellipse cx="256" cy="450" rx="140" ry="25" fill="#ff9a62" opacity=".2"/>
+ <g filter="url(#glow)" stroke="url(#edge)" stroke-width="9" stroke-linejoin="round">
+  <path d="M176 180 L50 130 112 300Z" fill="#7b2945" opacity=".92"/><path d="M336 180 L462 130 400 300Z" fill="#7b2945" opacity=".92"/>
+  <path d="M256 55 L330 155 390 190 340 265 360 365 256 420 152 365 172 265 122 190 182 155Z" fill="url(#body)"/>
+  <path d="M205 112 L230 35 256 112 282 35 307 112" fill="#7b2945"/>
+  <path d="M190 290 L135 385 225 350 M322 290 L377 385 287 350" fill="none" stroke="#ff9a62" stroke-width="17" stroke-linecap="round"/>
+  <path d="M180 215 Q256 260 332 215" fill="none" stroke="#ff9a62" stroke-width="8" opacity=".75"/>
+ </g>
+ <g fill="#f4ffff" filter="url(#glow)"><ellipse cx="207" cy="216" rx="25" ry="36"/><ellipse cx="305" cy="216" rx="25" ry="36"/></g>
+ <g fill="#7b2945"><ellipse cx="210" cy="220" rx="10" ry="25"/><ellipse cx="302" cy="220" rx="10" ry="25"/></g>
+ <path d="M225 310 Q256 335 287 310" fill="none" stroke="#ff9a62" stroke-width="12" stroke-linecap="round"/>
+ <path d="M256 135 L276 175 256 195 236 175Z" fill="#fff" opacity=".7"/>
+ <g fill="#ff9a62" opacity=".9"><circle cx="110" cy="350" r="7"/><circle cx="398" cy="350" r="7"/><circle cx="150" cy="105" r="5"/><circle cx="362" cy="105" r="5"/></g>
+ </svg>
