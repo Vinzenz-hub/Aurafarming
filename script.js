@@ -135,6 +135,7 @@ function boss(){
 }
 function hasShield(){return boss().mechanics.includes("🛡️ Schild")}
 function resetShield(){state.shieldMax=Math.max(20,Math.round(boss().hp*.22));state.shieldHp=state.shieldMax;state.shieldBroken=!hasShield();state.shieldSeed=Math.random()*Math.PI*2}
+if(!Number(state.bossAttackAt))resetBossAttack();
 function bossTargetPos(){return {x:50,y:48}}
 function shieldOpeningAngle(){return Date.now()/1400+state.shieldSeed}
 function bossHitInfo(px,py,arena){const r=arena.getBoundingClientRect();const target=document.getElementById("bossTarget");const tr=target?target.getBoundingClientRect():null;const bx=tr?(tr.left+tr.width/2-r.left):r.width/2;const by=tr?(tr.top+tr.height/2-r.top):r.height/2;const bossRadius=tr?Math.min(tr.width,tr.height)/2:Math.min(r.width,r.height)*.13;const d=Math.hypot(px-bx,py-by);const angle=Math.atan2(py-by,px-bx);let delta=Math.atan2(Math.sin(angle-shieldOpeningAngle()),Math.cos(angle-shieldOpeningAngle()));const opening=Math.abs(delta)<.34;return {d,bossRadius,opening,inside:d<=bossRadius}}
@@ -146,11 +147,11 @@ function skillEffect(id,value){return skillLevel(id)*value}
 function petBonus(type){return state.equippedPets.map(id=>pets.find(p=>p.id===id)).filter(Boolean).filter(p=>p.type===type).reduce((s,p)=>s+p.value,0)*(1+skillEffect("pet",.10)+skillEffect("pet2",.20))}
 function rewardMultiplier(){return prestigeMultiplier()*(1+petBonus("reward"))}
 function idleDps(){const b=clickers.find(c=>c.id===state.clicker)||clickers[0];const comboScale=Math.sqrt(Math.max(1,state.combo));const multiScale=Math.sqrt(state.multiplier);return Math.max(0,state.power*.5*comboScale*multiScale*(b.bonuses.idle||1)*(1+skillEffect("idle",.10)+skillEffect("idle2",.20)))}
-function zoneSize(){return Math.min(.32,.18*(1+skillEffect("crit2",.10)+petBonus("zone")))}
+function zoneSize(){const e=boss();let size=Math.min(.32,.18*(1+skillEffect("crit2",.10)+petBonus("zone")));if(!e.isBoss&&e.trait.id==="unstable")size*=.92;if(state.bossDebuff==="void"&&state.bossDebuffUntil>Date.now())size*=.72;return size}
 function bossPhase(){const ratio=state.bossHp/Math.max(1,boss().hp);return ratio<=.25?4:ratio<=.5?3:ratio<=.75?2:1}
 function bossPhaseInfo(){return [{label:"PHASE 1",icon:"🟢",desc:"Stabil"},{label:"PHASE 2",icon:"🟡",desc:"Schnellere Angriffe"},{label:"PHASE 3",icon:"🟠",desc:"Schild verstärkt"},{label:"PHASE 4",icon:"🔴",desc:"Enrage"}][bossPhase()-1]}
-function zoneSpeed(){const c=clickers.find(x=>x.id===state.clicker)||clickers[0];const phase=bossPhase();return .012*(c.bonuses.zoneSpeed||1)*(boss().mechanics.includes("⚡ Schnellere Zone")?1.5:1)*(phase>=2?1.18:1)*(phase>=4?1.22:1)}
-function critMultiplier(){const c=clickers.find(x=>x.id===state.clicker)||clickers[0];let m=2*(1+skillEffect("crit",.10));if(c.bonuses.crit)m*=c.bonuses.crit;if(state.event==="Perfect Storm")m*=1.5;return m}
+function zoneSpeed(){const c=clickers.find(x=>x.id===state.clicker)||clickers[0],e=boss();const phase=e.isBoss?bossPhase():1;let speed=.012*(c.bonuses.zoneSpeed||1)*(e.mechanics.includes("⚡ Schnellere Zone")?1.5:1)*(phase>=2?1.18:1)*(phase>=4?1.22:1);if(!e.isBoss&&(e.trait.id==="evasive"||e.trait.id==="swift"))speed*=e.trait.id==="evasive"?1.3:1.2;if(state.bossDebuff==="overload"&&state.bossDebuffUntil>Date.now())speed*=1.35;return speed}
+function critMultiplier(){const c=clickers.find(x=>x.id===state.clicker)||clickers[0],e=boss();let m=2*(1+skillEffect("crit",.10));if(c.bonuses.crit)m*=c.bonuses.crit;if(state.event==="Perfect Storm")m*=1.5;if(!e.isBoss&&e.trait.id==="volatile")m*=1.3;if(!e.isBoss&&e.trait.id==="unstable")m*=1.2;if(state.bossDebuff==="void"&&state.bossDebuffUntil>Date.now())m*=.8;return m}
 /* =============================
    RENDERING
    ============================= */
